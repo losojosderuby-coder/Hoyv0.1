@@ -1,17 +1,19 @@
-HOY v0.4 — Estructura por misiones
+HOY v0.5 INTEGRADA — Diseño celestial + mejoras técnicas
 
 Incluye:
-- Navegación Núcleo → Proyecto → Misión → Tareas.
-- Tarjetas visuales para proyectos y misiones, listas para tareas.
-- Sesiones registradas dentro de cada misión o proyecto.
-- Autoguardado de borradores de sesión.
-- Conserva los proyectos y tareas anteriores; las tareas viejas quedan visibles como “sin misión”.
-- Mantiene el mismo almacenamiento local y la misma dirección de GitHub Pages.
+- Diseño celeste, blanco cálido y dorado suave.
+- Logo HOY con el dibujo del sol enviado, preparado con transparencia.
+- Nubes celestiales desenfocadas y discretas en el fondo y algunas tarjetas.
+- Inicio con módulo compacto “Últimos movimientos”, basado en sesiones guardadas.
+- Edición de núcleos, proyectos, misiones y tareas mediante lápiz.
+- Tareas con subtareas: una por línea, marcables y editables.
+- Conserva registro de sesiones, borradores automáticos, proyectos y misiones.
+- Conserva la clave de almacenamiento hoy-data-v1 y hoy-drafts-v1; no cambia la URL.
 
-Instalación:
-1. En el repositorio Hoyv0.1, reemplazá index.html y sw.js por estos archivos.
-2. No reemplaces manifest.webmanifest.
-3. Commit changes y esperá unos segundos.
-4. Abrí la misma dirección de HOY y recargá la página.
+INSTALACIÓN:
+1. En GitHub, reemplazá index.html y sw.js.
+2. Agregá hoy_sol_original.png y hoy_cielo_nubes.jpg a la raíz del repositorio.
+3. No reemplaces manifest.webmanifest ni borres archivos existentes.
+4. Commit changes. Esperá a GitHub Pages y recargá HOY.
 
-Antes de instalar, ya exportaste una copia de tus datos. No borres los datos del sitio en Safari.
+IMPORTANTE: la aplicación guarda los datos en el almacenamiento local del navegador. Conservá tu exportación JSON.

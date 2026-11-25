@@ -1,5 +1,5 @@
-const CACHE='hoy-static-v4';
-const FILES=['./','./index.html','./manifest.webmanifest'];
+const CACHE='hoy-static-v5';
+const FILES=['./','./index.html','./manifest.webmanifest','./hoy_sol_original.png','./hoy_cielo_nubes.jpg'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));
 });
