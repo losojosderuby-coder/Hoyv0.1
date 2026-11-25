@@ -1,7 +1,17 @@
-HOY v0.6 - Mejoras solicitadas
+HOY v0.7 — navegación de cinco secciones
 
-Incluye ideas independientes por núcleo, último núcleo trabajado, prioridades que abren directamente su misión, eliminación con confirmación de núcleos/proyectos/misiones/tareas, archivo separado de últimos movimientos y ajustes visuales celestes/dorados.
+Esta versión conserva la clave local hoy-data-v1 y los datos existentes.
 
-IMPORTANTE: antes de reemplazar los archivos, exportá una copia desde HOY. Al actualizar el código, NO importes una copia antigua si la aplicación ya conserva los datos. La copia se usa solo para recuperar datos si hiciera falta.
+Barra inferior, en este orden: Hoy · Núcleos · Ideas · Consejos · Historial.
+El botón Ideas mantiene el círculo dorado destacado y abre directamente la captura/lista de ideas. Consejos es una sección independiente con versículos breves de Reina-Valera 1909 y un botón para ver otro. El versículo ya no aparece en el Dashboard.
 
-Subí los archivos de esta carpeta al repositorio GitHub, reemplazando los anteriores. Mantener los nombres de archivos.
+También conserva los cambios de la versión anterior: ideas globales y conversión a misiones, misiones en lista vertical con controles de orden, símbolos editables de núcleos, actividad compacta con porcentaje de misiones completadas, y eliminación de Continuidad y Actividad reciente dentro de proyectos.
+
+INSTALACIÓN
+1. Desde la versión actual, exportá una copia de seguridad.
+2. Descomprimí este ZIP.
+3. Subí TODOS los archivos de la carpeta HOY_v0.7 a la raíz del repositorio de GitHub, reemplazando los anteriores. No subas la carpeta contenedora: subí los archivos que están dentro.
+4. Esperá a que GitHub Pages publique los cambios.
+5. Cerrá HOY completamente y volvé a abrirla desde el icono.
+
+La clave de almacenamiento local sigue siendo hoy-data-v1. No borres los datos del navegador ni importes una copia si tus datos actuales siguen apareciendo. La caché del service worker cambió a hoy-cache-v8 para forzar la actualización de los archivos de la aplicación.
