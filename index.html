@@ -24,11 +24,11 @@ input,textarea,select{width:100%;background:#111;color:var(--text);border:1px so
 .row{display:flex;align-items:center;gap:8px}.between{justify-content:space-between}.wrap{flex-wrap:wrap}.item{padding:12px 0;border-bottom:1px solid #333}.item:last-child{border:0}
 .tag{font-size:10px;background:var(--accent);color:#111;border-radius:20px;padding:4px 8px;font-weight:700}.empty{border:1px dashed #444;border-radius:13px;padding:20px;text-align:center;color:var(--muted)}
 .nav{position:fixed;bottom:0;left:0;right:0;background:#191919f5;border-top:1px solid #333;display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:4}.nav button{background:none;border:0;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 10px}.nav button.active{color:var(--accent)}.nav b{font-size:22px;font-weight:500}.nav .plus{width:50px;height:50px;border-radius:50%;background:var(--accent);color:#111;font-size:28px;justify-content:center}
-.modal{position:fixed;inset:0;background:#000b;z-index:8;display:flex;align-items:flex-end;justify-content:center;padding:10px}.sheet{width:min(100%,680px);max-height:90vh;overflow:auto;background:#1d1d1d;border:1px solid #444;border-radius:22px;padding:19px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hidden{display:none!important}.check{width:auto;accent-color:var(--accent);margin-right:8px}.progress{height:6px;background:#333;border-radius:8px;overflow:hidden}.progress i{display:block;height:100%;background:var(--accent)}
+.modal{position:fixed;inset:0;background:#000b;z-index:8;display:flex;align-items:flex-end;justify-content:center;padding:10px}.sheet{width:min(100%,680px);max-height:90vh;overflow:auto;background:#1d1d1d;border:1px solid #444;border-radius:22px;padding:19px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hidden{display:none!important}.save-ok{color:#8bd5a8}.save-pending{color:#e7ed45}.save-error{color:#ff8585}.check{width:auto;accent-color:var(--accent);margin-right:8px}.progress{height:6px;background:#333;border-radius:8px;overflow:hidden}.progress i{display:block;height:100%;background:var(--accent)}
 </style>
 </head>
 <body>
-<header><div><div class="logo">HOY<span style="color:var(--accent)">.</span></div><div class="caption">TU SISTEMA DE CONTINUIDAD</div></div><button class="btn secondary" id="backup">Exportar copia</button></header>
+<header><div><div class="logo">HOY<span style="color:var(--accent)">.</span></div><div class="caption">TU SISTEMA DE CONTINUIDAD</div></div><div class="row"><span id="saveStatus" class="small">● Guardado</span><button class="btn secondary" id="backup">Exportar copia</button></div></header>
 <main id="app"></main>
 <nav class="nav">
 <button data-tab="today" class="active"><b>⌂</b>Hoy</button>
@@ -42,7 +42,17 @@ const KEY='hoy-data-v1';
 const cores=[['tomas','TOMÁS','Cuerpo · Mente · Alma','tom','◉'],['asoka','ASOKA','Música · Videoclips','aso','♫'],['ruby','RUBY','Grupo · Eventos · Contenido','rub','✳'],['godd','GODD','Ropa · Merchandising','god','◇']];
 let data=read(),tab='today',currentCore=null,currentProject=null;
 function read(){try{return JSON.parse(localStorage.getItem(KEY))||{projects:[],tasks:[],sessions:[],notes:[]}}catch{return {projects:[],tasks:[],sessions:[],notes:[]}}}
-function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(data));setSaveStatus('Guardado','ok');return true}
+ catch(e){setSaveStatus('Error al guardar','error');return false}
+}
+const DRAFT_KEY='hoy-drafts-v1';
+function setSaveStatus(label,state='ok'){const el=document.getElementById('saveStatus');if(el){el.textContent='● '+label;el.className='small '+(state==='error'?'save-error':state==='pending'?'save-pending':'save-ok')}}
+function readDrafts(){try{return JSON.parse(localStorage.getItem(DRAFT_KEY))||{}}catch(e){return {}}}
+function writeDraft(key,value){setSaveStatus('Guardando…','pending');try{const drafts=readDrafts();drafts[key]={value,updatedAt:Date.now()};localStorage.setItem(DRAFT_KEY,JSON.stringify(drafts));setSaveStatus('Borrador guardado','ok')}catch(e){setSaveStatus('Error al guardar','error')}}
+function getDraft(key){return readDrafts()[key]?.value||{}}
+function clearDraft(key){const drafts=readDrafts();delete drafts[key];try{localStorage.setItem(DRAFT_KEY,JSON.stringify(drafts))}catch(e){}}
+function bindDraftFields(key,ids){const draft=getDraft(key);ids.forEach(id=>{const el=document.getElementById(id);if(!el)return;if(draft[id]!==undefined)el.value=draft[id];el.addEventListener('input',()=>{const value={};ids.forEach(field=>{const node=document.getElementById(field);if(node)value[field]=node.value});writeDraft(key,value)})})}
 function uid(){return crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())}
 function safe(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function cname(k){return cores.find(c=>c[0]===k)?.[1]||k}
@@ -81,12 +91,31 @@ function updateProject(pid){const p=project(pid);p.name=document.getElementById(
 function newTask(pid){modal(`<h2>Nueva tarea</h2><label>Tarea</label><input id="tTitle" placeholder="¿Qué hay que hacer?"><label>Prioridad</label><select id="tPriority"><option>Media</option><option>Alta</option><option>Baja</option></select><div class="actions"><button class="btn" onclick="saveTask('${pid}')">Guardar tarea</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
 function saveTask(pid){const title=document.getElementById('tTitle').value.trim();if(!title)return alert('Escribí una tarea.');data.tasks.push({id:uid(),projectId:pid,title,priority:document.getElementById('tPriority').value,done:false,created:Date.now()});save();closeModal();openProject(pid)}
 function toggleTask(tid){const t=data.tasks.find(x=>x.id===tid);if(t){t.done=!t.done;save();render()}}
-function startSession(pid){const p=project(pid);modal(`<h2>Finalizar sesión</h2><p class="muted">Registrá el avance para poder retomarlo después.</p><label>¿Qué hiciste?</label><textarea id="sDone" placeholder="Avances realizados..."></textarea><label>¿Dónde te quedaste?</label><textarea id="sWhere" placeholder="Estado actual..."></textarea><label>¿Cuál es el próximo paso?</label><textarea id="sNext" placeholder="La acción concreta para continuar..."></textarea><div class="actions"><button class="btn" onclick="saveSession('${pid}')">Guardar y finalizar</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
-function saveSession(pid){const done=document.getElementById('sDone').value.trim(),where=document.getElementById('sWhere').value.trim(),next=document.getElementById('sNext').value.trim();if(!done&&!where&&!next)return alert('Registrá al menos un dato.');const p=project(pid);data.sessions.push({id:uid(),projectId:pid,core:p.core,done,where,next,at:Date.now()});p.last=where||done;p.next=next;p.lastAt=Date.now();save();closeModal();openProject(pid)}
+function startSession(pid){
+ const key='session-'+pid;
+ modal(`<h2>Continuar trabajando</h2><p class="muted">El borrador se guarda automáticamente mientras escribís. No necesitás finalizar para conservarlo.</p><label>¿Qué hiciste?</label><textarea id="sDone" placeholder="Avances realizados..."></textarea><label>¿Dónde te quedaste?</label><textarea id="sWhere" placeholder="Estado actual..."></textarea><label>¿Cuál es el próximo paso?</label><textarea id="sNext" placeholder="La acción concreta para continuar..."></textarea><p class="small">Guardado automático activado</p><div class="actions"><button class="btn" onclick="saveSession('${pid}')">Guardar registro y finalizar</button><button class="btn ghost" onclick="closeModal()">Volver después</button></div>`);
+ bindDraftFields(key,['sDone','sWhere','sNext']);
+}
+function saveSession(pid){
+ const done=document.getElementById('sDone').value.trim(),where=document.getElementById('sWhere').value.trim(),next=document.getElementById('sNext').value.trim();
+ if(!done&&!where&&!next)return alert('Registrá al menos un dato.');
+ const p=project(pid);
+ data.sessions.push({id:uid(),projectId:pid,core:p.core,done,where,next,at:Date.now()});
+ p.last=where||done;p.next=next;p.lastAt=Date.now();
+ if(!save())return;
+ clearDraft('session-'+pid);closeModal();openProject(pid);
+}
 function archiveProject(pid){if(!confirm('¿Archivar este proyecto? Podrás restaurarlo desde Historial.'))return;project(pid).archived=true;save();showCore(project(pid).core)}
 function restoreProject(pid){project(pid).archived=false;save();render()}
-function quickCapture(){modal(`<h2>Captura rápida</h2><p class="muted">Guardá una idea para clasificarla después.</p><label>Idea o pendiente</label><textarea id="noteText" placeholder="Escribí acá..."></textarea><label>Núcleo</label><select id="noteCore"><option value="">Sin clasificar</option>${cores.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('')}</select><div class="actions"><button class="btn" onclick="saveNote()">Guardar</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
-function saveNote(){const text=document.getElementById('noteText').value.trim();if(!text)return alert('Escribí una idea.');data.notes.push({id:uid(),text,core:document.getElementById('noteCore').value,at:Date.now()});save();closeModal();alert('Idea guardada.')}
+function quickCapture(){
+ modal(`<h2>Captura rápida</h2><p class="muted">La idea se guarda como borrador mientras escribís.</p><label>Idea o pendiente</label><textarea id="noteText" placeholder="Escribí acá..."></textarea><label>Núcleo</label><select id="noteCore"><option value="">Sin clasificar</option>${cores.map(c=>`<option value="${c[0]}">${c[1]}</option>`).join('')}</select><div class="actions"><button class="btn" onclick="saveNote()">Guardar idea</button><button class="btn ghost" onclick="closeModal()">Volver después</button></div>`);
+ bindDraftFields('quick-note',['noteText','noteCore']);
+}
+function saveNote(){
+ const text=document.getElementById('noteText').value.trim();if(!text)return alert('Escribí una idea.');
+ data.notes.push({id:uid(),text,core:document.getElementById('noteCore').value,at:Date.now()});
+ if(!save())return;clearDraft('quick-note');closeModal();alert('Idea guardada.');
+}
 function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hoy-copia-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x.projects)||!Array.isArray(x.tasks))throw 0;if(confirm('Esto reemplazará los datos actuales. ¿Continuar?')){data={projects:x.projects,tasks:x.tasks,sessions:x.sessions||[],notes:x.notes||[]};save();render();alert('Copia restaurada.')}}catch{alert('El archivo no parece una copia válida de HOY.')}};r.readAsText(f)}
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;render()}));
