@@ -1,23 +1,17 @@
-HOY v0.3 — Continuidad de proyectos
+HOY v0.4 — Estructura por misiones
 
-Novedades:
-- La pantalla Hoy muestra el último avance registrado del proyecto más reciente.
-- Muestra dónde quedó el trabajo y el próximo paso definido.
-- Permite iniciar una sesión directamente desde la pantalla Hoy.
-- Permite abrir el proyecto para consultar sus tareas y registros.
-- Las prioridades altas muestran el núcleo y el proyecto asociado; se puede abrir el proyecto desde la prioridad.
-
-Se conserva:
-- Los cuatro núcleos.
-- Los proyectos, tareas, sesiones, historial y archivo.
-- El guardado automático de borradores de sesiones y capturas rápidas.
+Incluye:
+- Navegación Núcleo → Proyecto → Misión → Tareas.
+- Tarjetas visuales para proyectos y misiones, listas para tareas.
+- Sesiones registradas dentro de cada misión o proyecto.
+- Autoguardado de borradores de sesión.
+- Conserva los proyectos y tareas anteriores; las tareas viejas quedan visibles como “sin misión”.
+- Mantiene el mismo almacenamiento local y la misma dirección de GitHub Pages.
 
 Instalación:
-- Reemplazar en la raíz del repositorio: index.html, LEEME.txt y sw.js.
-- No reemplazar manifest.webmanifest.
-- Hacer Commit changes en GitHub.
+1. En el repositorio Hoyv0.1, reemplazá index.html y sw.js por estos archivos.
+2. No reemplaces manifest.webmanifest.
+3. Commit changes y esperá unos segundos.
+4. Abrí la misma dirección de HOY y recargá la página.
 
-Datos:
-- La información continúa guardándose localmente en el navegador.
-- Esta versión no agrega sincronización en la nube ni notificaciones.
-- Hacer una copia de seguridad desde HOY antes de actualizar.
+Antes de instalar, ya exportaste una copia de tus datos. No borres los datos del sitio en Safari.
