@@ -1,10 +1,10 @@
-const CACHE='hoy-static-v5';
+const CACHE='hoy-cache-v7';
 const FILES=['./','./index.html','./manifest.webmanifest','./hoy_sol_original.png','./hoy_cielo_nubes.jpg'];
 self.addEventListener('install',event=>{
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting()));
 });
 self.addEventListener('activate',event=>{
- event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('hoy-static-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
+ event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>(key.startsWith('hoy-static-')||key.startsWith('hoy-cache-'))&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));
 });
 self.addEventListener('fetch',event=>{
  if(event.request.method!=='GET')return;
