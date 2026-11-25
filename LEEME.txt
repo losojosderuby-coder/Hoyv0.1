@@ -1,0 +1,25 @@
+HOY — versión inicial gratuita
+
+Incluye:
+- Cuatro núcleos: Tomás, Asoka, Ruby y GODD.
+- Proyectos y tareas.
+- Sesiones de continuidad: qué hiciste, dónde quedaste y próximo paso.
+- Historial y archivo/restauración de proyectos.
+- Captura rápida de ideas.
+- Exportar e importar copia JSON.
+- Diseño adaptable a iPhone y soporte básico PWA/offline.
+
+Privacidad y límites:
+- Los datos se guardan localmente en el navegador mediante localStorage.
+- No hay cuenta, servidor, sincronización ni coste de suscripción.
+- Si borrás los datos del navegador o cambiás de dispositivo, podés perderlos: exportá copias regularmente.
+- Esta versión no incluye notificaciones push ni alarmas fiables. No se promete esa función hasta implementarla y probarla con una solución que siga siendo gratuita.
+
+Para publicar gratis:
+1. Crear un repositorio público en GitHub.
+2. Subir el contenido de esta carpeta.
+3. Activar GitHub Pages desde Settings > Pages > Deploy from a branch > main > /(root).
+4. Abrir la URL HTTPS en Safari del iPhone.
+5. Compartir > Añadir a pantalla de inicio.
+
+No se requiere comprar créditos ni contratar hosting para esta opción.
