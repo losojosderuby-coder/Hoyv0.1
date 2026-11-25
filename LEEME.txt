@@ -1,13 +1,23 @@
-HOY v0.2 — actualización de guardado automático
+HOY v0.3 — Continuidad de proyectos
 
-Cambios:
-- Los borradores de sesiones se guardan automáticamente mientras escribís.
-- Los borradores de captura rápida se guardan automáticamente.
-- Al volver a abrir el formulario, recupera el borrador anterior.
-- Cerrar el formulario con «Volver después» no elimina el borrador.
-- Al guardar el registro definitivo, el borrador se limpia.
-- Indicador de estado de guardado en la cabecera.
+Novedades:
+- La pantalla Hoy muestra el último avance registrado del proyecto más reciente.
+- Muestra dónde quedó el trabajo y el próximo paso definido.
+- Permite iniciar una sesión directamente desde la pantalla Hoy.
+- Permite abrir el proyecto para consultar sus tareas y registros.
+- Las prioridades altas muestran el núcleo y el proyecto asociado; se puede abrir el proyecto desde la prioridad.
 
-Los datos siguen guardándose localmente en el navegador (localStorage). No hay sincronización entre dispositivos ni notificaciones push.
-Antes de reemplazar archivos en GitHub, descargá una copia del repositorio.
-Para actualizar, reemplazá index.html y LEEME.txt en la raíz del repositorio.
+Se conserva:
+- Los cuatro núcleos.
+- Los proyectos, tareas, sesiones, historial y archivo.
+- El guardado automático de borradores de sesiones y capturas rápidas.
+
+Instalación:
+- Reemplazar en la raíz del repositorio: index.html, LEEME.txt y sw.js.
+- No reemplazar manifest.webmanifest.
+- Hacer Commit changes en GitHub.
+
+Datos:
+- La información continúa guardándose localmente en el navegador.
+- Esta versión no agrega sincronización en la nube ni notificaciones.
+- Hacer una copia de seguridad desde HOY antes de actualizar.
