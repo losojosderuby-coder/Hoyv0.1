@@ -1,17 +1,23 @@
-HOY v0.7 — navegación de cinco secciones
+HOY v0.8 — progreso, núcleos y Dashboard
 
-Esta versión conserva la clave local hoy-data-v1 y los datos existentes.
+Esta versión mantiene la clave local hoy-data-v1 para conservar los datos de v0.7.
 
-Barra inferior, en este orden: Hoy · Núcleos · Ideas · Consejos · Historial.
-El botón Ideas mantiene el círculo dorado destacado y abre directamente la captura/lista de ideas. Consejos es una sección independiente con versículos breves de Reina-Valera 1909 y un botón para ver otro. El versículo ya no aparece en el Dashboard.
-
-También conserva los cambios de la versión anterior: ideas globales y conversión a misiones, misiones en lista vertical con controles de orden, símbolos editables de núcleos, actividad compacta con porcentaje de misiones completadas, y eliminación de Continuidad y Actividad reciente dentro de proyectos.
+Cambios incluidos:
+- Dashboard: título “El mundo es de quien lo hace suyo.”, Últimos movimientos con la estética de Prioridades y resumen de proyectos, tareas pendientes y misiones pendientes.
+- Núcleos: tarjetas más compactas; editar nombre, descripción, emoji opcional y color; agregar y eliminar núcleos.
+- Finalización: marcar/reabrir tareas, misiones y proyectos; fecha y eventos registrados.
+- Historial: contadores de tareas, misiones y proyectos completados y registro de finalizaciones/reaperturas.
+- Misiones: eliminados el botón de registrar sesión y el bloque “Sesiones de esta misión”.
+- Se conserva la barra inferior Hoy · Núcleos · Ideas · Consejos · Historial.
+- Se conserva la sesión de trabajo y su historial general, sin mostrar sesiones dentro de cada misión.
 
 INSTALACIÓN
-1. Desde la versión actual, exportá una copia de seguridad.
-2. Descomprimí este ZIP.
-3. Subí TODOS los archivos de la carpeta HOY_v0.7 a la raíz del repositorio de GitHub, reemplazando los anteriores. No subas la carpeta contenedora: subí los archivos que están dentro.
-4. Esperá a que GitHub Pages publique los cambios.
-5. Cerrá HOY completamente y volvé a abrirla desde el icono.
+1. Abrí tu HOY actual y exportá una copia de seguridad nueva.
+2. Descomprimí el ZIP.
+3. Subí TODOS los archivos que están dentro de la carpeta HOY_v0.8 a la raíz del repositorio GitHub, reemplazando los archivos anteriores.
+4. Esperá a que GitHub Pages publique los cambios. Cerrá HOY por completo y volvé a abrirla.
 
-La clave de almacenamiento local sigue siendo hoy-data-v1. No borres los datos del navegador ni importes una copia si tus datos actuales siguen apareciendo. La caché del service worker cambió a hoy-cache-v8 para forzar la actualización de los archivos de la aplicación.
+IMPORTANTE
+- No borres los datos del navegador. La clave de almacenamiento sigue siendo hoy-data-v1.
+- No importes la copia si los datos actuales siguen apareciendo.
+- Las estadísticas de completados se calculan a partir del estado actual de cada elemento. El historial registra cada finalización y reapertura.
