@@ -1,19 +1,16 @@
-HOY — actualización rápida v3
+HOY — actualización de carpetas v5
 
 CAMBIOS INCLUIDOS
-1. Carpetas compactas dentro de la vista de misiones del proyecto: icono, nombre y contador. Se despliegan al tocarlas.
-2. Se pueden crear carpetas con nombre y color.
-3. Se pueden seleccionar varias misiones desde la lista y moverlas a una carpeta, o dejarlas sin carpeta.
-4. Desde el detalle de una misión también se puede mover a una carpeta.
-5. Las tarjetas de misión muestran un bloque numérico: número grande, etiqueta MISIÓN pequeña y prioridad dentro del bloque.
-6. Se eliminó el selector de icono al crear misiones. El número reemplaza al icono visual.
-7. Se conserva prioridad Alta/Media/Baja propia de cada misión.
-8. Numeración dinámica por orden activo; al reordenar o completar, se recalcula.
-9. La prioridad de la misión se muestra en el bloque numérico, no debajo de la descripción.
-10. En las tarjetas y el detalle, la descripción solo aparece si el usuario escribió una.
-11. Se conservan los ajustes de contraste de modo oscuro, la vista de hasta tres prioridades del inicio con acceso a todas, los archivos de Consejos y el almacenamiento local.
+1. Dentro de una carpeta aparece un botón visible «← Todas las misiones» para regresar a la vista general del proyecto.
+2. Al seleccionar una o varias misiones, aparece inmediatamente la acción «Mover ... seleccionadas a carpeta».
+3. Cuando se está dentro de una carpeta, al seleccionar misiones aparece también «Quitar de esta carpeta».
+4. Quitar una misión de una carpeta la devuelve a «Todas las misiones»; no elimina la misión ni sus tareas, descripción, prioridad o historial.
+5. Mover varias misiones permite elegir otra carpeta o «Sin carpeta».
+6. Se mantienen las carpetas compactas, la edición de carpetas y la acción de mover una misión desde su detalle.
+7. Se conserva la estructura de archivos en la raíz para GitHub Pages y la clave de almacenamiento local existente `hoy-data-v1`.
 
 PUBLICACIÓN
-Extraer todos los archivos directamente en la raíz del repositorio GitHub Pages, reemplazando los archivos de la versión anterior. No subir la carpeta contenedora. No borrar los datos del navegador.
-
-La versión de caché del service worker es hoy-cache-v16.
+1. Hacer una copia de seguridad desde HOY antes de actualizar.
+2. Extraer todos los archivos directamente en la raíz del repositorio GitHub Pages, reemplazando los archivos de la versión anterior. No subir la carpeta contenedora.
+3. No borrar los datos del navegador ni limpiar el almacenamiento del sitio.
+4. El service worker usa la caché `hoy-cache-v18` para que el navegador descargue esta versión nueva.
