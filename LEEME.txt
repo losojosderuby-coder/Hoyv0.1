@@ -1,9 +1,14 @@
-HOY — VERSIÓN 19
+HOY — VERSIÓN 20
 
-Esta entrega incluye la identificación V19 en la esquina superior izquierda de la pantalla inicial. El indicador es pequeño, de baja opacidad y desaparece junto con la animación de bienvenida.
+Cambios:
+- Se quitó el número de versión de la pantalla inicial.
+- Se agregó al final de Historial la sección “Versiones de HOY”, que muestra V20 y la fecha de esta entrega.
+- Se conserva la clave local de datos: hoy-data-v1.
+- No se modifica ni se migra el contenido guardado del usuario.
+- Se actualiza el service worker a hoy-cache-v23, con navegación de red primero y respaldo en caché para uso sin conexión.
 
-También conserva la actualización de caché de la entrega anterior, con caché hoy-cache-v21.
-
-IMPORTANTE: conservar los datos locales. No borrar datos del navegador ni desinstalar la PWA para actualizar. Antes de reemplazar archivos, exportar una copia de seguridad desde HOY.
-
-Para publicar: reemplazar en la raíz del repositorio los archivos de esta carpeta, manteniendo los mismos nombres.
+Publicación:
+Reemplazar en la raíz del repositorio los archivos de esta entrega, conservando sus nombres.
+No borrar los datos del sitio ni desinstalar la PWA.
+Antes de publicar, conservar una copia JSON de HOY.
+Esta entrega debe probarse primero en Safari y luego en la aplicación instalada.
