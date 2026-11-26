@@ -262,6 +262,32 @@ body.dark .mission-number{color:#f0d9a8}
 body.dark .folder-shortcut,body.dark .project-mission-folder details{color:#f0f4f6;background:color-mix(in srgb,var(--folder-color,#c99b4b) 17%,#1b2730)}
 body.dark .mission-number-tile{background:#f4ead6;color:#29485a}
 
+
+/* Ajustes ergonomicos: carpetas únicas y tarjetas compactas */
+.folder-shortcuts{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:8px 0 12px}
+.folder-shortcut-wrap{display:inline-flex;align-items:center;gap:3px}
+.folder-shortcut{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border:1px solid var(--folder-color,#c99b4b);border-radius:10px;background:color-mix(in srgb,var(--folder-color,#c99b4b) 12%,var(--panel,#fff));color:var(--text);font-size:12px;max-width:none}
+.folder-shortcut .folder-symbol{font-size:15px}.folder-shortcut strong{font-size:12px;white-space:nowrap;overflow-wrap:normal}
+.folder-shortcut .folder-count{font-size:10px;color:var(--muted);margin-left:2px}
+.folder-shortcut.selected{outline:2px solid var(--folder-color,#c99b4b);outline-offset:1px}
+.folder-shortcut-edit{border:0;background:transparent;color:var(--muted);padding:3px;font-size:12px}
+.folder-show-all{border:0;background:transparent;color:var(--muted);font-size:12px;padding:6px}
+.project-mission-folder{display:none!important}
+.mission-card{padding:13px 14px}
+.mission-card .mission-line{display:flex;align-items:center;gap:10px}
+.mission-index{width:42px;min-width:42px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.mission-number-tile{width:34px;min-width:34px;min-height:34px;height:34px;border-radius:9px;padding:0;background:#f4ead6;color:#29485a;display:flex;align-items:center;justify-content:center}
+.mission-number-tile .number{font-size:20px;line-height:1;font-weight:800}
+.mission-number-tile .word{display:none}
+.mission-index .priority-badge{font-size:9px;padding:2px 5px;margin:0;white-space:nowrap}
+.mission-card .mission-main{flex:1;min-width:0}
+.mission-card .mission-main h3{font-size:17px;line-height:1.25;margin:0 0 4px;overflow-wrap:anywhere}
+.mission-card .mission-main p.small{font-size:13px;line-height:1.35;margin:4px 0}
+.mission-card .mission-tools{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:30px}
+.mission-card .mission-tools button{width:29px;height:29px;min-width:29px;font-size:15px}
+.mission-select{width:17px;height:17px;accent-color:#c99b4b;margin:0 0 2px;flex:none}
+body.dark .folder-shortcut{color:#f0f4f6;background:color-mix(in srgb,var(--folder-color,#c99b4b) 17%,#1b2730)}
+
 </style>
 </head>
 <body>
@@ -398,18 +424,21 @@ function updateProjectMissionFolder(fid){const f=(data.projectMissionFolders||[]
 function deleteProjectMissionFolder(fid){const f=(data.projectMissionFolders||[]).find(x=>x.id===fid);if(!f)return;if(!confirm('¿Eliminar carpeta? Las misiones se conservarán sin carpeta.'))return;data.missions.forEach(m=>{if(m.folderId===fid)delete m.folderId});data.projectMissionFolders=data.projectMissionFolders.filter(x=>x.id!==fid);save();closeModal();openProject(f.projectId)}
 function missionPriorityBadge(m){return `<span class="priority-badge priority-${String(m.priority||'Media').toLowerCase()}">${safe(m.priority||'Media')}</span>`}
 
+let projectFolderFilter = {};
+function setProjectFolderFilter(pid,folderId){projectFolderFilter[pid]=folderId;openProject(pid)}
 function openProject(pid){
  currentProject=pid;const p=project(pid);if(!p)return;tab='project';touchCore(p.core,pid);
  const allMs=data.missions.filter(m=>m.projectId===pid).slice().sort((a,b)=>(a.order??0)-(b.order??0));const ms=allMs.filter(m=>!(m.completedAt||m.done));const doneMs=allMs.filter(m=>!!(m.completedAt||m.done));
  const oldTasks=data.tasks.filter(t=>t.projectId===pid&&!t.missionId),folders=projectMissionFolders(pid);
- const folderCards=folders.map(f=>{const list=ms.filter(m=>m.folderId===f.id);return `<section class="project-mission-folder" id="folder-${f.id}" style="--folder-color:${safe(f.color||'#c99b4b')}"><details><summary><span class="folder-symbol">📁</span><strong>${safe(f.name)}</strong><span class="small">${list.length}</span><button class="edit-icon" onclick="event.preventDefault();event.stopPropagation();editProjectMissionFolder('${f.id}')" aria-label="Editar carpeta">✎</button></summary><div class="folder-missions mission-grid">${list.map(m=>missionCard(m)).join('')||'<div class="folder-empty">Carpeta vacía.</div>'}</div></details></section>`}).join('');
- const loose=ms.filter(m=>!m.folderId||!folders.some(f=>f.id===m.folderId));
+ const activeFolder=projectFolderFilter[pid]||'';
+ const visibleMs=activeFolder?ms.filter(m=>m.folderId===activeFolder):ms;
+ const folderShortcuts=`<div class="folder-shortcuts">${folders.map(f=>{const count=ms.filter(m=>m.folderId===f.id).length;return `<div class="folder-shortcut-wrap"><button class="folder-shortcut ${activeFolder===f.id?'selected':''}" style="--folder-color:${safe(f.color||'#c99b4b')}" onclick="setProjectFolderFilter('${pid}','${f.id}')"><span class="folder-symbol">📁</span><strong>${safe(f.name)}</strong><span class="folder-count">${count}</span></button><button class="folder-shortcut-edit" onclick="editProjectMissionFolder('${f.id}')" aria-label="Editar carpeta">✎</button></div>`}).join('')}${activeFolder?`<button class="folder-show-all" onclick="setProjectFolderFilter('${pid}','')">Ver todas las misiones</button>`:''}</div>`;
+ const loose=visibleMs;
  document.getElementById('app').innerHTML=`<button class="btn ghost" onclick="showCore('${p.core}')">← ${cname(p.core)}</button><p class="eyebrow">${cname(p.core)} / PROYECTO</p><div class="headline"><h1>${safe(p.name)}</h1><button class="edit-icon" onclick="editProject('${p.id}')">✎</button></div><p class="muted">${safe(p.description||'')}</p>${p.completedAt?`<span class="tag">PROYECTO TERMINADO · ${fmt(p.completedAt)}</span>`:''}
  <div class="row between section-head"><div><h2>Misiones</h2><p class="small">Dividí el proyecto en partes de trabajo.</p></div><button class="btn" onclick="newMission('${p.id}')">＋ Misión</button></div>
  <div class="project-folder-create"><button class="btn secondary" onclick="newProjectMissionFolder('${p.id}')">📁 Crear carpeta</button></div>
- ${folders.length?`<div class="folder-shortcuts">${folders.map(f=>`<button class="folder-shortcut" style="--folder-color:${safe(f.color||'#c99b4b')}" onclick="document.getElementById('folder-${f.id}')?.scrollIntoView({behavior:'smooth',block:'center'});const d=document.querySelector('#folder-${f.id} details');if(d)d.open=true"><span class="folder-symbol">📁</span><strong>${safe(f.name)}</strong></button>`).join('')}</div>`:''}
- <div class="project-bulk-actions"><button class="btn ghost" onclick="moveSelectedMissions('${p.id}')">Mover seleccionadas a carpeta</button><span class="small">Seleccioná las misiones con el cuadrito.</span></div>
- ${folderCards} 
+ ${folders.length?folderShortcuts:''}
+ ${selectedMissionIds.size?`<div class="project-bulk-actions"><button class="btn ghost" onclick="moveSelectedMissions('${p.id}')">Mover ${selectedMissionIds.size} seleccionadas a carpeta</button></div>`:''}
  <div class="mission-grid">${loose.map(m=>missionCard(m)).join('')||(!folders.length?'<div class="empty">No hay misiones pendientes.</div>':'')}</div>${doneMs.length?`<div class="mission-completed-list"><h2>Misiones completadas</h2>${doneMs.map(m=>`<div class="item row between"><div><b>${safe(m.name)}</b><div class="small">Completada · ${fmt(m.completedAt||m.doneAt||Date.now())}</div></div><button class="btn secondary" onclick="openMission('${m.id}')">Ver</button></div>`).join('')}</div>`:''}
  ${oldTasks.length?`<div class="panel"><h3>Tareas de la misión sin asignar</h3><p class="small">Estas tareas ya existían en el proyecto. Podés mantenerlas acá o asignarlas a una misión más adelante.</p>${oldTasks.map(t=>taskRow(t)).join('')}</div>`:''}
  <div class="completion-actions">${p.completedAt?`<span class="tag">TERMINADO · ${fmt(p.completedAt)}</span>`:''}<button class="btn ${p.completedAt?'secondary':''}" onclick="toggleProjectComplete('${p.id}')">${p.completedAt?'↶ Reabrir proyecto':'✓ Finalizar proyecto'}</button></div><div class="actions"><button class="btn ghost" onclick="editProject('${p.id}')">Editar proyecto</button><button class="btn ghost" onclick="archiveProject('${p.id}')">Archivar</button><button class="btn danger" onclick="deleteProject('${p.id}')">Eliminar</button></div>`;
@@ -417,8 +446,9 @@ function openProject(pid){
 function missionCard(m){
  const ts=missionTasks(m.id),done=ts.filter(t=>t.done).length;
  const siblings=data.missions.filter(x=>x.projectId===m.projectId&&!(x.completedAt||x.done)).slice().sort((a,b)=>(a.order??0)-(b.order??0));const idx=siblings.findIndex(x=>x.id===m.id),number=idx+1;
- return `<div class="mission-card" onclick="openMission('${m.id}')"><div class="mission-line"><input class="mission-select" type="checkbox" aria-label="Seleccionar misión" onclick="event.stopPropagation()" onchange="toggleMissionSelection('${m.id}',this.checked)"><div class="mission-number-tile"><span class="number">${number}</span><span class="word">MISIÓN</span>${missionPriorityBadge(m)}</div><div class="mission-main"><h3>${safe(m.name)} ${m.completedAt?'✓':''}</h3>${m.description?`<p class="small">${safe(m.description)}</p>`:''}<div class="small">${done}/${ts.length} tareas completadas</div></div><div class="mission-tools"><button onclick="event.stopPropagation();moveMission('${m.id}',-1)" ${idx===0?'disabled':''} aria-label="Subir misión">↑</button><button onclick="event.stopPropagation();moveMission('${m.id}',1)" ${idx===siblings.length-1?'disabled':''} aria-label="Bajar misión">↓</button><button onclick="event.stopPropagation();editMission('${m.id}')" aria-label="Editar misión">✎</button></div></div><div class="progress"><i style="width:${ts.length?done/ts.length*100:0}%"></i></div><div class="small">Abrir misión →</div></div>`;
+ return `<div class="mission-card" onclick="openMission('${m.id}')"><div class="mission-line"><div class="mission-index"><div class="mission-number-tile"><span class="number">${number}</span></div>${missionPriorityBadge(m)}</div><div class="mission-main"><h3>${safe(m.name)} ${m.completedAt?'✓':''}</h3>${m.description?`<p class="small">${safe(m.description)}</p>`:''}<div class="small">${done}/${ts.length} tareas completadas</div></div><div class="mission-tools"><input class="mission-select" type="checkbox" aria-label="Seleccionar misión" onclick="event.stopPropagation()" onchange="toggleMissionSelection('${m.id}',this.checked)"><button onclick="event.stopPropagation();moveMission('${m.id}',-1)" ${idx===0?'disabled':''} aria-label="Subir misión">↑</button><button onclick="event.stopPropagation();moveMission('${m.id}',1)" ${idx===siblings.length-1?'disabled':''} aria-label="Bajar misión">↓</button><button onclick="event.stopPropagation();editMission('${m.id}')" aria-label="Editar misión">✎</button></div></div><div class="progress"><i style="width:${ts.length?done/ts.length*100:0}%"></i></div><div class="small">Abrir misión →</div></div>`;
 }
+
 function moveMission(mid,delta){const m=mission(mid);if(!m)return;const list=data.missions.filter(x=>x.projectId===m.projectId&&!(x.completedAt||x.done)).slice().sort((a,b)=>(a.order??0)-(b.order??0));const i=list.findIndex(x=>x.id===mid),j=i+delta;if(j<0||j>=list.length)return;const [moved]=list.splice(i,1);list.splice(j,0,moved);list.forEach((x,n)=>x.order=n);save();openProject(m.projectId)}
 function openMission(mid){
  const m=mission(mid);if(!m)return;currentMission=mid;const p=project(m.projectId);if(!p)return;tab='mission';touchCore(p.core,p.id,mid);
