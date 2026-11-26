@@ -142,11 +142,51 @@ main{padding-bottom:18px;min-height:0}
 body.dark{--bg:#101820;--panel:#1b2730;--line:#35434b;--muted:#a8b6bd;--text:#e7eef1;background:linear-gradient(180deg,#101820,#182630 60%,#101820);color:var(--text)}body.dark:before{opacity:.12}body.dark header{background:#14212bea;border-color:#34434b}body.dark h1,body.dark h2,body.dark h3{color:#e6edf0}body.dark .panel,body.dark .core,body.dark .project-card,body.dark .mission-card,body.dark .task-list{background:#1c2a33eF;border-color:#3a4b54;color:#e6edf0}body.dark .nav{background:#111c24f5;border-color:#34434b}body.dark .recent-compact{background:#202d35;border-color:#46535a}body.dark .recent-compact h2{color:#e2c58f}body.dark input,body.dark textarea,body.dark select{background:#14212a;color:#e6edf0;border-color:#46545d}body.dark .sheet{background:#1b2932;color:#e6edf0;border-color:#45545d}body.dark .secondary,body.dark .ghost{background:#24343e;color:#e6edf0;border-color:#46545d}body.dark .tutorial-mission{background:#26343b;border-color:#6b5a3d}body.dark .advice-panel{background:#1d2b34}
 @media(prefers-reduced-motion:reduce){#sunSplash{display:none}.logo .sun-logo{animation:none}}
 
+
+/* HOY v0.10 visual refinement */
+#sunSplash{background:radial-gradient(circle at center,#f8fcfd 0%,#eaf4f8 68%,#dcebf0 100%);animation:splashFade 2.15s ease forwards}
+#sunSplash .splash-content{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;padding:24px}
+#sunSplash img{width:min(68vw,340px);height:auto;max-height:48vh;object-fit:contain;animation:splashGlow 1.9s ease-out forwards}
+#sunSplash .splash-signature{font-family:Georgia,serif;font-size:13px;letter-spacing:1.5px;color:#a84443;opacity:0;animation:signatureIn 1.65s ease .38s forwards}
+@keyframes splashFade{0%,78%{opacity:1}100%{opacity:0;visibility:hidden}}
+@keyframes splashGlow{0%{opacity:0;transform:scale(.88);filter:drop-shadow(0 0 4px #d5a84d)}28%{opacity:1;transform:scale(1);filter:drop-shadow(0 0 28px #d5a84d)}78%{opacity:1;transform:scale(1);filter:drop-shadow(0 0 18px #d5a84d)}100%{opacity:0;transform:scale(1.02)}}
+@keyframes signatureIn{0%{opacity:0;transform:translateY(5px)}35%,78%{opacity:.88;transform:translateY(0)}100%{opacity:0}}
+/* Prioridades comparte el dorado de Últimos movimientos */
+#priorityPanel h2{color:#a77a32}
+body.dark #priorityPanel h2{color:#e2c58f}
+/* Consejos: lectura con contraste */
+.advice-panel{background:linear-gradient(120deg,#fff9e9f2,#f7f1e3f2);color:#5b482b;border-color:#d7bd87}
+.advice-panel blockquote{color:#57421f;font-size:17px}
+.advice-panel .small{color:#786642}
+body.dark .advice-panel{background:linear-gradient(120deg,#24343d,#1d2b34);border-color:#78643f;color:#f0e3c4}
+body.dark .advice-panel blockquote{color:#f3dfad}
+body.dark .advice-panel .small{color:#c4b99e}
+/* Ideas completamente adaptadas al tema */
+body.dark .idea-list-card,body.dark .idea-entry,body.dark .idea-card{background:#1c2a33;color:#e6edf0;border-color:#46545d}
+body.dark .idea-list-card p,body.dark .idea-meta,body.dark .idea-card .small{color:#b9c7ce}
+body.dark .idea-entry{background:#28343a;color:#f0d49c;border-color:#78643f}
+body.dark .edit-icon{background:#30414b;color:#e7d3a6}
+body.dark .idea-actions .secondary,body.dark .idea-list-card .secondary{background:#30414b;color:#f0e7d4;border-color:#53616a}
+/* Tutorial jerárquico, como una vista real de la app */
+.tutorial-example{border:1px solid #d7c49d;border-radius:18px;padding:12px;background:#f7f5ed;margin:12px 0}
+.tutorial-core{border:1px solid #b9ced6;border-radius:15px;background:#e6f0f3;padding:13px;color:#29485a}
+.tutorial-project{margin:10px 0 0 10px;padding:12px;border:1px solid #d8c69f;border-radius:13px;background:#fffdf6}
+.tutorial-mission{margin:10px 0 0 10px;padding:10px 12px;background:#f7f1e5;border:1px solid #e3d3b2;border-radius:11px;color:#3c5260}
+.tutorial-task-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#96743d;font-weight:750;margin-top:8px}
+.tutorial-task{font-size:12px;color:#526875;padding:3px 0 3px 12px;position:relative}
+.tutorial-task:before{content:'·';position:absolute;left:2px;font-size:18px;top:-1px;color:#b58a43}
+body.dark .tutorial-example{background:#182630;border-color:#65583e}
+body.dark .tutorial-core{background:#253944;border-color:#526a76;color:#edf3f5}
+body.dark .tutorial-project{background:#202f38;border-color:#766443;color:#edf3f5}
+body.dark .tutorial-mission{background:#293943;border-color:#66583e;color:#edf3f5}
+body.dark .tutorial-task{color:#d0dce1}
+@media(prefers-reduced-motion:reduce){#sunSplash{display:none}}
+
 </style>
 </head>
 <body>
 <header><div><div class="logo">HOY <img class="sun-logo" src="hoy_sol_original.png" alt="Sol original"></div><div class="caption">TU HERRAMIENTA</div></div><div class="row"><span id="saveStatus" class="small" aria-live="polite">● Guardado</span><button class="btn secondary" id="backup">Exportar copia</button></div></header>
-<div id="sunSplash" aria-hidden="true"><img src="hoy_sol_original.png" alt=""></div><main id="app"></main>
+<div id="sunSplash" aria-hidden="true"><div class="splash-content"><img src="hoy_sol_original.png" alt=""><div class="splash-signature">by El Asoka</div></div></div><main id="app"></main>
 <nav class="nav" aria-label="Navegación principal">
 <button data-tab="today" class="active"><b>⌂</b>Hoy</button>
 <button data-tab="ideas" class="ideas-nav"><b>💡</b>Ideas</button>
@@ -260,7 +300,7 @@ function today(){
  const pendingMissions=data.missions.filter(m=>!m.completedAt&&!m.done).length;
  return `<p class="small">CENTRO DE CONTROL</p><h1 class="dashboard-title">El mundo es de quien lo hace suyo</h1>
  <div class="recent-compact"><div class="headline"><h2>Últimos movimientos</h2><span class="small">Último núcleo</span></div>${recentCore?`<div class="recent-entry"><div><b>${safe(coreName(recentCore))}</b><div class="small">${lm.projectId&&project(lm.projectId)&&!project(lm.projectId).archived?safe(project(lm.projectId).name):'Último espacio de trabajo'}<br>${lm.at?fmt(lm.at):''}</div></div><button class="btn secondary" onclick="showCore('${recentCore}')">Abrir</button></div>`:'<div class="recent-entry"><span class="small">Todavía no hay actividad registrada.</span></div>'}</div>
- <div class="panel"><div class="row between"><h2>Prioridades</h2><span class="small">${priorities.length}/3</span></div>${priorities.length?recentTasks:'<p class="muted">No hay prioridades altas pendientes.</p>'}</div>
+ <div class="panel" id="priorityPanel"><div class="row between"><h2>Prioridades</h2><span class="small">${priorities.length}/3</span></div>${priorities.length?recentTasks:'<p class="muted">No hay prioridades altas pendientes.</p>'}</div>
  <div class="row between"><h2>Tus núcleos</h2><button class="btn ghost" onclick="tab='cores';render()">Ver todos</button></div><div class="grid">${activeCores().map(c=>coreTile(c)).join('')}</div>
  <div class="activity-inline"><span><b>${active.length}</b> proyectos</span><span><b>${pendingTasks}</b> tareas de la misión pendientes</span><span><b>${pendingMissions}</b> misiones pendientes</span></div><div class="theme-control"><span>Modo oscuro</span><label class="switch"><input type="checkbox" id="themeSwitch" ${localStorage.getItem('hoy-theme')==='dark'?'checked':''} onchange="setTheme(this.checked)"><span></span></label></div>`;
 }
@@ -315,7 +355,7 @@ function historyPage(){
  <div class="panel"><h2>Cómo funciona HOY</h2><p class="small">Una guía rápida para organizarte.</p><button class="btn secondary" onclick="showTutorial()">Ver tutorial</button></div><div class="panel"><h2>Copias de seguridad</h2><p class="small">Tus datos se guardan en este navegador. Exportá una copia periódicamente.</p><button class="btn secondary" onclick="exportData()">Descargar copia JSON</button><label>Restaurar copia</label><input type="file" accept="application/json" onchange="importData(event)"></div>`;
 }
 
-function showTutorial(){modal(`<h2>Cómo funciona HOY</h2><p><b>Núcleos:</b> organizá las áreas de tu vida.</p><p><b>Proyectos:</b> agrupá objetivos relacionados con un núcleo.</p><p><b>Misiones:</b> dividí cada proyecto en etapas.</p><p><b>Tareas de la misión:</b> convertí cada misión en acciones concretas.</p><p><b>Ideas:</b> capturá pensamientos y convertí los que quieras desarrollar en misiones.</p><p><b>Historial:</b> consultá lo que terminaste y tu progreso.</p><hr><h3>Ejemplo práctico: una panadería</h3><p><b>Núcleo:</b> Panadería</p><p><b>Proyecto:</b> Restauración de la panadería</p><div class="tutorial-mission"><b>Misión: Pintar paredes</b><div class="small">Tareas de la misión</div><ul><li>Contratar pintor</li><li>Comprar pintura</li></ul></div><div class="tutorial-mission"><b>Misión: Cambiar piso</b><div class="small">Tareas de la misión</div><ul><li>Contratar quién lo coloca</li><li>Tomar medidas</li><li>Ir a comprar los materiales</li></ul></div><div class="actions"><button class="btn" onclick="closeModal()">Entendido</button></div>`)}
+function showTutorial(){modal(`<h2>Cómo funciona HOY</h2><p><b>Núcleos:</b> organizá las áreas de tu vida.</p><p><b>Proyectos:</b> agrupá objetivos relacionados con un núcleo.</p><p><b>Misiones:</b> dividí cada proyecto en etapas.</p><p><b>Tareas de la misión:</b> convertí cada misión en acciones concretas.</p><p><b>Ideas:</b> capturá pensamientos y convertí los que quieras desarrollar en misiones.</p><p><b>Historial:</b> consultá lo que terminaste y tu progreso.</p><hr><p><b>Por ejemplo, tenés un proyecto de una panadería.</b></p><div class="tutorial-example"><div class="tutorial-core"><div class="tutorial-task-label">Núcleo</div><h3>🏪 Panadería</h3><div class="tutorial-project"><div class="tutorial-task-label">Proyecto</div><b>Restauración de la panadería</b><div class="tutorial-mission"><div class="tutorial-task-label">Misión</div><b>Pintar paredes</b><div class="tutorial-task-label">Tareas de la misión</div><div class="tutorial-task">Contratar pintor</div><div class="tutorial-task">Comprar pintura</div></div><div class="tutorial-mission"><div class="tutorial-task-label">Misión</div><b>Cambiar piso</b><div class="tutorial-task-label">Tareas de la misión</div><div class="tutorial-task">Contratar quién lo coloca</div><div class="tutorial-task">Tomar medidas</div><div class="tutorial-task">Ir a comprar los materiales</div></div></div></div></div><div class="actions"><button class="btn" onclick="closeModal()">Entendido</button></div>`)}
 function openArchivedProject(pid){const p=project(pid);if(!p)return;const was=p.archived;p.archived=false;openProject(pid);p.archived=was;}
 
 function modal(content){document.getElementById('modal').innerHTML=`<div class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet">${content}</div></div>`}

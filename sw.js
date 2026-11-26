@@ -1,4 +1,4 @@
-const CACHE='hoy-cache-v11';
+const CACHE='hoy-cache-v12';
 const FILES=['./','./index.html','./manifest.webmanifest','./hoy_sol_original.png','./hoy_cielo_nubes.jpg'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('hoy-cache-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
