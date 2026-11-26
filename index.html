@@ -298,11 +298,14 @@ body.dark .folder-shortcut{color:#f0f4f6;background:color-mix(in srgb,var(--fold
 .mission-completed-list .completed-count{font-size:12px;opacity:.7}
 .mission-completed-list .completed-more{margin-left:auto;font-size:25px;letter-spacing:2px;line-height:1}
 .mission-completed-list .completed-missions{padding-top:8px}
+
+/* Identificador de versión: acompaña exactamente la animación de bienvenida */
+#sunSplash .splash-version{position:absolute;top:14px;left:16px;z-index:2;font-family:Arial,sans-serif;font-size:10px;font-weight:500;letter-spacing:1px;color:#526b78;opacity:.42;pointer-events:none;animation:splashTogether 2.15s ease-in-out forwards!important}
 </style>
 </head>
 <body>
 <header><div><div class="logo">HOY <img class="sun-logo" src="hoy_sol_original.png" alt="Sol original"></div><div class="caption">TU HERRAMIENTA</div></div><div class="row"><span id="saveStatus" class="small" aria-live="polite">● Guardado</span><button class="btn secondary" id="backup">Exportar copia</button></div></header>
-<div id="sunSplash" aria-hidden="true"><div class="splash-content"><img src="hoy_sol_original.png" alt=""><div class="splash-signature"><span>by El Asoka</span><small>para los pibes</small></div></div></div><main id="app"></main>
+<div id="sunSplash" aria-hidden="true"><span class="splash-version">V19</span><div class="splash-content"><img src="hoy_sol_original.png" alt=""><div class="splash-signature"><span>by El Asoka</span><small>para los pibes</small></div></div></div><main id="app"></main>
 <nav class="nav" aria-label="Navegación principal">
 <button data-tab="today" class="active"><b>⌂</b>Hoy</button>
 <button data-tab="ideas" class="ideas-nav"><b>💡</b>Ideas</button>
@@ -568,6 +571,9 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()
 document.getElementById('backup').onclick=exportData;
 loadAdviceSources().then(()=>{chooseAdviceOnLaunch();initTheme();render();});
 window.addEventListener('pagehide',()=>{try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}});
-if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!window.__hoySwReloading){window.__hoySwReloading=true;location.reload();}});
+ navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>reg.update()).catch(()=>{});
+}
 </script>
 </body></html>
