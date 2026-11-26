@@ -1,17 +1,12 @@
-HOY v0.9.1
+HOY — BETA CON CONSEJOS
 
-Actualización de la versión 0.9.
+Basada en la versión HOY v0.10 proporcionada por el usuario.
 
-Cambios incluidos:
-- Modo oscuro con interruptor discreto al final del Dashboard; la preferencia queda guardada en el dispositivo.
-- Animación breve de apertura con el sol original.
-- Resplandor suave y persistente detrás del sol del logo.
-- Consejos apilados verticalmente: Biblia, Martín Fierro y San Martín, sin la etiqueta genérica “Consejo”.
-- Barra inferior fija y ajuste del espacio inferior para evitar el salto visual en Consejos.
-- Conversión de ideas a misiones con selector de núcleo y proyectos de ese núcleo.
-- Tutorial básico “Cómo funciona HOY” dentro de Historial, con ejemplo de la panadería.
-- Etiquetas “Tareas de la misión” en las pantallas y formularios correspondientes.
+Cambios:
+- Firma de inicio: “by Asoka” en rojo y “para los pibes” debajo en verde.
+- Se integra la Biblia Reina-Valera 1909 del archivo Spanish-json.zip proporcionado: 31084 registros de texto.
+- Se integra la selección curada de Martín Fierro: 105 fragmentos, con referencias.
+- Se mantienen las Máximas de San Martín y el resto de la aplicación.
+- Las fuentes bíblica y Martín Fierro se cargan desde archivos JSON locales; no requieren servidor ni servicios pagos.
 
-Datos: se conserva la clave local hoy-data-v1. No borres los datos del navegador. Antes de instalar, exportá una copia desde HOY.
-
-Contenido: esta actualización conserva la biblioteca breve que ya tenía v0.9. Todavía no contiene los 5.000 versículos proyectados; esa biblioteca requiere recopilación y verificación independiente.
+Publicar todos los archivos de esta carpeta juntos en GitHub Pages. No borrar datos del navegador ni cambiar la clave localStorage existente.

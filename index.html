@@ -147,7 +147,7 @@ body.dark{--bg:#101820;--panel:#1b2730;--line:#35434b;--muted:#a8b6bd;--text:#e7
 #sunSplash{background:radial-gradient(circle at center,#f8fcfd 0%,#eaf4f8 68%,#dcebf0 100%);animation:splashFade 2.15s ease forwards}
 #sunSplash .splash-content{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;padding:24px}
 #sunSplash img{width:min(68vw,340px);height:auto;max-height:48vh;object-fit:contain;animation:splashGlow 1.9s ease-out forwards}
-#sunSplash .splash-signature{font-family:Georgia,serif;font-size:13px;letter-spacing:1.5px;color:#a84443;opacity:0;animation:signatureIn 1.65s ease .38s forwards}
+#sunSplash .splash-signature{display:flex;flex-direction:column;align-items:center;gap:5px;font-family:Georgia,serif;font-size:17px;font-weight:600;letter-spacing:1.5px;color:#c62828;opacity:0;animation:signatureIn 1.65s ease .38s forwards}.splash-signature small{font-family:Georgia,serif;font-size:14px;font-weight:600;letter-spacing:1px;color:#23834a}
 @keyframes splashFade{0%,78%{opacity:1}100%{opacity:0;visibility:hidden}}
 @keyframes splashGlow{0%{opacity:0;transform:scale(.88);filter:drop-shadow(0 0 4px #d5a84d)}28%{opacity:1;transform:scale(1);filter:drop-shadow(0 0 28px #d5a84d)}78%{opacity:1;transform:scale(1);filter:drop-shadow(0 0 18px #d5a84d)}100%{opacity:0;transform:scale(1.02)}}
 @keyframes signatureIn{0%{opacity:0;transform:translateY(5px)}35%,78%{opacity:.88;transform:translateY(0)}100%{opacity:0}}
@@ -186,7 +186,7 @@ body.dark .tutorial-task{color:#d0dce1}
 </head>
 <body>
 <header><div><div class="logo">HOY <img class="sun-logo" src="hoy_sol_original.png" alt="Sol original"></div><div class="caption">TU HERRAMIENTA</div></div><div class="row"><span id="saveStatus" class="small" aria-live="polite">● Guardado</span><button class="btn secondary" id="backup">Exportar copia</button></div></header>
-<div id="sunSplash" aria-hidden="true"><div class="splash-content"><img src="hoy_sol_original.png" alt=""><div class="splash-signature">by El Asoka</div></div></div><main id="app"></main>
+<div id="sunSplash" aria-hidden="true"><div class="splash-content"><img src="hoy_sol_original.png" alt=""><div class="splash-signature"><span>by Asoka</span><small>para los pibes</small></div></div></div><main id="app"></main>
 <nav class="nav" aria-label="Navegación principal">
 <button data-tab="today" class="active"><b>⌂</b>Hoy</button>
 <button data-tab="ideas" class="ideas-nav"><b>💡</b>Ideas</button>
@@ -254,25 +254,7 @@ function render(){
 function setTheme(on){document.body.classList.toggle('dark',!!on);localStorage.setItem('hoy-theme',on?'dark':'light');const meta=document.querySelector('meta[name=theme-color]');if(meta)meta.content=on?'#14212a':'#eaf4f8'}
 function initTheme(){setTheme(localStorage.getItem('hoy-theme')==='dark')}
 function missionCompletion(){const ms=data.missions.filter(m=>!m.archived);if(!ms.length)return 0;const completed=ms.filter(m=>{const ts=missionTasks(m.id);return ts.length>0&&ts.every(t=>t.done)}).length;return Math.round(completed/ms.length*100)}
-const adviceLibrary={
- bible:[
- {text:'Encomienda á Jehová tu camino, Y espera en él; y él hará.',ref:'Salmos 37:5'},
- {text:'La blanda respuesta quita la ira: Mas la palabra áspera hace subir el furor.',ref:'Proverbios 15:1'},
- {text:'El corazón alegre hermosea el rostro: Mas por el dolor del corazón el espíritu se abate.',ref:'Proverbios 15:13'},
- {text:'Mejor es el que tarda en airarse que el fuerte; Y el que se enseñorea de su espíritu, que el que toma una ciudad.',ref:'Proverbios 16:32'},
- {text:'Todo tiene su tiempo, y todo lo que se quiere debajo del cielo, tiene su hora.',ref:'Eclesiastés 3:1'},
- {text:'El que guarda su boca y su lengua, Su alma guarda de angustias.',ref:'Proverbios 21:23'},
- {text:'En todo tiempo ama el amigo; Y el hermano para la angustia es nacido.',ref:'Proverbios 17:17'},
- {text:'No te dejes vencer de lo malo; mas vence con el bien el mal.',ref:'Romanos 12:21'}
- ],
- martin:[
- {text:'Los hermanos sean unidos, porque ésa es la ley primera.',ref:'Martín Fierro · La vuelta, canto XXXII'},
- {text:'Tengan unión verdadera en cualquier tiempo que sea.',ref:'Martín Fierro · La vuelta, canto XXXII'},
- {text:'El trabajar es la ley, porque es preciso alquirir.',ref:'Martín Fierro · La vuelta'},
- {text:'Siempre es bueno tener palenque ande ir a rascarse.',ref:'Martín Fierro · Primera parte'},
- {text:'La ocasión es como el fierro: se ha de machacar caliente.',ref:'Martín Fierro · La vuelta'}
- ],
- sanmartin:[
+const adviceLibrary={bible:[],martin:[],sanmartin:[
  {text:'Humanizar el carácter y hacerlo sensible aun con los insectos que nos perjudican.',ref:'Máximas de San Martín a Mercedes · 1825'},
  {text:'Inspirarla amor a la verdad y odio a la mentira.',ref:'Máximas de San Martín a Mercedes · 1825'},
  {text:'Inspirarla gran confianza y amistad, pero uniendo el respeto.',ref:'Máximas de San Martín a Mercedes · 1825'},
@@ -285,9 +267,14 @@ const adviceLibrary={
  {text:'Acostumbrarla a estar formal en la mesa.',ref:'Máximas de San Martín a Mercedes · 1825'},
  {text:'Amor al aseo y desprecio al lujo.',ref:'Máximas de San Martín a Mercedes · 1825'},
  {text:'Inspirarla amor por la Patria y por la Libertad.',ref:'Máximas de San Martín a Mercedes · 1825'}
- ]
-};
-function chooseAdviceOnLaunch(){const seen=data.adviceSeen||{};data.adviceCurrent={};Object.keys(adviceLibrary).forEach(k=>{let ids=seen[k]||[];if(ids.length>=adviceLibrary[k].length)ids=[];const pool=adviceLibrary[k].map((_,i)=>i).filter(i=>!ids.includes(i));const pick=pool[Math.floor(Math.random()*pool.length)];data.adviceCurrent[k]=pick;ids.push(pick);seen[k]=ids;});data.adviceSeen=seen;try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+]};
+async function loadAdviceSources(){
+ try{const [b,m]=await Promise.all([fetch('bible-rv1909.json').then(r=>r.json()),fetch('martin-fierro.json').then(r=>r.json())]);
+ adviceLibrary.bible=b.items.map(v=>({text:v.text,ref:v.ref}));
+ adviceLibrary.martin=m.items.map(v=>({text:v.text,ref:v.reference}));
+ }catch(e){console.error('No se pudieron cargar las fuentes de Consejos',e)}
+}
+function chooseAdviceOnLaunch(){const seen=data.adviceSeen||{};data.adviceCurrent={};Object.keys(adviceLibrary).forEach(k=>{if(!adviceLibrary[k].length)return;let ids=seen[k]||[];if(ids.length>=adviceLibrary[k].length)ids=[];const pool=adviceLibrary[k].map((_,i)=>i).filter(i=>!ids.includes(i));const pick=pool[Math.floor(Math.random()*pool.length)];data.adviceCurrent[k]=pick;ids.push(pick);seen[k]=ids;});data.adviceSeen=seen;try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
 function advicePage(){const order=['bible','martin','sanmartin'];return `<p class="eyebrow">CONSEJOS</p><h1>Consejos</h1><div class="advice-stack">${order.map(k=>{const v=adviceLibrary[k][data.adviceCurrent?.[k]??0];return `<article class="advice-panel panel"><blockquote>“${safe(v.text)}”</blockquote><div class="small">${safe(v.ref)}</div></article>`}).join('')}</div>`}
 
 function today(){
@@ -428,7 +415,7 @@ function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'a
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x.projects)||!Array.isArray(x.tasks))throw 0;if(confirm('Esto reemplazará los datos actuales. ¿Continuar?')){data={...x,projects:x.projects,tasks:x.tasks,sessions:x.sessions||[],missions:x.missions||[],notes:x.notes||[],ideasByCore:x.ideasByCore||{},deletedCores:x.deletedCores||[]};save();render();alert('Copia restaurada.')}}catch{alert('El archivo no parece una copia válida de HOY.')}};r.readAsText(f)}
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;render()}));
 document.getElementById('backup').onclick=exportData;
-chooseAdviceOnLaunch();initTheme();render();
+loadAdviceSources().then(()=>{chooseAdviceOnLaunch();initTheme();render();});
 window.addEventListener('pagehide',()=>{try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}});
 if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 </script>
