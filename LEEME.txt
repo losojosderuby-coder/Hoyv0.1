@@ -1,10 +1,17 @@
-HOY v0.9
+HOY v0.9.1
 
-Instalación: reemplazá los archivos de la raíz del repositorio GitHub Pages por los de esta carpeta.
-Antes: exportá una copia JSON desde HOY.
+Actualización de la versión 0.9.
 
-La aplicación mantiene la clave local hoy-data-v1. No borres los datos del navegador.
+Cambios incluidos:
+- Modo oscuro con interruptor discreto al final del Dashboard; la preferencia queda guardada en el dispositivo.
+- Animación breve de apertura con el sol original.
+- Resplandor suave y persistente detrás del sol del logo.
+- Consejos apilados verticalmente: Biblia, Martín Fierro y San Martín, sin la etiqueta genérica “Consejo”.
+- Barra inferior fija y ajuste del espacio inferior para evitar el salto visual en Consejos.
+- Conversión de ideas a misiones con selector de núcleo y proyectos de ese núcleo.
+- Tutorial básico “Cómo funciona HOY” dentro de Historial, con ejemplo de la panadería.
+- Etiquetas “Tareas de la misión” en las pantallas y formularios correspondientes.
 
-Cambios: navegación Hoy/Ideas/Consejos/Historial; misiones completadas separadas dentro de proyectos; finalización de proyectos con archivo e Historial; estadísticas sin sesiones; Consejos separados en Biblia, Martín Fierro y San Martín con rotación local antirrepetición; animaciones discretas y título adaptable.
+Datos: se conserva la clave local hoy-data-v1. No borres los datos del navegador. Antes de instalar, exportá una copia desde HOY.
 
-Nota sobre contenidos: la biblioteca incorporada en esta versión es una selección inicial pequeña y verificable, NO contiene todavía 5.000 versículos. La ampliación a 5.000 requiere incorporar y revisar una fuente completa de Reina-Valera 1909 y seleccionar pasajes breves sin inventar textos.
+Contenido: esta actualización conserva la biblioteca breve que ya tenía v0.9. Todavía no contiene los 5.000 versículos proyectados; esa biblioteca requiere recopilación y verificación independiente.
