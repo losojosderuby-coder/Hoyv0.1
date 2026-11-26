@@ -110,6 +110,23 @@ input,textarea,select{background:#f8fbfc;color:#29485a;border:1px solid #d4e2e7}
 input[type=color]{height:44px;padding:5px}
 @media(max-width:390px){.completion-stats{gap:5px}.completion-stat{padding:10px 5px}.completion-stat strong{font-size:21px}}
 
+
+/* HOY v0.9 */
+.dashboard-title{font-size:clamp(18px,4.8vw,25px);white-space:nowrap;letter-spacing:-.55px;line-height:1.2}
+.recent-compact{background:#fffdf5c9;border:1px solid #e4d6b9;box-shadow:0 8px 24px #8b6b3212;border-radius:19px;padding:15px;margin:12px 0}
+.nav button[data-tab="cores"]{display:none}
+.logo{position:relative}.logo:after{content:"";position:absolute;left:47px;top:2px;width:33px;height:30px;border-radius:50%;background:radial-gradient(circle,#f5d58b99 0%,#e7bb5b55 38%,transparent 72%);opacity:0;pointer-events:none;animation:sunGlow 1.7s ease-out 1}
+@keyframes sunGlow{0%{opacity:0;transform:scale(.7) translateX(-5px)}35%{opacity:.9;transform:scale(1.18) translateX(3px)}100%{opacity:0;transform:scale(1.45) translateX(10px)}}
+.nav .ideas-nav b{font-size:0}.nav .ideas-nav b:before{content:'💡';font-size:25px}
+.task-row{transition:background .2s}.task-row.just-completed{animation:taskDone .45s ease}
+@keyframes taskDone{0%{background:#f6e8c8}100%{background:transparent}}
+.mission-card.just-completed,.mission-hero.just-completed{animation:missionDone .75s ease}
+@keyframes missionDone{0%{box-shadow:0 0 0 0 #c99b4b00}35%{box-shadow:0 0 0 7px #c99b4b44}100%{box-shadow:0 0 0 14px #c99b4b00}}
+.advice-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:14px 0}.advice-tabs button{border:1px solid #e4d6b9;background:#fffdf5;color:#607d8b;border-radius:12px;padding:10px 5px;font-size:12px}.advice-tabs button.active{background:#f1e3c8;color:#85632e;border-color:#c99b4b}
+.mission-completed-list{margin-top:22px}.mission-completed-list .item{padding:11px 0}
+@media(max-width:390px){.dashboard-title{font-size:clamp(16px,4.45vw,19px);letter-spacing:-.7px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
 </style>
 </head>
 <body>
@@ -117,7 +134,6 @@ input[type=color]{height:44px;padding:5px}
 <main id="app"></main>
 <nav class="nav" aria-label="Navegación principal">
 <button data-tab="today" class="active"><b>⌂</b>Hoy</button>
-<button data-tab="cores"><b>▦</b>Núcleos</button>
 <button data-tab="ideas" class="ideas-nav"><b>💡</b>Ideas</button>
 <button data-tab="advice"><b>✧</b>Consejos</button>
 <button data-tab="history"><b>◷</b>Historial</button>
@@ -180,7 +196,8 @@ function render(){
  if(tab==='advice') app.innerHTML=advicePage();
 }
 function missionCompletion(){const ms=data.missions.filter(m=>!m.archived);if(!ms.length)return 0;const completed=ms.filter(m=>{const ts=missionTasks(m.id);return ts.length>0&&ts.every(t=>t.done)}).length;return Math.round(completed/ms.length*100)}
-const verses=[
+const adviceLibrary={
+ bible:[
  {text:'Encomienda á Jehová tu camino, Y espera en él; y él hará.',ref:'Salmos 37:5'},
  {text:'La blanda respuesta quita la ira: Mas la palabra áspera hace subir el furor.',ref:'Proverbios 15:1'},
  {text:'El corazón alegre hermosea el rostro: Mas por el dolor del corazón el espíritu se abate.',ref:'Proverbios 15:13'},
@@ -189,11 +206,32 @@ const verses=[
  {text:'El que guarda su boca y su lengua, Su alma guarda de angustias.',ref:'Proverbios 21:23'},
  {text:'En todo tiempo ama el amigo; Y el hermano para la angustia es nacido.',ref:'Proverbios 17:17'},
  {text:'No te dejes vencer de lo malo; mas vence con el bien el mal.',ref:'Romanos 12:21'}
-];
-let currentVerseIndex=Math.floor(Math.random()*verses.length);
-function dailyVerse(){return verses[currentVerseIndex]}
-function nextVerse(){let next=currentVerseIndex;while(verses.length>1&&next===currentVerseIndex)next=Math.floor(Math.random()*verses.length);currentVerseIndex=next;render()}
-function advicePage(){const v=dailyVerse();return `<p class="eyebrow">UN MOMENTO PARA REFLEXIONAR</p><h1>Consejos</h1><p class="muted">Versículos breves de la Biblia.</p><div class="advice-panel panel"><blockquote>“${safe(v.text)}”</blockquote><div class="small">${safe(v.ref)} · Reina-Valera 1909</div></div><button class="btn secondary" onclick="nextVerse()">Ver otro versículo</button>`}
+ ],
+ martin:[
+ {text:'Los hermanos sean unidos, porque ésa es la ley primera.',ref:'Martín Fierro · La vuelta, canto XXXII'},
+ {text:'Tengan unión verdadera en cualquier tiempo que sea.',ref:'Martín Fierro · La vuelta, canto XXXII'},
+ {text:'El trabajar es la ley, porque es preciso alquirir.',ref:'Martín Fierro · La vuelta'},
+ {text:'Siempre es bueno tener palenque ande ir a rascarse.',ref:'Martín Fierro · Primera parte'},
+ {text:'La ocasión es como el fierro: se ha de machacar caliente.',ref:'Martín Fierro · La vuelta'}
+ ],
+ sanmartin:[
+ {text:'Humanizar el carácter y hacerlo sensible aun con los insectos que nos perjudican.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Inspirarla amor a la verdad y odio a la mentira.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Inspirarla gran confianza y amistad, pero uniendo el respeto.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Estimular en Mercedes la caridad con los pobres.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Respeto sobre la propiedad ajena.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Acostumbrarla a guardar un secreto.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Inspirarla sentimientos de indulgencia hacia todas las religiones.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Dulzura con los criados, pobres y viejos.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Que hable poco y lo preciso.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Acostumbrarla a estar formal en la mesa.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Amor al aseo y desprecio al lujo.',ref:'Máximas de San Martín a Mercedes · 1825'},
+ {text:'Inspirarla amor por la Patria y por la Libertad.',ref:'Máximas de San Martín a Mercedes · 1825'}
+ ]
+};
+function chooseAdviceOnLaunch(){const seen=data.adviceSeen||{};data.adviceCurrent={};Object.keys(adviceLibrary).forEach(k=>{let ids=seen[k]||[];if(ids.length>=adviceLibrary[k].length)ids=[];const pool=adviceLibrary[k].map((_,i)=>i).filter(i=>!ids.includes(i));const pick=pool[Math.floor(Math.random()*pool.length)];data.adviceCurrent[k]=pick;ids.push(pick);seen[k]=ids;});data.adviceSeen=seen;try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+function advicePage(){const k=window.adviceSection||'bible',names={bible:'Biblia',martin:'Martín Fierro',sanmartin:'San Martín'},v=adviceLibrary[k][data.adviceCurrent?.[k]??0];return `<p class="eyebrow">CONSEJOS</p><h1>Consejos</h1><div class="advice-tabs"><button class="${k==='bible'?'active':''}" onclick="adviceSection='bible';render()">Biblia</button><button class="${k==='martin'?'active':''}" onclick="adviceSection='martin';render()">Martín Fierro</button><button class="${k==='sanmartin'?'active':''}" onclick="adviceSection='sanmartin';render()">San Martín</button></div><div class="advice-panel panel"><blockquote>“${safe(v.text)}”</blockquote><div class="small">${safe(v.ref)}</div></div>`}
+
 function today(){
  const active=data.projects.filter(p=>!p.archived);
  const priorities=data.tasks.filter(t=>!t.done&&t.priority==='Alta').slice(0,3);
@@ -202,7 +240,7 @@ function today(){
  const recentTasks=priorities.map(t=>{const p=project(t.projectId),m=t.missionId?mission(t.missionId):null;return `<div class="item"><button class="text-button" onclick="${m?`openMission('${m.id}')`:`openProject('${t.projectId}')`}">${safe(t.title)}</button><div class="small">${p?cname(p.core)+' · '+safe(p.name):'Proyecto'}${m?' · '+safe(m.name):''}</div></div>`}).join('');
  const pendingTasks=data.tasks.filter(t=>!t.done).length;
  const pendingMissions=data.missions.filter(m=>!m.completedAt&&!m.done).length;
- return `<p class="small">CENTRO DE CONTROL</p><h1 class="dashboard-title">El mundo es de quien lo hace suyo.</h1>
+ return `<p class="small">CENTRO DE CONTROL</p><h1 class="dashboard-title">El mundo es de quien lo hace suyo</h1>
  <div class="recent-compact"><div class="headline"><h2>Últimos movimientos</h2><span class="small">Último núcleo</span></div>${recentCore?`<div class="recent-entry"><div><b>${safe(coreName(recentCore))}</b><div class="small">${lm.projectId&&project(lm.projectId)&&!project(lm.projectId).archived?safe(project(lm.projectId).name):'Último espacio de trabajo'}<br>${lm.at?fmt(lm.at):''}</div></div><button class="btn secondary" onclick="showCore('${recentCore}')">Abrir</button></div>`:'<div class="recent-entry"><span class="small">Todavía no hay actividad registrada.</span></div>'}</div>
  <div class="panel"><div class="row between"><h2>Prioridades</h2><span class="small">${priorities.length}/3</span></div>${priorities.length?recentTasks:'<p class="muted">No hay prioridades altas pendientes.</p>'}</div>
  <div class="row between"><h2>Tus núcleos</h2><button class="btn ghost" onclick="tab='cores';render()">Ver todos</button></div><div class="grid">${activeCores().map(c=>coreTile(c)).join('')}</div>
@@ -226,17 +264,17 @@ function projectCard(p){
 }
 function openProject(pid){
  currentProject=pid;const p=project(pid);if(!p)return;tab='project';touchCore(p.core,pid);
- const ms=data.missions.filter(m=>m.projectId===pid).slice().sort((a,b)=>(a.order??0)-(b.order??0));
+ const allMs=data.missions.filter(m=>m.projectId===pid).slice().sort((a,b)=>(a.order??0)-(b.order??0));const ms=allMs.filter(m=>!(m.completedAt||m.done));const doneMs=allMs.filter(m=>!!(m.completedAt||m.done));
  const oldTasks=data.tasks.filter(t=>t.projectId===pid&&!t.missionId);
  document.getElementById('app').innerHTML=`<button class="btn ghost" onclick="showCore('${p.core}')">← ${cname(p.core)}</button><p class="eyebrow">${cname(p.core)} / PROYECTO</p><div class="headline"><h1>${safe(p.name)}</h1><button class="edit-icon" onclick="editProject('${p.id}')">✎</button></div><p class="muted">${safe(p.description||'')}</p>${p.completedAt?`<span class="tag">PROYECTO TERMINADO · ${fmt(p.completedAt)}</span>`:''}
  <div class="row between section-head"><div><h2>Misiones</h2><p class="small">Dividí el proyecto en partes de trabajo.</p></div><button class="btn" onclick="newMission('${p.id}')">＋ Misión</button></div>
- <div class="mission-grid">${ms.map(m=>missionCard(m)).join('')||'<div class="empty">Todavía no hay misiones. Creá la primera, por ejemplo Canción o Video.</div>'}</div>
+ <div class="mission-grid">${ms.map(m=>missionCard(m)).join('')||'<div class="empty">No hay misiones pendientes.</div>'}</div>${doneMs.length?`<div class="mission-completed-list"><h2>Misiones completadas</h2>${doneMs.map(m=>`<div class="item row between"><div><b>${safe(m.name)}</b><div class="small">Completada · ${fmt(m.completedAt||m.doneAt||Date.now())}</div></div><button class="btn secondary" onclick="openMission('${m.id}')">Ver</button></div>`).join('')}</div>`:''}
  ${oldTasks.length?`<div class="panel"><h3>Tareas sin misión</h3><p class="small">Estas tareas ya existían en el proyecto. Podés mantenerlas acá o asignarlas a una misión más adelante.</p>${oldTasks.map(t=>taskRow(t)).join('')}</div>`:''}
- <div class="completion-actions">${p.completedAt?`<span class="tag">TERMINADO · ${fmt(p.completedAt)}</span>`:''}<button class="btn ${p.completedAt?'secondary':''}" onclick="toggleProjectComplete('${p.id}')">${p.completedAt?'↶ Reabrir proyecto':'✓ Marcar proyecto terminado'}</button></div><div class="actions"><button class="btn ghost" onclick="editProject('${p.id}')">Editar proyecto</button><button class="btn ghost" onclick="archiveProject('${p.id}')">Archivar</button><button class="btn danger" onclick="deleteProject('${p.id}')">Eliminar</button></div>`;
+ <div class="completion-actions">${p.completedAt?`<span class="tag">TERMINADO · ${fmt(p.completedAt)}</span>`:''}<button class="btn ${p.completedAt?'secondary':''}" onclick="toggleProjectComplete('${p.id}')">${p.completedAt?'↶ Reabrir proyecto':'✓ Finalizar proyecto'}</button></div><div class="actions"><button class="btn ghost" onclick="editProject('${p.id}')">Editar proyecto</button><button class="btn ghost" onclick="archiveProject('${p.id}')">Archivar</button><button class="btn danger" onclick="deleteProject('${p.id}')">Eliminar</button></div>`;
 }
 function missionCard(m){
  const ts=missionTasks(m.id),done=ts.filter(t=>t.done).length;
- const siblings=data.missions.filter(x=>x.projectId===m.projectId).slice().sort((a,b)=>(a.order??0)-(b.order??0));const idx=siblings.findIndex(x=>x.id===m.id);
+ const siblings=data.missions.filter(x=>x.projectId===m.projectId&&!(x.completedAt||x.done)).slice().sort((a,b)=>(a.order??0)-(b.order??0));const idx=siblings.findIndex(x=>x.id===m.id);
  return `<div class="mission-card" onclick="openMission('${m.id}')"><div class="mission-line"><div class="mission-icon">${safe(m.icon||'✦')}</div><div class="mission-main"><h3>${safe(m.name)} ${m.completedAt?'✓':''}</h3><p class="small">${safe(m.description||'Misión del proyecto')}</p><div class="small">${done}/${ts.length} tareas completadas</div></div><div class="mission-tools"><button onclick="event.stopPropagation();moveMission('${m.id}',-1)" ${idx===0?'disabled':''} aria-label="Subir misión">↑</button><button onclick="event.stopPropagation();moveMission('${m.id}',1)" ${idx===siblings.length-1?'disabled':''} aria-label="Bajar misión">↓</button><button onclick="event.stopPropagation();editMission('${m.id}')" aria-label="Editar misión">✎</button></div></div><div class="progress"><i style="width:${ts.length?done/ts.length*100:0}%"></i></div><div class="small">Abrir misión →</div></div>`;
 }
 function moveMission(mid,delta){const m=mission(mid);if(!m)return;const list=data.missions.filter(x=>x.projectId===m.projectId).slice().sort((a,b)=>(a.order??0)-(b.order??0));const i=list.findIndex(x=>x.id===mid),j=i+delta;if(j<0||j>=list.length)return;const a=list[i],b=list[j],temp=a.order??i;a.order=b.order??j;b.order=temp;list.forEach((x,n)=>{if(x.order===undefined)x.order=n});save();openProject(m.projectId)}
@@ -251,15 +289,14 @@ function openMission(mid){
 
 function taskRow(t){const subs=Array.isArray(t.subtasks)?t.subtasks:[];return `<div class="task-row"><div class="task-main"><label><input class="check" type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')"><span class="${t.done?'completed':''}">${safe(t.title)}</span></label>${subs.length?`<div class="subtask-list">${subs.map((s,i)=>`<div class="subtask"><input type="checkbox" ${s.done?'checked':''} onchange="toggleSubtask('${t.id}',${i})"><span class="${s.done?'completed':''}">${safe(s.title)}</span></div>`).join('')}</div>`:''}<div class="small">${t.priority||'Media'}</div></div><div class="task-actions"><button class="edit-icon" onclick="editTask('${t.id}')" aria-label="Editar tarea">✎</button></div></div>`}
 function historyPage(){
- const sessions=data.sessions.slice().reverse(),archived=data.projects.filter(p=>p.archived);
  const completedTasks=data.tasks.filter(t=>t.done),completedMissions=data.missions.filter(m=>!!(m.completedAt||m.done)),completedProjects=data.projects.filter(p=>!!p.completedAt);
  const events=(data.completionEvents||[]).slice().reverse();
  return `<p class="small">MEMORIA DE TRABAJO</p><h1>Historial</h1><div class="panel"><h2>Tu progreso</h2><div class="completion-stats"><div class="completion-stat"><strong>${completedMissions.length}</strong><span>Misiones cumplidas</span></div><div class="completion-stat"><strong>${completedTasks.length}</strong><span>Tareas cumplidas</span></div><div class="completion-stat"><strong>${completedProjects.length}</strong><span>Proyectos terminados</span></div></div></div>
- <div class="panel"><h2>Finalizaciones</h2>${events.length?events.map(e=>`<div class="event-row"><b>${e.action==='reopened'?'Reabierto':'Completado'}: ${safe(e.label)}</b><div class="small">${e.kind==='task'?'Tarea':e.kind==='mission'?'Misión':'Proyecto'} · ${fmt(e.at)}</div></div>`).join(''):'<p class="muted">Cuando completes tareas, misiones o proyectos, aparecerán acá.</p>'}</div>
- <div class="panel"><h2>Proyectos archivados</h2>${archived.length?archived.map(p=>`<div class="item row between"><div><b>${safe(p.name)}</b><div class="small">${cname(p.core)}</div></div><div class="row"><button class="btn secondary" onclick="restoreProject('${p.id}')">Restaurar</button><button class="btn danger" onclick="deleteProject('${p.id}')">Eliminar</button></div></div>`).join(''):'<p class="muted">No hay proyectos archivados.</p>'}</div>
- <div class="panel"><h2>Sesiones registradas</h2>${sessions.length?sessions.map(s=>`<div class="item"><b>${safe(project(s.projectId)?.name||'Proyecto archivado')}</b><p>${safe(s.done)}</p><div class="small">${cname(s.core)} · ${fmt(s.at)}</div></div>`).join(''):'<div class="empty">Todavía no hay sesiones guardadas.</div>'}</div>
- <div class="panel"><h2>Copia de seguridad</h2><p class="small">Tus datos se guardan en este navegador. Exportá una copia periódicamente para no perderlos.</p><button class="btn secondary" onclick="exportData()">Descargar copia JSON</button><label>Restaurar copia</label><input type="file" accept="application/json" onchange="importData(event)"></div>`;
+ <div class="panel"><h2>Proyectos terminados</h2>${completedProjects.length?completedProjects.slice().sort((a,b)=>b.completedAt-a.completedAt).map(p=>`<div class="item row between"><div><b>${safe(p.name)}</b><div class="small">${safe(coreName(p.core))} · ${fmt(p.completedAt)}</div></div><button class="btn secondary" onclick="openArchivedProject('${p.id}')">Ver</button></div>`).join(''):'<p class="muted">Todavía no terminaste proyectos.</p>'}</div>
+ <div class="panel"><h2>Registro de finalizaciones</h2>${events.length?events.map(e=>`<div class="event-row"><b>${e.action==='reopened'?'Reabierto':'Completado'}: ${safe(e.label)}</b><div class="small">${e.kind==='task'?'Tarea':e.kind==='mission'?'Misión':'Proyecto'} · ${fmt(e.at)}</div></div>`).join(''):'<p class="muted">Cuando completes tareas, misiones o proyectos, aparecerán acá.</p>'}</div>
+ <div class="panel"><h2>Copias de seguridad</h2><p class="small">Tus datos se guardan en este navegador. Exportá una copia periódicamente.</p><button class="btn secondary" onclick="exportData()">Descargar copia JSON</button><label>Restaurar copia</label><input type="file" accept="application/json" onchange="importData(event)"></div>`;
 }
+function openArchivedProject(pid){const p=project(pid);if(!p)return;const was=p.archived;p.archived=false;openProject(pid);p.archived=was;}
 
 function modal(content){document.getElementById('modal').innerHTML=`<div class="modal" onclick="if(event.target===this)closeModal()"><div class="sheet">${content}</div></div>`}
 function closeModal(){document.getElementById('modal').innerHTML=''}
@@ -283,9 +320,10 @@ function deleteTask(tid){if(!confirm('¿Eliminar esta tarea y sus subtareas?'))r
 function toggleSubtask(tid,index){const t=data.tasks.find(x=>x.id===tid);if(!t||!t.subtasks||!t.subtasks[index])return;t.subtasks[index].done=!t.subtasks[index].done;if(!save())return;if(t.missionId)openMission(t.missionId);else openProject(t.projectId)}
 
 function addCompletionEvent(kind,action,label){if(!Array.isArray(data.completionEvents))data.completionEvents=[];data.completionEvents.push({id:uid(),kind,action,label,at:Date.now()});}
-function toggleMissionComplete(mid){const m=mission(mid);if(!m)return;const reopening=!!(m.completedAt||m.done);if(reopening){m.completedAt=null;m.done=false;addCompletionEvent('mission','reopened',m.name)}else{m.completedAt=Date.now();m.done=true;addCompletionEvent('mission','completed',m.name)}if(!save())return;openMission(mid)}
-function toggleProjectComplete(pid){const p=project(pid);if(!p)return;const reopening=!!p.completedAt;if(reopening){p.completedAt=null;addCompletionEvent('project','reopened',p.name)}else{p.completedAt=Date.now();addCompletionEvent('project','completed',p.name)}if(!save())return;openProject(pid)}
-function toggleTask(tid){const t=data.tasks.find(x=>x.id===tid);if(t){t.done=!t.done;t.completedAt=t.done?Date.now():null;addCompletionEvent('task',t.done?'completed':'reopened',t.title);save();if(currentMission)openMission(currentMission);else if(currentProject)openProject(currentProject);else render()}}
+function toggleMissionComplete(mid){const m=mission(mid);if(!m)return;const reopening=!!(m.completedAt||m.done);if(reopening){m.completedAt=null;m.done=false;addCompletionEvent('mission','reopened',m.name)}else{m.completedAt=Date.now();m.done=true;m.doneAt=Date.now();addCompletionEvent('mission','completed',m.name)}if(!save())return;if(!reopening)celebrate('mission');openMission(mid)}
+function toggleProjectComplete(pid){const p=project(pid);if(!p)return;const reopening=!!p.completedAt;if(reopening){p.completedAt=null;p.archived=false;addCompletionEvent('project','reopened',p.name);if(!save())return;openProject(pid)}else{if(!confirm('¿Finalizar y archivar este proyecto? Lo vas a encontrar en Historial → Proyectos terminados.'))return;p.completedAt=Date.now();p.archived=true;addCompletionEvent('project','completed',p.name);if(data.lastMovement?.projectId===pid)data.lastMovement=null;if(!save())return;tab='history';render();celebrate('project')}}
+function toggleTask(tid){const t=data.tasks.find(x=>x.id===tid);if(t){t.done=!t.done;t.completedAt=t.done?Date.now():null;addCompletionEvent('task',t.done?'completed':'reopened',t.title);if(!save())return;if(t.done)celebrate('task');if(currentMission)openMission(currentMission);else if(currentProject)openProject(currentProject);else render()}}
+function celebrate(kind){document.body.classList.remove('celebrate-'+kind);void document.body.offsetWidth;document.body.classList.add('celebrate-'+kind);setTimeout(()=>document.body.classList.remove('celebrate-'+kind),850)}
 function startSession(pid,mid=''){
  const p=project(pid),m=mid?mission(mid):null,key='session-'+pid+(mid?'-'+mid:'');
  modal(`<p class="eyebrow">${cname(p.core)} / ${safe(p.name)}${m?' / '+safe(m.name):''}</p><h2>Registrar sesión</h2><p class="muted">Anotá el avance. El borrador se guarda automáticamente; podés volver después.</p><label>¿Qué hiciste?</label><textarea id="sDone" placeholder="Avances realizados..."></textarea><label>¿Cuál es el próximo paso?</label><textarea id="sNext" placeholder="La acción concreta para continuar..."></textarea><p class="small">● Guardado automático activado</p><div class="actions"><button class="btn" onclick="saveSession('${pid}','${mid}')">Guardar sesión</button><button class="btn ghost" onclick="closeModal()">Volver después</button></div>`);
@@ -330,7 +368,7 @@ function exportData(){const blob=new Blob([JSON.stringify(data,null,2)],{type:'a
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x.projects)||!Array.isArray(x.tasks))throw 0;if(confirm('Esto reemplazará los datos actuales. ¿Continuar?')){data={...x,projects:x.projects,tasks:x.tasks,sessions:x.sessions||[],missions:x.missions||[],notes:x.notes||[],ideasByCore:x.ideasByCore||{},deletedCores:x.deletedCores||[]};save();render();alert('Copia restaurada.')}}catch{alert('El archivo no parece una copia válida de HOY.')}};r.readAsText(f)}
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;render()}));
 document.getElementById('backup').onclick=exportData;
-render();
+chooseAdviceOnLaunch();render();
 window.addEventListener('pagehide',()=>{try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}});
 if('serviceWorker' in navigator && location.protocol!=='file:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 </script>

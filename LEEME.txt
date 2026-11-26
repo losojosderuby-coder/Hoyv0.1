@@ -1,23 +1,10 @@
-HOY v0.8 — progreso, núcleos y Dashboard
+HOY v0.9
 
-Esta versión mantiene la clave local hoy-data-v1 para conservar los datos de v0.7.
+Instalación: reemplazá los archivos de la raíz del repositorio GitHub Pages por los de esta carpeta.
+Antes: exportá una copia JSON desde HOY.
 
-Cambios incluidos:
-- Dashboard: título “El mundo es de quien lo hace suyo.”, Últimos movimientos con la estética de Prioridades y resumen de proyectos, tareas pendientes y misiones pendientes.
-- Núcleos: tarjetas más compactas; editar nombre, descripción, emoji opcional y color; agregar y eliminar núcleos.
-- Finalización: marcar/reabrir tareas, misiones y proyectos; fecha y eventos registrados.
-- Historial: contadores de tareas, misiones y proyectos completados y registro de finalizaciones/reaperturas.
-- Misiones: eliminados el botón de registrar sesión y el bloque “Sesiones de esta misión”.
-- Se conserva la barra inferior Hoy · Núcleos · Ideas · Consejos · Historial.
-- Se conserva la sesión de trabajo y su historial general, sin mostrar sesiones dentro de cada misión.
+La aplicación mantiene la clave local hoy-data-v1. No borres los datos del navegador.
 
-INSTALACIÓN
-1. Abrí tu HOY actual y exportá una copia de seguridad nueva.
-2. Descomprimí el ZIP.
-3. Subí TODOS los archivos que están dentro de la carpeta HOY_v0.8 a la raíz del repositorio GitHub, reemplazando los archivos anteriores.
-4. Esperá a que GitHub Pages publique los cambios. Cerrá HOY por completo y volvé a abrirla.
+Cambios: navegación Hoy/Ideas/Consejos/Historial; misiones completadas separadas dentro de proyectos; finalización de proyectos con archivo e Historial; estadísticas sin sesiones; Consejos separados en Biblia, Martín Fierro y San Martín con rotación local antirrepetición; animaciones discretas y título adaptable.
 
-IMPORTANTE
-- No borres los datos del navegador. La clave de almacenamiento sigue siendo hoy-data-v1.
-- No importes la copia si los datos actuales siguen apareciendo.
-- Las estadísticas de completados se calculan a partir del estado actual de cada elemento. El historial registra cada finalización y reapertura.
+Nota sobre contenidos: la biblioteca incorporada en esta versión es una selección inicial pequeña y verificable, NO contiene todavía 5.000 versículos. La ampliación a 5.000 requiere incorporar y revisar una fuente completa de Reina-Valera 1909 y seleccionar pasajes breves sin inventar textos.
