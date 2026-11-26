@@ -1,14 +1,17 @@
-HOY — VERSIÓN 20
+HOY — VERSIÓN 21
 
 Cambios:
-- Se quitó el número de versión de la pantalla inicial.
-- Se agregó al final de Historial la sección “Versiones de HOY”, que muestra V20 y la fecha de esta entrega.
+- Se recupera la selección múltiple de misiones mediante casillas.
+- Al seleccionar una o más misiones aparece la acción «Meter en carpeta».
+- El cuadro permite mover todas las seleccionadas a una carpeta o a General.
+- Cada misión muestra debajo de «Abrir misión» una etiqueta discreta con el nombre y color de su carpeta.
+- Se conserva la barra de progreso de cada misión.
+- En Historial, la versión aparece como texto sutil, sin recuadro.
 - Se conserva la clave local de datos: hoy-data-v1.
-- No se modifica ni se migra el contenido guardado del usuario.
-- Se actualiza el service worker a hoy-cache-v23, con navegación de red primero y respaldo en caché para uso sin conexión.
+- Se mantiene el comportamiento del service worker de V20 y se incrementa el identificador de caché a hoy-cache-v24.
 
 Publicación:
 Reemplazar en la raíz del repositorio los archivos de esta entrega, conservando sus nombres.
 No borrar los datos del sitio ni desinstalar la PWA.
 Antes de publicar, conservar una copia JSON de HOY.
-Esta entrega debe probarse primero en Safari y luego en la aplicación instalada.
+Probar primero en Safari y luego en la aplicación instalada.
