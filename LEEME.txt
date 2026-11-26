@@ -1,17 +1,26 @@
-HOY — VERSIÓN 21
+HOY — VERSIÓN 22
 
 Cambios:
-- Se recupera la selección múltiple de misiones mediante casillas.
-- Al seleccionar una o más misiones aparece la acción «Meter en carpeta».
-- El cuadro permite mover todas las seleccionadas a una carpeta o a General.
-- Cada misión muestra debajo de «Abrir misión» una etiqueta discreta con el nombre y color de su carpeta.
-- Se conserva la barra de progreso de cada misión.
-- En Historial, la versión aparece como texto sutil, sin recuadro.
+- Tarjetas de misión más compactas.
+- Se conserva el número de misión y la prioridad debajo.
+- Se elimina el botón «Abrir misión»: toda la tarjeta abre la misión.
+- Se muestra el nombre y color de la carpeta dentro de la tarjeta.
+- Se elimina la barra horizontal de progreso.
+- Si una misión no tiene tareas, no muestra contador.
+- Si tiene tareas, muestra completadas/total (por ejemplo, 1/3).
+- Se recupera la selección múltiple y la acción «Meter en carpeta».
+- Se agrega el filtro «Sin carpeta» junto a «General» y las carpetas individuales.
+- En Historial, la versión aparece como texto sutil: «VERSIÓN DE LA APLICACIÓN · V22».
+- La animación del sol y su frase se muestran antes que el menú, evitando el pantallazo inicial.
 - Se conserva la clave local de datos: hoy-data-v1.
-- Se mantiene el comportamiento del service worker de V20 y se incrementa el identificador de caché a hoy-cache-v24.
+- El identificador de caché del service worker pasa a hoy-cache-v25.
+
+Protección:
+- No se cambia el esquema de datos ni la clave hoy-data-v1.
+- No se ejecuta ninguna operación de borrado sobre localStorage.
+- Esta entrega debe probarse primero en Safari y luego en la PWA instalada.
+- Conservar el ZIP V21 y una copia JSON de HOY antes de publicar.
 
 Publicación:
 Reemplazar en la raíz del repositorio los archivos de esta entrega, conservando sus nombres.
 No borrar los datos del sitio ni desinstalar la PWA.
-Antes de publicar, conservar una copia JSON de HOY.
-Probar primero en Safari y luego en la aplicación instalada.
