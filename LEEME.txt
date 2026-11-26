@@ -1,12 +1,19 @@
-HOY — BETA CON CONSEJOS
+HOY — actualización rápida v3
 
-Basada en la versión HOY v0.10 proporcionada por el usuario.
+CAMBIOS INCLUIDOS
+1. Carpetas compactas dentro de la vista de misiones del proyecto: icono, nombre y contador. Se despliegan al tocarlas.
+2. Se pueden crear carpetas con nombre y color.
+3. Se pueden seleccionar varias misiones desde la lista y moverlas a una carpeta, o dejarlas sin carpeta.
+4. Desde el detalle de una misión también se puede mover a una carpeta.
+5. Las tarjetas de misión muestran un bloque numérico: número grande, etiqueta MISIÓN pequeña y prioridad dentro del bloque.
+6. Se eliminó el selector de icono al crear misiones. El número reemplaza al icono visual.
+7. Se conserva prioridad Alta/Media/Baja propia de cada misión.
+8. Numeración dinámica por orden activo; al reordenar o completar, se recalcula.
+9. La prioridad de la misión se muestra en el bloque numérico, no debajo de la descripción.
+10. En las tarjetas y el detalle, la descripción solo aparece si el usuario escribió una.
+11. Se conservan los ajustes de contraste de modo oscuro, la vista de hasta tres prioridades del inicio con acceso a todas, los archivos de Consejos y el almacenamiento local.
 
-Cambios:
-- Firma de inicio: “by Asoka” en rojo y “para los pibes” debajo en verde.
-- Se integra la Biblia Reina-Valera 1909 del archivo Spanish-json.zip proporcionado: 31084 registros de texto.
-- Se integra la selección curada de Martín Fierro: 105 fragmentos, con referencias.
-- Se mantienen las Máximas de San Martín y el resto de la aplicación.
-- Las fuentes bíblica y Martín Fierro se cargan desde archivos JSON locales; no requieren servidor ni servicios pagos.
+PUBLICACIÓN
+Extraer todos los archivos directamente en la raíz del repositorio GitHub Pages, reemplazando los archivos de la versión anterior. No subir la carpeta contenedora. No borrar los datos del navegador.
 
-Publicar todos los archivos de esta carpeta juntos en GitHub Pages. No borrar datos del navegador ni cambiar la clave localStorage existente.
+La versión de caché del service worker es hoy-cache-v16.
