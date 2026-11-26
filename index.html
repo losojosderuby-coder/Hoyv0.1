@@ -182,6 +182,12 @@ body.dark .tutorial-mission{background:#293943;border-color:#66583e;color:#edf3f
 body.dark .tutorial-task{color:#d0dce1}
 @media(prefers-reduced-motion:reduce){#sunSplash{display:none}}
 
+/* FIX: firma visible incluso con reducir movimiento */
+#sunSplash{animation:splashFade 3.2s ease forwards!important}
+#sunSplash .splash-signature{opacity:1!important;animation:none!important}
+#sunSplash .splash-signature span{color:#c62828!important}
+#sunSplash .splash-signature small{display:block!important;color:#23834a!important}
+@media(prefers-reduced-motion:reduce){#sunSplash{display:grid!important;animation:none!important;opacity:1!important}#sunSplash .splash-signature{opacity:1!important;animation:none!important}#sunSplash img{animation:none!important;opacity:1!important}}
 </style>
 </head>
 <body>
