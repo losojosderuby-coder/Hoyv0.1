@@ -1,26 +1,26 @@
-HOY — VERSIÓN 22
+HOY V23
+Fecha: 26/11/2026
 
-Cambios:
-- Tarjetas de misión más compactas.
-- Se conserva el número de misión y la prioridad debajo.
-- Se elimina el botón «Abrir misión»: toda la tarjeta abre la misión.
-- Se muestra el nombre y color de la carpeta dentro de la tarjeta.
-- Se elimina la barra horizontal de progreso.
-- Si una misión no tiene tareas, no muestra contador.
-- Si tiene tareas, muestra completadas/total (por ejemplo, 1/3).
-- Se recupera la selección múltiple y la acción «Meter en carpeta».
-- Se agrega el filtro «Sin carpeta» junto a «General» y las carpetas individuales.
-- En Historial, la versión aparece como texto sutil: «VERSIÓN DE LA APLICACIÓN · V22».
-- La animación del sol y su frase se muestran antes que el menú, evitando el pantallazo inicial.
-- Se conserva la clave local de datos: hoy-data-v1.
-- El identificador de caché del service worker pasa a hoy-cache-v25.
+Base: paquete HOY V22.
 
-Protección:
-- No se cambia el esquema de datos ni la clave hoy-data-v1.
-- No se ejecuta ninguna operación de borrado sobre localStorage.
-- Esta entrega debe probarse primero en Safari y luego en la PWA instalada.
-- Conservar el ZIP V21 y una copia JSON de HOY antes de publicar.
+Cambios de esta versión:
+- El Registro de finalizaciones queda plegado inicialmente y se despliega al tocar su encabezado.
+- Se pueden eliminar registros individuales con confirmación.
+- Se puede borrar todo el registro con confirmación.
+- El borrado del registro no modifica el estado real de tareas, misiones ni proyectos.
+- En los formularios de Ideas, el contenido aparece primero y el título después.
+- El título sigue siendo opcional y no se muestra ningún aviso sobre esa condición.
+- Las ideas sin título se identifican con su fecha y hora de creación.
+- Se conserva el orden cronológico descendente (más recientes primero).
 
-Publicación:
-Reemplazar en la raíz del repositorio los archivos de esta entrega, conservando sus nombres.
-No borrar los datos del sitio ni desinstalar la PWA.
+Datos:
+- Se conserva la clave local hoy-data-v1.
+- No se modifica ni se borra información existente al cargar esta versión.
+- Antes de actualizar, se recomienda exportar una copia JSON desde HOY.
+
+Archivos incluidos: index.html, sw.js, manifest.webmanifest, hoy_sol_original.png,
+hoy_cielo_nubes.jpg, bible-rv1909.json y martin-fierro.json.
+
+Nota: se verificó la sintaxis JavaScript y la integridad del ZIP. No se ha realizado
+una prueba de ejecución en un iPhone real; debe probarse antes de considerar V23
+como estable.
