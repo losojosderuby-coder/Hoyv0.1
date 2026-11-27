@@ -22,3 +22,9 @@ Validación realizada:
 Antes de publicar, probar en una copia de la aplicación y conservar una exportación JSON de seguridad.
 
 Archivos incluidos: index.html, sw.js, manifest.webmanifest, hoy_sol_original.png, hoy_cielo_nubes.jpg, bible-rv1909.json y martin-fierro.json.
+
+
+V26 (26/11/2026): cerebro de atención en inicio y calendario; resumen de recordatorios para hoy/mañana; avisos dentro de la app mientras HOY está abierta; interruptor técnico calendarEnabled en HOY_CONFIG; reordenamiento manual de ideas globales y por núcleo. Las notificaciones del sistema iOS cuando la app está cerrada no están implementadas ni verificadas.
+
+
+V26 (26/11/2026): cerebro de atención en inicio y calendario; resumen de recordatorios para hoy/mañana; avisos dentro de la app mientras está abierta; interruptor técnico calendarEnabled en HOY_CONFIG; reordenamiento manual de ideas globales y por núcleo. Las notificaciones del sistema iOS cuando la app está cerrada no están implementadas ni verificadas.
