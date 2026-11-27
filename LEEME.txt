@@ -1,27 +1,31 @@
-HOY V34 — AJUSTES DE ORGANIZACIÓN, CONSEJOS Y ATENCIÓN
+HOY V35 — AJUSTES VISUALES, CARPETAS Y ORDENAMIENTO
 
-Base: HOY V30. Se conserva la clave local hoy-data-v1.
+Base: paquete HOY V34 disponible en esta conversación.
+Almacenamiento: se conserva la clave hoy-data-v1. No se cambia el esquema base ni se reinicia el almacenamiento.
 
-CAMBIOS V34
-1. Se elimina el bloque Últimos movimientos del inicio.
-2. Los núcleos se muestran apilados verticalmente. Se agregan controles para subir/bajar y se guarda el orden en data.coreOrder.
-3. Las descripciones de núcleos usan el color principal del texto, con contraste blanco en modo oscuro.
-4. Se elimina el selector separado de emoji al crear/editar núcleos. Se puede escribir un emoji directamente en el nombre.
-5. El contador exterior de misiones de cada proyecto muestra solo las misiones activas de General (sin carpeta). Los contadores internos de cada carpeta siguen siendo independientes; General cuenta solo las que no tienen folderId.
-6. Tu atención incluye «Crear recordatorio». El recordatorio se guarda como anotación del calendario, con fecha, hora, repetición y recordatorio opcionales.
-7. Consejos bíblicos: se sustituyó la selección de versículos sueltos por pasajes completos seleccionados de Reina-Valera 1909, con referencias por rango.
-8. Martín Fierro: se filtran fragmentos con al menos tres líneas para evitar recortes demasiado breves. Se mantiene la referencia de página.
-9. Se actualiza el Service Worker a hoy-cache-v35.
+CAMBIOS V35
+1. Paleta de botones actualizada hacia tonos azulados, con contraste diferenciado para acciones principales, secundarias y destructivas.
+2. Identificador numérico de misión convertido en círculo. Prioridad mostrada como etiqueta pequeña: Alta, Media o Baja.
+3. Detalle de misión reorganizado: acciones antes de las tareas, en grilla de dos columnas. Acción de completar rotulada «Misión completa». Eliminar misión queda separada al final.
+4. Bloque de carpetas del proyecto reorganizado: «Carpetas» y «+ Nueva carpeta», tarjetas uniformes en dos columnas, contadores alineados y selección azul sutil.
+5. Selector de orden de misiones disponible en General y dentro de cada carpeta: recientes, antiguas, vencimiento próximo, vencimiento lejano y manual. Predeterminado: recientes primero.
+6. En orden manual se muestran controles de subir/bajar. El orden se conserva en los datos locales.
+7. Ideas: selector global y dentro de cada núcleo: recientes, antiguas y manual. Predeterminado: recientes primero. Se conservan flechas para reordenar manualmente.
+8. Se retira la interfaz de subtareas. Las tareas de misión se conservan. Los campos antiguos de subtareas, si existieran en datos locales, no se borran automáticamente.
+9. Se quita el subrayado de los títulos/enlaces dentro del panel Prioridades.
+10. Service Worker actualizado a hoy-cache-v39.
 
 CONSERVACIÓN
-- Se mantiene hoy-data-v1; no se reinicia el almacenamiento.
-- Los datos existentes de núcleos y proyectos se conservan. El orden se guarda en coreOrder.
-- El calendario y el resto de funciones existentes siguen en el mismo modelo de datos.
+- Se mantiene hoy-data-v1.
+- No se eliminan ni modifican tareas de misión existentes por el retiro de subtareas.
+- No se borran automáticamente datos heredados de subtareas.
+- Se conservan núcleos, proyectos, misiones, ideas, carpetas, calendario y recordatorios.
+- No incluye demo ficticia de Santiago.
 
-REVISIÓN TÉCNICA
-- Se verifica sintaxis JS del script principal y Service Worker.
-- Se comprueba integridad del ZIP.
-- Se comprueba que todos los recursos referenciados estén incluidos.
-- Se prueban reglas de conteo de carpeta General, orden de núcleos, creación de recordatorios y curación de pasajes con pruebas aisladas.
-- No se certifica funcionamiento visual en iPhone; requiere prueba manual en Safari.
-- Los recordatorios en app no equivalen a notificaciones del sistema con la app cerrada.
+REVISIÓN
+- Sintaxis JavaScript del documento: verificada con Node.js.
+- Sintaxis del Service Worker: verificada con Node.js.
+- Integridad del ZIP: verificada con unzip -t.
+- Recursos locales referenciados: comprobados.
+- No se ejecutó una prueba visual/end-to-end en Safari ni en iPhone. La instalación y el comportamiento real deben comprobarse manualmente.
+- El orden por vencimiento utiliza fecha de vencimiento/fecha de misión si existe, o fecha de calendario vinculada a la misión. Las misiones sin fecha quedan al final.
