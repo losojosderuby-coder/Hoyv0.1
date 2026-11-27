@@ -1,8 +1,8 @@
-HOY V32 — AJUSTES DE ORGANIZACIÓN, CONSEJOS Y ATENCIÓN
+HOY V34 — AJUSTES DE ORGANIZACIÓN, CONSEJOS Y ATENCIÓN
 
 Base: HOY V30. Se conserva la clave local hoy-data-v1.
 
-CAMBIOS V32
+CAMBIOS V34
 1. Se elimina el bloque Últimos movimientos del inicio.
 2. Los núcleos se muestran apilados verticalmente. Se agregan controles para subir/bajar y se guarda el orden en data.coreOrder.
 3. Las descripciones de núcleos usan el color principal del texto, con contraste blanco en modo oscuro.
