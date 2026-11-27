@@ -372,6 +372,30 @@ body.dark .folder-shortcut{color:#f0f4f6;background:color-mix(in srgb,var(--fold
 .core-tile-actions button:disabled{opacity:.25}
 body.dark .core-tile-copy strong,body.dark .core-tile-copy .core-description{color:#fff!important}
 
+/* V32: controles circulares y jerarquía visual más ligera */
+.core-tile{min-height:58px;padding:9px 54px 9px 13px;gap:8px;border-radius:15px;border-top-width:2px!important;box-shadow:0 3px 10px #8b6b3210}
+.core-tile-copy{gap:3px}
+.core-tile-copy strong{font-size:16px;letter-spacing:.015em;line-height:1.15}
+.core-tile-copy .core-description{font-size:11px;line-height:1.2}
+.core-tile-actions{right:8px;gap:4px}
+.core-tile-actions button{width:27px;height:27px;min-width:27px;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--text);font-size:14px;font-weight:600;line-height:1;display:grid;place-items:center;padding:0;box-shadow:0 1px 4px #0000000a}
+.core-tile-actions button:disabled{opacity:.22}
+.idea-card-actions .edit-icon,.idea-list-card .actions .edit-icon,.idea-actions .edit-icon{min-width:30px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--panel);font-size:15px;box-shadow:0 1px 4px #0000000a}
+.idea-card-actions .edit-icon{min-width:30px;width:30px;height:30px}
+.idea-card-actions{gap:7px}.idea-reorder{gap:5px}
+.cal-arrow{width:34px;height:34px;min-width:34px;border-radius:50%;display:grid;place-items:center;padding:0;font-size:21px;line-height:1}
+.cal-views{border-radius:18px}.cal-views button{border-radius:18px}
+.mission-card .mission-tools button,.edit-icon{border-radius:50%}
+input.mission-select,input.check,.subtask input[type=checkbox],#calReminder{appearance:none;-webkit-appearance:none;width:22px;height:22px;min-width:22px;border:1.6px solid #9aa7ad;border-radius:50%;background:var(--panel);padding:0;margin:0;display:inline-grid;place-items:center;accent-color:var(--accent);vertical-align:middle}
+input.mission-select:checked,input.check:checked,.subtask input[type=checkbox]:checked,#calReminder:checked{border-color:var(--accent);background-color:var(--accent);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4 10.5l4 4L16 6' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;background-size:14px}
+.cal-check input[type=checkbox]{width:20px;height:20px;min-width:20px;border-radius:50%}
+body.dark .core-tile{box-shadow:0 3px 10px #0002}
+body.dark .core-tile-actions button{background:#263640;border-color:#46545d;color:#f2f5f6}
+body.dark input.mission-select,body.dark input.check,body.dark .subtask input[type=checkbox],body.dark #calReminder{background-color:#1c2a33;border-color:#7c8b92}
+body.dark input.mission-select:checked,input.check:checked,.subtask input[type=checkbox]:checked,#calReminder:checked{background-color:var(--accent);border-color:var(--accent)}
+@media(max-width:390px){.core-stack{gap:8px!important}.core-tile{min-height:54px;padding:8px 49px 8px 11px;border-radius:13px}.core-tile-copy strong{font-size:15px}.core-tile-copy .core-description{font-size:10.5px}.core-tile-actions button{width:25px;height:25px;min-width:25px}}
+
+
 </style>
 <style>
 /* HOY V24 CALENDAR */
@@ -420,7 +444,7 @@ body.dark .cal-day.is-selected{background:#4b493d}body.dark .cal-views{backgroun
 <div id="modal"></div>
 <script>
 const KEY='hoy-data-v1';
-const APP_VERSION='V31';
+const APP_VERSION='V32';
 // Interruptor técnico en este archivo: false oculta Calendario para todos los usuarios.
 // No borra datos; al volver a true, el calendario reaparece.
 const HOY_CONFIG={modules:{calendarEnabled:true}};
@@ -518,7 +542,7 @@ function advicePage(){const order=['bible','martin','sanmartin'];return `<p clas
 function showAllPriorities(){const list=[...data.tasks.filter(t=>!t.done&&t.priority==='Alta').map(t=>({kind:'task',item:t})),...data.missions.filter(m=>!(m.completedAt||m.done)&&m.priority==='Alta').map(m=>({kind:'mission',item:m}))].sort((a,b)=>(a.item.created||0)-(b.item.created||0));modal(`<h2>Todas las urgencias</h2>${list.map(({kind,item})=>{const p=project(item.projectId),m=kind==='mission'?item:(item.missionId?mission(item.missionId):null);return `<div class="item"><button class="text-button" onclick="closeModal();${m?`openMission('${m.id}')`:`openProject('${item.projectId}')`}">${safe(kind==='mission'?item.name:item.title)}</button><div class="small">${p?cname(p.core)+' · '+safe(p.name):'Proyecto'}${m&&kind==='task'?' · '+safe(m.name):''} · ${kind==='mission'?'Misión':'Tarea de la misión'}</div></div>`}).join('')||'<p class="muted">No hay urgencias pendientes.</p>'}<div class="actions"><button class="btn ghost" onclick="closeModal()">Cerrar</button></div>`) }
 // CALENDARIO HOY V24 — los elementos se guardan dentro de hoy-data-v1 sin alterar proyectos ni misiones.
 if(!Array.isArray(data.calendarItems))data.calendarItems=[];
-let calDate=new Date(),calView='month';
+let calDate=new Date(),calView='week';
 const calTypes={event:['Evento','▣'],activity:['Actividad','◉'],note:['Anotación','✎']};
 function calISO(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function calParse(v){const [y,m,d]=v.split('-').map(Number);return new Date(y,m-1,d,12)}
@@ -531,7 +555,7 @@ const chosen=calISO(calDate),items=calItemsForDay(chosen),missions=data.missions
 const list=items.length?items.map(x=>calItemRow(x,chosen)).join(''):'<p class="small muted">No hay elementos para este día.</p>';
 let body=calView==='month'?`<div class="cal-weekdays">${['L','M','X','J','V','S','D'].map(x=>`<span>${x}</span>`).join('')}</div><div class="cal-grid">${cells}</div>`:calView==='week'?calWeekView():`<div class="cal-day-focus"><strong>${calDate.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'})}</strong><p class="small">${items.length} elemento(s)</p></div>`;
 const unscheduled=activeCores().map(c=>{const key=c[0],coreProjects=data.projects.filter(p=>!p.archived&&p.core===key),groups=coreProjects.map(p=>{const ms=missions.filter(x=>x.projectId===p.id);if(!ms.length)return '';return `<details class="cal-project-group"><summary>${calEsc(p.name)} · ${ms.length}</summary>${ms.map(x=>`<div class="cal-unscheduled"><span>${calEsc(x.name||x.title||'Misión')}</span><button class="text-button" onclick="calLinkMission('${x.id}')">＋ Fecha</button></div>`).join('')}</details>`}).join('');const count=coreProjects.reduce((n,p)=>n+missions.filter(x=>x.projectId===p.id).length,0);return count?`<details class="cal-core-group"><summary><span class="cal-dot ${key}"></span>${calEsc(coreName(key))}<span class="small muted">${count}</span></summary>${groups}</details>`:''}).join('');
-return `<div class="cal-head"><div><p class="small">ORGANIZACIÓN</p><h1>Calendario</h1></div><div class="cal-head-actions"><button class="btn" onclick="newCalendarItem()">＋ Nuevo</button></div></div><section class="panel cal-panel"><div class="cal-toolbar"><button class="cal-arrow" onclick="calMove(-1)">‹</button><strong>${calMonthLabel(calDate)}</strong><button class="cal-arrow" onclick="calMove(1)">›</button></div><div class="cal-views">${['month','week','day'].map((v,i)=>`<button class="${calView===v?'active':''}" onclick="calView='${v}';render()">${['Mes','Semana','Día'][i]}</button>`).join('')}</div>${body}<div class="cal-selected-date"><span>${calDate.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="text-button" onclick="calDate=new Date();render()">Hoy</button></div>${list}</section><section class="panel"><div class="row between"><h3>Sin programar</h3><span class="small">${missions.length} misiones</span></div><p class="small muted">Abrí un núcleo y después un proyecto para elegir qué misiones agendar.</p>${unscheduled||'<p class="small muted">No hay misiones pendientes sin programar.</p>'}</section><p class="small muted cal-legend">● Misión · ▣ Evento · ◉ Actividad · ✎ Anotación</p>`}
+return `<div class="cal-head"><div><p class="small">ORGANIZACIÓN</p><h1>Calendario</h1></div><div class="cal-head-actions"><button class="btn" onclick="newCalendarItem()">＋ Nuevo</button></div></div><section class="panel cal-panel"><div class="cal-toolbar"><button class="cal-arrow" onclick="calMove(-1)">‹</button><strong>${calMonthLabel(calDate)}</strong><button class="cal-arrow" onclick="calMove(1)">›</button></div><div class="cal-views">${['week','month','day'].map((v,i)=>`<button class="${calView===v?'active':''}" onclick="calView='${v}';render()">${['Semana','Mes','Día'][i]}</button>`).join('')}</div>${body}<div class="cal-selected-date"><span>${calDate.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'})}</span><button class="text-button" onclick="calDate=new Date();render()">Hoy</button></div>${list}</section><section class="panel"><div class="row between"><h3>Sin programar</h3><span class="small">${missions.length} misiones</span></div><p class="small muted">Abrí un núcleo y después un proyecto para elegir qué misiones agendar.</p>${unscheduled||'<p class="small muted">No hay misiones pendientes sin programar.</p>'}</section><p class="small muted cal-legend">● Misión · ▣ Evento · ◉ Actividad · ✎ Anotación</p>`}
 function calWeekView(){const start=new Date(calDate);start.setDate(start.getDate()-((start.getDay()+6)%7));return `<div class="cal-week-list">${Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);const iso=calISO(d),it=calItemsForDay(iso);return `<button class="cal-week-row ${iso===calISO(calDate)?'is-selected':''}" onclick="calSelect('${iso}')"><b>${d.toLocaleDateString('es-AR',{weekday:'short',day:'numeric'})}</b><span>${it.length?it.map(x=>calEsc(x.title)).join(' · '):'—'}</span></button>`}).join('')}</div>`}
 function calMove(n){if(calView==='day')calDate.setDate(calDate.getDate()+n);else if(calView==='week')calDate.setDate(calDate.getDate()+7*n);else calDate.setMonth(calDate.getMonth()+n);render()}
 function calSelect(v){calDate=calParse(v);render()}
