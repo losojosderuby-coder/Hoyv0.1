@@ -1,10 +1,10 @@
-const CACHE = 'hoy-cache-v30';
+const CACHE = 'hoy-cache-v31';
 const FILES = [
   './',
   './index.html',
   './manifest.webmanifest',
   './hoy_sol_original.png',
-  './hoy_cielo_nubes.jpg',
+  './hoy_cielo_nubes.jpg',\n  './hoy-icon-180.png',\n  './hoy-icon-192.png',\n  './hoy-icon-512.png',
   './bible-rv1909.json',
   './martin-fierro.json'
 ];

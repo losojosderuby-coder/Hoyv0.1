@@ -1,35 +1,22 @@
-HOY V25 — CALENDARIO, AJUSTES
-Fecha: 27/11/2026
+HOY V29 - AJUSTES DE USABILIDAD E ICONO
 
-Base: HOY V24 Calendario. Se trabaja sobre una copia del paquete; no se altera la versión publicada ni los datos locales del usuario.
+Base: HOY V28.
 
 Cambios:
-- Cada elemento del calendario tiene un menú para eliminarlo.
-- Quitar una misión vinculada solo la retira del calendario; no elimina la misión ni su proyecto.
-- Al vincular una misión existente, el núcleo se obtiene automáticamente de su proyecto y no se solicita modificarlo.
-- Se puede crear una misión desde el calendario eligiendo núcleo y proyecto, y agendarla en el mismo paso.
-- La sección “Sin programar” agrupa las misiones por núcleo y proyecto, con secciones plegables.
-- Desde el detalle de una misión se puede abrir el flujo para agendarla.
-- Se conserva la clave local hoy-data-v1.
-- Se incrementa el caché del service worker a hoy-cache-v27.
+1. Se quitó el segundo cerebro del encabezado del Calendario. El indicador global del encabezado principal permanece.
+2. En las tarjetas de Ideas, "Convertir en misión" queda a la izquierda; las flechas para subir/bajar quedan a la derecha; Editar permanece como acción independiente.
+3. Se eliminó la X de las tarjetas. La opción "Eliminar idea" está dentro de Editar idea y conserva confirmación.
+4. Se configuró el icono de la PWA y el apple-touch-icon usando el archivo hoy_sol_original.png existente, sin redibujar ni recolorear el sol.
+5. Se actualizó la caché del Service Worker.
 
-Validación realizada:
-- Sintaxis JavaScript comprobada con Node.js.
-- Integridad del ZIP comprobada.
-- No se ha realizado una prueba funcional en iPhone real.
-- Las notificaciones de iOS siguen pendientes de validación en el dispositivo.
+Conservación:
+- Se conserva hoy-data-v1.
+- Se mantienen las funciones y archivos de V28 como base.
+- Se conservan las bases de datos y recursos originales.
 
-Antes de publicar, probar en una copia de la aplicación y conservar una exportación JSON de seguridad.
+Pendiente de prueba en dispositivo:
+- Verificar la distribución de los botones de Ideas en iPhone.
+- Verificar el icono al añadir/actualizar HOY en pantalla de inicio. iOS puede requerir volver a añadir el acceso para reflejar un icono nuevo.
+- Validar el comportamiento funcional completo en iPhone.
 
-Archivos incluidos: index.html, sw.js, manifest.webmanifest, hoy_sol_original.png, hoy_cielo_nubes.jpg, bible-rv1909.json y martin-fierro.json.
-
-
-V26 (26/11/2026): cerebro de atención en inicio y calendario; resumen de recordatorios para hoy/mañana; avisos dentro de la app mientras HOY está abierta; interruptor técnico calendarEnabled en HOY_CONFIG; reordenamiento manual de ideas globales y por núcleo. Las notificaciones del sistema iOS cuando la app está cerrada no están implementadas ni verificadas.
-
-
-V26 (26/11/2026): cerebro de atención en inicio y calendario; resumen de recordatorios para hoy/mañana; avisos dentro de la app mientras está abierta; interruptor técnico calendarEnabled en HOY_CONFIG; reordenamiento manual de ideas globales y por núcleo. Las notificaciones del sistema iOS cuando la app está cerrada no están implementadas ni verificadas.
-
-
-V28 (26/11/2026): corrección de estilos del cerebro/recordatorios para que permanezcan dentro de la etiqueta style; encabezado simplificado: se quitan “Guardado” y “Exportar copia” y el cerebro queda como único control a la derecha; el control de Calendario es exclusivamente técnico en HOY_CONFIG.modules.calendarEnabled (true/false), sin interruptor visible para cada usuario. Si se desactiva, se oculta la pestaña inferior y se bloquea el acceso a la pantalla del calendario sin borrar sus datos. Se conserva hoy-data-v1. Caché: hoy-cache-v30.
-
-Validación V28: etiquetas style balanceadas; JavaScript inline comprobado con Node.js; ZIP íntegro. No se ha realizado prueba funcional en iPhone real. Las notificaciones de iOS con la PWA cerrada siguen pendientes.
+Este paquete no se debe publicar encima de la versión estable sin probarlo primero.
