@@ -1,26 +1,24 @@
-HOY V24
-Fecha: 26/11/2026
+HOY V25 — CALENDARIO, AJUSTES
+Fecha: 27/11/2026
 
-Base: paquete HOY V22.
+Base: HOY V24 Calendario. Se trabaja sobre una copia del paquete; no se altera la versión publicada ni los datos locales del usuario.
 
-Cambios de esta versión:
-- El Registro de finalizaciones queda plegado inicialmente y se despliega al tocar su encabezado.
-- Se pueden eliminar registros individuales con confirmación.
-- Se puede borrar todo el registro con confirmación.
-- El borrado del registro no modifica el estado real de tareas, misiones ni proyectos.
-- En los formularios de Ideas, el contenido aparece primero y el título después.
-- El título sigue siendo opcional y no se muestra ningún aviso sobre esa condición.
-- Las ideas sin título se identifican con su fecha y hora de creación.
-- Se conserva el orden cronológico descendente (más recientes primero).
-
-Datos:
+Cambios:
+- Cada elemento del calendario tiene un menú para eliminarlo.
+- Quitar una misión vinculada solo la retira del calendario; no elimina la misión ni su proyecto.
+- Al vincular una misión existente, el núcleo se obtiene automáticamente de su proyecto y no se solicita modificarlo.
+- Se puede crear una misión desde el calendario eligiendo núcleo y proyecto, y agendarla en el mismo paso.
+- La sección “Sin programar” agrupa las misiones por núcleo y proyecto, con secciones plegables.
+- Desde el detalle de una misión se puede abrir el flujo para agendarla.
 - Se conserva la clave local hoy-data-v1.
-- No se modifica ni se borra información existente al cargar esta versión.
-- Antes de actualizar, se recomienda exportar una copia JSON desde HOY.
+- Se incrementa el caché del service worker a hoy-cache-v27.
 
-Archivos incluidos: index.html, sw.js, manifest.webmanifest, hoy_sol_original.png,
-hoy_cielo_nubes.jpg, bible-rv1909.json y martin-fierro.json.
+Validación realizada:
+- Sintaxis JavaScript comprobada con Node.js.
+- Integridad del ZIP comprobada.
+- No se ha realizado una prueba funcional en iPhone real.
+- Las notificaciones de iOS siguen pendientes de validación en el dispositivo.
 
-Nota: se verificó la sintaxis JavaScript y la integridad del ZIP. No se ha realizado
-una prueba de ejecución en un iPhone real; debe probarse antes de considerar V24
-como estable.
+Antes de publicar, probar en una copia de la aplicación y conservar una exportación JSON de seguridad.
+
+Archivos incluidos: index.html, sw.js, manifest.webmanifest, hoy_sol_original.png, hoy_cielo_nubes.jpg, bible-rv1909.json y martin-fierro.json.
