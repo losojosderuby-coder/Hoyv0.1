@@ -1,4 +1,4 @@
-const CACHE = 'hoy-cache-v26';
+const CACHE = 'hoy-cache-v27';
 const FILES = [
   './',
   './index.html',

@@ -1,4 +1,4 @@
-HOY V23
+HOY V24
 Fecha: 26/11/2026
 
 Base: paquete HOY V22.
@@ -22,5 +22,5 @@ Archivos incluidos: index.html, sw.js, manifest.webmanifest, hoy_sol_original.pn
 hoy_cielo_nubes.jpg, bible-rv1909.json y martin-fierro.json.
 
 Nota: se verificó la sintaxis JavaScript y la integridad del ZIP. No se ha realizado
-una prueba de ejecución en un iPhone real; debe probarse antes de considerar V23
+una prueba de ejecución en un iPhone real; debe probarse antes de considerar V24
 como estable.
