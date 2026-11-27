@@ -1,29 +1,27 @@
-HOY V30 - CENTRO DE ATENCION INTELIGENTE
+HOY V31 — AJUSTES DE ORGANIZACIÓN, CONSEJOS Y ATENCIÓN
 
-Base: HOY V29 con correccion del icono.
+Base: HOY V30. Se conserva la clave local hoy-data-v1.
 
-NOVEDADES V30
-1. Tu atencion ahora agrupa elementos de HOY, MANANA, PROXIMAMENTE (7 dias) y ATRASADAS / SIN MOVIMIENTO.
-2. Los elementos del calendario y las revisiones de misiones son seleccionables y llevan directamente al elemento correspondiente.
-3. Al abrir una mision desde Tu atencion, el panel se cierra automaticamente.
-4. El cerebro usa celeste cuando no hay pendientes inmediatos, rojo para hoy, azul para manana, violeta para hoy y manana, y naranja cuando hay misiones atrasadas sin movimiento.
-5. El contador refleja elementos de hoy, manana y misiones atrasadas. La sugerencia por exceso de proyectos no altera el contador ni el color.
-6. Si hay mas de 7 proyectos activos (no archivados ni terminados), Tu atencion muestra una sugerencia de enfoque: invita a desarrollar los proyectos existentes, pero no bloquea la creacion de otros.
-7. Si una mision pendiente lleva mas de 7 dias sin actividad registrada, HOY puede recordarla con el mensaje «Hey, perrito» y permite retomarla, programar una fecha de revision o eliminarla con confirmacion.
-8. Las revisiones programadas aparecen en la fecha elegida y dejan de figurar como olvidadas hasta entonces.
-9. Las alertas de enfoque se muestran como banner al abrir HOY y se limitan a una vez cada 7 dias por categoria.
-10. Se conserva la organizacion de ideas: eliminar queda dentro de Editar idea tambien en las ideas por nucleo.
-11. Se conserva el sol original y los iconos PWA V29; se corrige el archivo del Service Worker y se actualiza la cache a hoy-cache-v34.
+CAMBIOS V31
+1. Se elimina el bloque Últimos movimientos del inicio.
+2. Los núcleos se muestran apilados verticalmente. Se agregan controles para subir/bajar y se guarda el orden en data.coreOrder.
+3. Las descripciones de núcleos usan el color principal del texto, con contraste blanco en modo oscuro.
+4. Se elimina el selector separado de emoji al crear/editar núcleos. Se puede escribir un emoji directamente en el nombre.
+5. El contador exterior de misiones de cada proyecto muestra solo las misiones activas de General (sin carpeta). Los contadores internos de cada carpeta siguen siendo independientes; General cuenta solo las que no tienen folderId.
+6. Tu atención incluye «Crear recordatorio». El recordatorio se guarda como anotación del calendario, con fecha, hora, repetición y recordatorio opcionales.
+7. Consejos bíblicos: se sustituyó la selección de versículos sueltos por pasajes completos seleccionados de Reina-Valera 1909, con referencias por rango.
+8. Martín Fierro: se filtran fragmentos con al menos tres líneas para evitar recortes demasiado breves. Se mantiene la referencia de página.
+9. Se actualiza el Service Worker a hoy-cache-v35.
 
-CONSERVACION DE DATOS
-- Se mantiene la clave local hoy-data-v1.
-- No se borra ni se reinicia ningun dato existente.
-- Se agregan campos opcionales a misiones para registrar actividad y fecha de revision.
-- El calendario y las demas funciones existentes se mantienen.
+CONSERVACIÓN
+- Se mantiene hoy-data-v1; no se reinicia el almacenamiento.
+- Los datos existentes de núcleos y proyectos se conservan. El orden se guarda en coreOrder.
+- El calendario y el resto de funciones existentes siguen en el mismo modelo de datos.
 
-LIMITACIONES / PRUEBAS
-- Se verifico la sintaxis JavaScript y del Service Worker.
-- Se probaron las reglas principales de umbral de proyectos, inactividad de misiones y color naranja mediante pruebas automatizadas aisladas.
-- Se verificaron las referencias del manifest y la presencia de los iconos.
-- No se pudo completar una prueba real en iPhone ni una prueba visual de navegador en este entorno. Antes de publicar sobre la version estable, probar en Safari/iPhone con una copia de seguridad reciente.
-- Los avisos inteligentes aparecen cuando HOY se abre y mientras esta ejecutandose. No son notificaciones push del sistema con la app cerrada.
+REVISIÓN TÉCNICA
+- Se verifica sintaxis JS del script principal y Service Worker.
+- Se comprueba integridad del ZIP.
+- Se comprueba que todos los recursos referenciados estén incluidos.
+- Se prueban reglas de conteo de carpeta General, orden de núcleos, creación de recordatorios y curación de pasajes con pruebas aisladas.
+- No se certifica funcionamiento visual en iPhone; requiere prueba manual en Safari.
+- Los recordatorios en app no equivalen a notificaciones del sistema con la app cerrada.

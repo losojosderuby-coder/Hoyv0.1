@@ -1,4 +1,4 @@
-const CACHE = 'hoy-cache-v34';
+const CACHE = 'hoy-cache-v35';
 const FILES = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const FILES = [
   './hoy-sol-v29-192.png',
   './hoy-sol-v29-512.png',
   './bible-rv1909.json',
+  './bible-consejos.json',
   './martin-fierro.json'
 ];
 
