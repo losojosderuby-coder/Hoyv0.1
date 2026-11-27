@@ -1,31 +1,29 @@
-HOY V35 — AJUSTES VISUALES, CARPETAS Y ORDENAMIENTO
+HOY V36 — CARPETAS, HISTORIAL Y RUTINAS SEMANALES
 
-Base: paquete HOY V34 disponible en esta conversación.
-Almacenamiento: se conserva la clave hoy-data-v1. No se cambia el esquema base ni se reinicia el almacenamiento.
+Base: HOY V35 proporcionada por el usuario.
+Versión: V36
+Almacenamiento: se conserva la clave hoy-data-v1. No se reinicia ni se cambia el esquema de datos existente.
+Service Worker: hoy-cache-v40.
 
-CAMBIOS V35
-1. Paleta de botones actualizada hacia tonos azulados, con contraste diferenciado para acciones principales, secundarias y destructivas.
-2. Identificador numérico de misión convertido en círculo. Prioridad mostrada como etiqueta pequeña: Alta, Media o Baja.
-3. Detalle de misión reorganizado: acciones antes de las tareas, en grilla de dos columnas. Acción de completar rotulada «Misión completa». Eliminar misión queda separada al final.
-4. Bloque de carpetas del proyecto reorganizado: «Carpetas» y «+ Nueva carpeta», tarjetas uniformes en dos columnas, contadores alineados y selección azul sutil.
-5. Selector de orden de misiones disponible en General y dentro de cada carpeta: recientes, antiguas, vencimiento próximo, vencimiento lejano y manual. Predeterminado: recientes primero.
-6. En orden manual se muestran controles de subir/bajar. El orden se conserva en los datos locales.
-7. Ideas: selector global y dentro de cada núcleo: recientes, antiguas y manual. Predeterminado: recientes primero. Se conservan flechas para reordenar manualmente.
-8. Se retira la interfaz de subtareas. Las tareas de misión se conservan. Los campos antiguos de subtareas, si existieran en datos locales, no se borran automáticamente.
-9. Se quita el subrayado de los títulos/enlaces dentro del panel Prioridades.
-10. Service Worker actualizado a hoy-cache-v39.
+CAMBIOS
+1. Carpetas de proyecto: se reemplaza la tira permanente de carpetas por un botón de tres puntos que despliega General, Sin carpeta y las carpetas creadas. Se mantienen los contadores y la edición de carpetas.
+2. Tarjetas de proyecto: se elimina el indicador de progreso numérico (por ejemplo 0/1) y su barra. No se reemplaza por otro indicador.
+3. Historial: Proyectos terminados pasa a ser un bloque desplegable con tres puntos.
+4. Historial: el bloque Registro de finalizaciones cambia su título a Misiones terminadas.
+5. Calendario: se incorpora Tu rutina, con un máximo de cinco rutinas semanales. Solo se muestran las rutinas creadas. Cada rutina permite organizar actividades de lunes a domingo, varias por día, con horario y duración opcionales. Se puede crear, renombrar y eliminar una rutina; añadir, editar y eliminar actividades.
+6. Integración rutina/calendario: al crear o editar una actividad se puede marcar Añadir también al Calendario. La actividad se agrega como elemento de tipo Actividad con repetición semanal, en la fecha del día de semana correspondiente a la semana actual (o el día de hoy si coincide). La relación queda guardada. Si se desmarca en edición, se quita ese elemento del calendario. Si se elimina la actividad o la rutina, los elementos previamente añadidos al calendario se conservan, tal como se avisa en la interfaz.
 
 CONSERVACIÓN
 - Se mantiene hoy-data-v1.
-- No se eliminan ni modifican tareas de misión existentes por el retiro de subtareas.
-- No se borran automáticamente datos heredados de subtareas.
-- Se conservan núcleos, proyectos, misiones, ideas, carpetas, calendario y recordatorios.
-- No incluye demo ficticia de Santiago.
+- Los datos existentes de proyectos, núcleos, misiones, tareas, ideas, carpetas, calendario y recordatorios se conservan.
+- Se agrega data.routines como arreglo si no existe; no se altera el resto de los datos.
+- No se migran ni se borran registros previos.
+- Los elementos añadidos desde rutinas se guardan en calendarItems existentes.
 
-REVISIÓN
-- Sintaxis JavaScript del documento: verificada con Node.js.
-- Sintaxis del Service Worker: verificada con Node.js.
-- Integridad del ZIP: verificada con unzip -t.
-- Recursos locales referenciados: comprobados.
-- No se ejecutó una prueba visual/end-to-end en Safari ni en iPhone. La instalación y el comportamiento real deben comprobarse manualmente.
-- El orden por vencimiento utiliza fecha de vencimiento/fecha de misión si existe, o fecha de calendario vinculada a la misión. Las misiones sin fecha quedan al final.
+REVISIÓN TÉCNICA REALIZADA
+- Integridad del ZIP de entrada V35 comprobada.
+- Sintaxis JavaScript del documento comprobada con Node.js.
+- Sintaxis del Service Worker comprobada con Node.js.
+- Se actualizó la caché a hoy-cache-v40 para evitar servir los recursos de V35.
+- No se pudo ejecutar una prueba visual/interactiva real en Safari/iPhone ni una prueba completa de interacción de la app en un navegador. Por lo tanto, la prueba final de interfaz y de sincronía visual debe hacerse manualmente en el iPhone.
+- Antes de instalar: exportar copia JSON desde Configuración/Historial y conservar la instalación anterior hasta validar V36.
