@@ -91,3 +91,26 @@ Base: HOY_V40(1).zip recibido del usuario.
 - Se unifica el aspecto de controles circulares en una paleta oscura azul petróleo/azul grisáceo, sin fondos blancos ni celestes brillantes.
 - Se conserva hoy-data-v1 y todos los datos preexistentes. Se actualiza caché a hoy-cache-v46.
 - No se modifican las funciones de navegación, historial, calendario, consejos, rutinas ni notificaciones.
+
+
+HOY V42 — actualización incremental sobre HOY V41
+Base: HOY_V41.zip recibido del usuario.
+Versión interna y título: V42.
+Almacenamiento: se conserva hoy-data-v1.
+Service Worker: hoy-cache-v47.
+
+CAMBIOS
+1. Editar misión: se agrega la acción Eliminar misión dentro del editor.
+2. Listado de misiones: se agrega un acceso directo circular para eliminar cada misión, con confirmación.
+3. Editar proyecto: se agrega la acción Eliminar proyecto dentro del editor.
+4. Tarjetas de proyectos: se agrega un acceso directo circular para eliminar cada proyecto, con confirmación.
+5. Historial > Tu progreso: los tres indicadores cambian del fondo gris claro a fondos azul petróleo oscuros, con números y etiquetas legibles.
+6. Al eliminar una misión o proyecto también se limpian sus colecciones de ideas asociadas, evitando referencias huérfanas.
+
+CONSERVACIÓN
+- Se conserva la clave de almacenamiento hoy-data-v1.
+- Se conserva el resto de módulos, navegación y datos.
+- Los accesos directos reutilizan las funciones de eliminación existentes y sus confirmaciones.
+
+VALIDACIONES
+- Pendientes de ejecutar en este paquete.
