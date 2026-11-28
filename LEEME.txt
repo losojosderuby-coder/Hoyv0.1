@@ -191,3 +191,13 @@ CAMBIO
 - Se aplicó explícitamente el mismo diseño de projectIdeasSection(): encabezado con divisores superior/inferior, menú de tres puntos a la derecha, botón + Idea alineado a la derecha y tarjetas oscuras con borde y espaciado iguales.
 - No se modificaron funciones de creación, edición, traslado, eliminación ni almacenamiento de ideas.
 - No se modificó el resto de la lógica ni el registro de progreso.
+
+HOY V48 — cambios solicitados
+Base estricta: HOY V46 (no V47).
+Versión visible/interna: V48.
+Caché: hoy-cache-v54.
+
+1. Ideas de proyecto: ahora usan el mismo <details class="v39-core-ideas">, summary, tres puntos, líneas divisorias, tipografía, tamaño, colores y espaciado que las Ideas de núcleo. «＋ Idea» aparece solo al desplegar. Las ideas se siguen guardando por proyecto. Se conservan editar/color y administrar/eliminar.
+2. Ideas de misión: se elimina la sección y sus destinos/acciones; no se crea ni se muestra esa funcionalidad.
+3. Historial: «Actividad registrada» ahora se presenta como una fila desplegable con tres puntos. Al desplegar aparecen todos los registros y la opción «Borrar actividad registrada» queda dentro del contenido desplegado, no visible permanentemente. Se conserva la eliminación individual de registros y el mecanismo existente de conteo mensual.
+No se modificó el resto de la estructura funcional de HOY.
