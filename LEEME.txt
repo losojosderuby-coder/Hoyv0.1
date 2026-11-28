@@ -118,3 +118,63 @@ VALIDACIONES
 CORRECCIÓN DE INTEGRACIÓN V42
 En el paquete anterior las modificaciones se habían aplicado al archivo inline.js, pero index.html ejecutaba un bloque JavaScript embebido y no cargaba inline.js. En este paquete corregido, el código V42 completo está incorporado directamente en index.html, que es el código que ejecuta la aplicación. Se conserva inline.js sincronizado como copia.
 Service Worker actualizado a hoy-cache-v48 para forzar la renovación de caché al publicar esta corrección.
+
+
+HOY V43 — REGISTRO DE PROGRESO MENSUAL
+Base: HOY_V42_CORREGIDA.zip.
+Versión interna y título: V43.
+Almacenamiento: se conserva hoy-data-v1.
+Service Worker: hoy-cache-v49.
+
+CAMBIOS
+1. Historial cambia el encabezado a “Tu progreso este mes”.
+2. Selector de mes para consultar meses anteriores desde el inicio del nuevo registro.
+3. Se agrega progressLedger, independiente de completionEvents.
+4. Cada misión, tarea y proyecto suma como máximo una finalización única, identificada por tipo e ID.
+5. Reabrir, archivar, restaurar, editar o cambiar prioridades no altera el progreso mensual.
+6. Al iniciar por primera vez V43, los elementos que ya estaban completados se guardan como línea de base y no se cuentan como logros nuevos.
+7. “Misiones terminadas” pasa a llamarse “Actividad registrada”; conserva el registro de movimientos anterior y muestra completar, reabrir, archivar y restaurar.
+8. El registro histórico anterior no se borra ni se usa para inventar fechas mensuales.
+
+NOTAS DE CONTABILIDAD
+- El progreso mensual comienza al activar V43 por primera vez en el dispositivo.
+- Cada entidad se cuenta una sola vez en progressLedger, en el mes de su primera finalización registrada desde V43.
+- El historial anterior permanece en completionEvents, separado de progressLedger.
+- Borrar entradas de Actividad registrada no borra los logros mensuales.
+- La línea de base inicial evita contar como nuevos los elementos que ya estaban completados antes de V43.
+
+VALIDACIONES
+- JavaScript embebido en index.html: sintaxis correcta.
+- inline.js sincronizado y con sintaxis correcta.
+- Service Worker: sintaxis correcta.
+- Archivos JSON: válidos.
+- Pendiente: prueba interactiva real en Safari/iPhone.
+
+
+HOY V44 — ajuste visual de Ideas
+Base: HOY V43.zip.
+Versión visible e interna: V44.
+Caché Service Worker: hoy-cache-v50.
+
+CAMBIOS EXCLUSIVAMENTE VISUALES
+- Se unifica la presentación de Ideas de cada proyecto y de cada misión.
+- Encabezado con título a la izquierda, menú de tres puntos circular a la derecha y líneas divisorias superior e inferior.
+- Botón + Idea alineado a la derecha debajo del encabezado.
+- Tarjetas de ideas con el mismo tratamiento oscuro, bordes y espaciado coherentes.
+- No se modifica la lógica, el almacenamiento ni los datos de ideas.
+
+VALIDACIÓN
+- Sintaxis JS independiente, JS embebido y Service Worker comprobada.
+- Prueba visual/interactiva en Safari pendiente.
+
+
+HOY V45 — ajuste de botones
+Base: HOY V44.
+Versión visible/interna: V45.
+Caché Service Worker: hoy-cache-v51.
+
+CAMBIOS EXCLUSIVAMENTE ESTÉTICOS
+- Botones de ordenar/subir/bajar/editar/eliminar en tarjetas de misión: círculos oscuros, sin relleno celeste claro.
+- Lápices de edición en toda la aplicación: se elimina el aro/contorno destacado y se unifica el tratamiento oscuro.
+- Se mantienen dimensiones circulares y comportamiento de los controles.
+- No se modifican funciones, datos ni contabilidad.

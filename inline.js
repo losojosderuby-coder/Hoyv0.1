@@ -1,14 +1,29 @@
 
+
 const KEY='hoy-data-v1';
-const APP_VERSION='V42';
+const APP_VERSION='V45';
 // Interruptor técnico en este archivo: false oculta Calendario para todos los usuarios.
 // No borra datos; al volver a true, el calendario reaparece.
 const HOY_CONFIG={modules:{calendarEnabled:true}};
 function calendarIsAvailable(){return HOY_CONFIG.modules.calendarEnabled;}
-const APP_RELEASE_DATE='27/11/2026';
+const APP_RELEASE_DATE='28/11/2026';
 const cores=[['tomas','TOMÁS','Cuerpo · Mente · Alma','tom','◉'],['asoka','ASOKA','Música · Videoclips','aso','♫'],['ruby','RUBY','Grupo · Eventos · Contenido','rub','✳'],['godd','GODD','Ropa · Merchandising','god','◇']];
 let data=read(),tab='today',currentCore=null,currentProject=null,currentMission=null;
 if(!Array.isArray(data.missions))data.missions=[];if(!Array.isArray(data.missionFolders))data.missionFolders=[];if(!Array.isArray(data.projectMissionFolders))data.projectMissionFolders=[];if(!Array.isArray(data.sessions))data.sessions=[];if(!Array.isArray(data.tasks))data.tasks=[];if(!Array.isArray(data.projects))data.projects=[];if(!Array.isArray(data.notes))data.notes=[];if(!data.ideasByCore)data.ideasByCore={};if(!data.projectIdeas)data.projectIdeas={};if(!data.missionIdeas)data.missionIdeas={};if(!Array.isArray(data.deletedCores))data.deletedCores=[];if(!Array.isArray(data.notes))data.notes=[];if(!data.coreIcons)data.coreIcons={};if(!Array.isArray(data.customCores))data.customCores=[];if(!Array.isArray(data.coreOrder))data.coreOrder=[];if(!Array.isArray(data.completionEvents))data.completionEvents=[];if(!Array.isArray(data.routines))data.routines=[];data.customCores.forEach(id=>{if(!cores.some(c=>c[0]===id))cores.push([id,data.coreNames?.[id]||'NÚCLEO',data.coreDescs?.[id]||'','custom','']);});
+function progressEntityKey(kind,id){return `${kind}:${id}`}
+function initializeProgressTracking(){
+ if(!Array.isArray(data.progressLedger))data.progressLedger=[];
+ if(!data.progressTracking){
+  const baseline=[];
+  (data.missions||[]).filter(m=>m&&(m.done||m.completedAt)).forEach(m=>baseline.push(progressEntityKey('mission',m.id)));
+  (data.tasks||[]).filter(t=>t&&t.done).forEach(t=>baseline.push(progressEntityKey('task',t.id)));
+  (data.projects||[]).filter(p=>p&&p.completedAt).forEach(p=>baseline.push(progressEntityKey('project',p.id)));
+  data.progressTracking={startedAt:Date.now(),baseline};
+  try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}
+ }
+}
+initializeProgressTracking();
+
 function read(){try{return JSON.parse(localStorage.getItem(KEY))||{projects:[],tasks:[],sessions:[],notes:[]}}catch{return {projects:[],tasks:[],sessions:[],notes:[]}}}
 function save(){
  try{localStorage.setItem(KEY,JSON.stringify(data));setSaveStatus('Guardado','ok');return true}
@@ -201,8 +216,8 @@ function sortMissions(list,mode){const a=list.slice();if(mode==='oldest')return 
 function setMissionSort(pid,mode){if(!data.missionSortBy)data.missionSortBy={};data.missionSortBy[pid]=mode;if(!save())return;openProject(pid)}
 function missionSortControl(pid){const mode=missionSortMode(pid);return `<label class="sort-control"><span>Ordenar por</span><select aria-label="Ordenar misiones" onchange="setMissionSort('${pid}',this.value)"><option value="newest" ${mode==='newest'?'selected':''}>Más recientes primero</option><option value="oldest" ${mode==='oldest'?'selected':''}>Más antiguas primero</option><option value="dueSoon" ${mode==='dueSoon'?'selected':''}>Vencimiento más próximo</option><option value="dueLate" ${mode==='dueLate'?'selected':''}>Vencimiento más lejano</option><option value="manual" ${mode==='manual'?'selected':''}>Orden manual</option></select></label>`}
 
-function projectIdeasSection(p){const a=data.projectIdeas[p.id]||[];return `<section class="v41-ideas"><div class="row between"><h2>Ideas de ${safe(p.name)}</h2><button class="v41-dots" onclick="ideaCollectionMenu('project','${p.id}')">•••</button></div><div class="v41-ideas-add"><button class="btn secondary" onclick="newScopedIdea('project','${p.id}')">＋ Idea</button></div>${a.map(i=>scopedIdeaCard(i,'project',p.id)).join('')||'<p class="small muted">Todavía no hay ideas para este proyecto.</p>'}</section>`}
-function missionIdeasSection(m){const a=data.missionIdeas[m.id]||[];return `<section class="v41-ideas"><div class="row between"><h2>Ideas de ${safe(m.name)}</h2><button class="v41-dots" onclick="ideaCollectionMenu('mission','${m.id}')">•••</button></div><div class="v41-ideas-add"><button class="btn secondary" onclick="newScopedIdea('mission','${m.id}')">＋ Idea</button></div>${a.map(i=>scopedIdeaCard(i,'mission',m.id)).join('')||'<p class="small muted">Todavía no hay ideas para esta misión.</p>'}</section>`}
+function projectIdeasSection(p){const a=data.projectIdeas[p.id]||[];return `<section class="v41-ideas v44-ideas"><div class="v44-ideas-heading"><h2>Ideas de ${safe(p.name)}</h2><button class="v41-dots" onclick="ideaCollectionMenu('project','${p.id}')" aria-label="Opciones de ideas">•••</button></div><div class="v41-ideas-add v44-ideas-add"><button class="btn secondary" onclick="newScopedIdea('project','${p.id}')">＋ Idea</button></div>${a.map(i=>scopedIdeaCard(i,'project',p.id)).join('')||'<p class="small muted">Todavía no hay ideas para este proyecto.</p>'}</section>`}
+function missionIdeasSection(m){const a=data.missionIdeas[m.id]||[];return `<section class="v41-ideas v44-ideas"><div class="v44-ideas-heading"><h2>Ideas de ${safe(m.name)}</h2><button class="v41-dots" onclick="ideaCollectionMenu('mission','${m.id}')" aria-label="Opciones de ideas">•••</button></div><div class="v41-ideas-add v44-ideas-add"><button class="btn secondary" onclick="newScopedIdea('mission','${m.id}')">＋ Idea</button></div>${a.map(i=>scopedIdeaCard(i,'mission',m.id)).join('')||'<p class="small muted">Todavía no hay ideas para esta misión.</p>'}</section>`}
 function scopedIdeaCard(i,k,oid){return `<div class="v41-idea-card" style="--v41-idea-bg:${safe(i.color||'#22323c')}"><div class="row between"><b>${safe(i.title||'Idea')}</b><div class="row"><button class="edit-icon" onclick="editScopedIdea('${i.id}','${k}','${oid}')" aria-label="Editar color e idea">✎</button><button class="v41-dots" onclick="scopedIdeaMenu('${i.id}','${k}','${oid}')">•••</button></div></div><p>${safe(i.text)}</p><small>${i.at?fmt(i.at):''}</small></div>`}
 function newScopedIdea(k,oid){modal(`<h2>Nueva idea</h2><label>Título</label><input id="v41Title"><label>Idea</label><textarea id="v41Text"></textarea><div class="actions"><button class="btn" onclick="saveScopedIdea('${k}','${oid}')">Guardar idea</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
 function saveScopedIdea(k,oid){const text=document.getElementById('v41Text').value.trim();if(!text)return alert('Escribí la idea.');const store=k==='project'?data.projectIdeas:data.missionIdeas;(store[oid]||(store[oid]=[])).push({id:uid(),title:document.getElementById('v41Title').value.trim(),text,at:Date.now()});if(!save())return;closeModal();k==='project'?openProject(oid):openMission(oid)}
@@ -259,15 +274,21 @@ function deleteMissionFolder(fid){const f=(data.missionFolders||[]).find(x=>x.id
 
 function taskRow(t){return `<div class="task-row" id="task-${t.id}"><div class="task-main"><label><input class="check" type="checkbox" ${t.done?'checked':''} onchange="toggleTask('${t.id}')"><span class="${t.done?'completed':''}">${safe(t.title)}</span></label><div class="small">${t.priority||'Media'}</div></div><div class="task-actions"><button class="edit-icon" onclick="editTask('${t.id}')" aria-label="Editar tarea">✎</button></div></div>`}
 function historyPage(){
- const completedTasks=data.tasks.filter(t=>t.done),completedMissions=data.missions.filter(m=>!!(m.completedAt||m.done)),completedProjects=data.projects.filter(p=>!!p.completedAt);
+ const now=new Date(),currentMonth=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+ const selectedMonth=data.progressViewMonth||currentMonth;
+ const ledger=(data.progressLedger||[]).filter(entry=>progressMonthKey(entry.at)===selectedMonth);
+ const counts={mission:new Set(),task:new Set(),project:new Set()};
+ ledger.forEach(entry=>{if(counts[entry.kind])counts[entry.kind].add(entry.entityId)});
  const events=(data.completionEvents||[]).slice().reverse();
- return `<p class="small">MEMORIA DE TRABAJO</p><h1>Historial</h1><div class="panel"><h2>Tu progreso</h2><div class="completion-stats"><div class="completion-stat"><strong>${completedMissions.length}</strong><span>Misiones cumplidas</span></div><div class="completion-stat"><strong>${completedTasks.length}</strong><span>Tareas cumplidas</span></div><div class="completion-stat"><strong>${completedProjects.length}</strong><span>Proyectos terminados</span></div></div></div>
- <details class="panel completed-projects"><summary><span>Proyectos terminados</span><span class="completion-log-more">⋯</span><span class="completed-count">${completedProjects.length}</span></summary><div class="completion-log-body">${completedProjects.length?completedProjects.slice().sort((a,b)=>b.completedAt-a.completedAt).map(p=>`<div class="item row between"><div><b>${safe(p.name)}</b><div class="small">${safe(coreName(p.core))} · ${fmt(p.completedAt)}</div></div><button class="btn secondary" onclick="openArchivedProject('${p.id}')">Ver</button></div>`).join(''):'<p class="muted">Todavía no terminaste proyectos.</p>'}</div></details>
- <details class="panel completion-log"><summary><span>Misiones terminadas</span><span class="completion-log-more">⋯</span></summary><div class="completion-log-body">${events.length?`<div class="completion-log-actions"><button class="text-button danger-text" onclick="clearCompletionLog()">Borrar todo el registro</button></div>${events.map(e=>`<div class="event-row completion-event"><div><b>${e.action==='reopened'?'Reabierto':'Completado'}: ${safe(e.label)}</b><div class="small">${e.kind==='task'?'Tarea de la misión':e.kind==='mission'?'Misión':'Proyecto'} · ${fmt(e.at)}</div></div><button class="edit-icon completion-delete" onclick="deleteCompletionEvent('${e.id}')" aria-label="Eliminar registro" title="Eliminar registro">×</button></div>`).join('')}`:'<p class="muted">Cuando completes tareas, misiones o proyectos, aparecerán acá.</p>'}</div></details>
+ const trackingStart=data.progressTracking?.startedAt?new Date(data.progressTracking.startedAt).toLocaleDateString('es-AR'):'';
+ const eventLabel=e=>({completed:'Completado',reopened:'Reabierto',archived:'Archivado',restored:'Restaurado'})[e.action]||'Actividad';
+ const eventRows=events.map(e=>`<div class="event-row completion-event"><div><b>${eventLabel(e)}: ${safe(e.label)}</b><div class="small">${e.kind==='task'?'Tarea de la misión':e.kind==='mission'?'Misión':'Proyecto'} · ${fmt(e.at)}</div></div><button class="edit-icon completion-delete" onclick="deleteCompletionEvent('${e.id}')" aria-label="Eliminar registro" title="Eliminar registro">×</button></div>`).join('');
+ return `<p class="small">MEMORIA DE TRABAJO</p><h1>Historial</h1>
+ <div class="panel"><div class="row between" style="align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">Tu progreso este mes</h2><label class="small" style="margin:0"><input type="month" value="${safe(selectedMonth)}" onchange="setProgressMonth(this.value)" aria-label="Elegir mes del progreso"></label></div><p class="small muted">${safe(progressMonthLabel(selectedMonth))}</p><div class="completion-stats"><div class="completion-stat"><strong>${counts.mission.size}</strong><span>Misiones</span></div><div class="completion-stat"><strong>${counts.task.size}</strong><span>Tareas</span></div><div class="completion-stat"><strong>${counts.project.size}</strong><span>Proyectos</span></div></div><p class="small muted">Se cuentan finalizaciones únicas registradas desde ${safe(trackingStart)}. Archivar, restaurar o reabrir no suma ni resta logros.</p></div>
+ <div class="panel completion-log"><h2>Actividad registrada</h2>${events.length?`<div class="completion-log-actions"><button class="text-button danger-text" onclick="clearCompletionLog()">Borrar actividad registrada</button></div>${eventRows}`:'<p class="muted">Todavía no hay actividad registrada.</p>'}</div>
  <div class="panel"><h2>Cómo funciona HOY</h2><p class="small">Una guía rápida para organizarte.</p><button class="btn secondary" onclick="showTutorial()">Ver tutorial</button></div><div class="panel"><h2>Copias de seguridad</h2><p class="small">Tus datos se guardan en este navegador. Exportá una copia periódicamente.</p><button class="btn secondary" onclick="exportData()">Descargar copia JSON</button><label>Restaurar copia</label><input type="file" accept="application/json" onchange="importData(event)"></div>
  <div class="version-history"><p class="small version-history-label">VERSIÓN DE LA APLICACIÓN</p><div class="version-history-line"><span>${APP_VERSION}</span><span class="version-history-date">· ${APP_RELEASE_DATE}</span></div></div>`;
 }
-
 function showTutorial(){modal(`<h2>Cómo funciona HOY</h2><p><b>Núcleos:</b> organizá las áreas de tu vida.</p><p><b>Proyectos:</b> agrupá objetivos relacionados con un núcleo.</p><p><b>Misiones:</b> dividí cada proyecto en etapas.</p><p><b>Tareas de la misión:</b> convertí cada misión en acciones concretas.</p><p><b>Ideas:</b> capturá pensamientos y convertí los que quieras desarrollar en misiones.</p><p><b>Historial:</b> consultá lo que terminaste y tu progreso.</p><hr><p><b>Por ejemplo, tenés un proyecto de una panadería.</b></p><div class="tutorial-example"><div class="tutorial-core"><div class="tutorial-task-label">Núcleo</div><h3>🏪 Panadería</h3><div class="tutorial-project"><div class="tutorial-task-label">Proyecto</div><b>Restauración de la panadería</b><div class="tutorial-mission"><div class="tutorial-task-label">Misión</div><b>Pintar paredes</b><div class="tutorial-task-label">Tareas de la misión</div><div class="tutorial-task">Contratar pintor</div><div class="tutorial-task">Comprar pintura</div></div><div class="tutorial-mission"><div class="tutorial-task-label">Misión</div><b>Cambiar piso</b><div class="tutorial-task-label">Tareas de la misión</div><div class="tutorial-task">Contratar quién lo coloca</div><div class="tutorial-task">Tomar medidas</div><div class="tutorial-task">Ir a comprar los materiales</div></div></div></div></div><div class="actions"><button class="btn" onclick="closeModal()">Entendido</button></div>`)}
 function openArchivedProject(pid){const p=project(pid);if(!p)return;const was=p.archived;p.archived=false;openProject(pid);p.archived=was;}
 
@@ -328,12 +349,36 @@ function saveTaskEdit(tid){const t=data.tasks.find(x=>x.id===tid);if(!t)return;t
 function deleteTask(tid){if(!confirm('¿Eliminar esta tarea de la misión?'))return;const t=data.tasks.find(x=>x.id===tid);data.tasks=data.tasks.filter(x=>x.id!==tid);if(!save())return;closeModal();if(t.missionId)openMission(t.missionId);else openProject(t.projectId)}
 
 
+
+function progressMonthKey(timestamp){
+ const d=new Date(timestamp);
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function recordProgressCompletion(kind,item){
+ if(!item||!item.id)return;
+ const key=progressEntityKey(kind,item.id);
+ if((data.progressTracking?.baseline||[]).includes(key))return;
+ if(!Array.isArray(data.progressLedger))data.progressLedger=[];
+ if(data.progressLedger.some(entry=>entry.kind===kind&&entry.entityId===item.id))return;
+ data.progressLedger.push({id:uid(),kind,entityId:item.id,at:Date.now()});
+}
+function progressMonthLabel(key){
+ const [year,month]=String(key||'').split('-').map(Number);
+ if(!year||!month)return '';
+ return new Date(year,month-1,1).toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+}
+function setProgressMonth(value){
+ if(!/^\\d{4}-\\d{2}$/.test(value))return;
+ data.progressViewMonth=value;
+ if(!save())return;
+ render();
+}
 function addCompletionEvent(kind,action,label){if(!Array.isArray(data.completionEvents))data.completionEvents=[];data.completionEvents.push({id:uid(),kind,action,label,at:Date.now()});}
 function deleteCompletionEvent(id){if(!confirm('¿Eliminar este registro del historial? La misión o tarea conservará su estado.'))return;data.completionEvents=(data.completionEvents||[]).filter(e=>e.id!==id);if(!save())return;render()}
 function clearCompletionLog(){if(!confirm('¿Borrar todo el registro de finalizaciones? Esto no modificará el estado de misiones, tareas ni proyectos.'))return;data.completionEvents=[];if(!save())return;render()}
-function toggleMissionComplete(mid){const m=mission(mid);if(!m)return;const reopening=!!(m.completedAt||m.done);if(reopening){m.completedAt=null;m.done=false;addCompletionEvent('mission','reopened',m.name)}else{m.completedAt=Date.now();m.done=true;m.doneAt=Date.now();addCompletionEvent('mission','completed',m.name)}if(!save())return;if(!reopening)celebrate('mission');openMission(mid)}
-function toggleProjectComplete(pid){const p=project(pid);if(!p)return;const reopening=!!p.completedAt;if(reopening){p.completedAt=null;p.archived=false;addCompletionEvent('project','reopened',p.name);if(!save())return;openProject(pid)}else{if(!confirm('¿Finalizar y archivar este proyecto? Lo vas a encontrar en Historial → Proyectos terminados.'))return;p.completedAt=Date.now();p.archived=true;addCompletionEvent('project','completed',p.name);if(data.lastMovement?.projectId===pid)data.lastMovement=null;if(!save())return;tab='history';render();celebrate('project')}}
-function toggleTask(tid){const t=data.tasks.find(x=>x.id===tid);if(t){t.done=!t.done;t.completedAt=t.done?Date.now():null;if(t.missionId){const m=mission(t.missionId);if(m)m.lastActivityAt=Date.now()}addCompletionEvent('task',t.done?'completed':'reopened',t.title);if(!save())return;if(t.done)celebrate('task');if(currentMission)openMission(currentMission);else if(currentProject)openProject(currentProject);else render()}}
+function toggleMissionComplete(mid){const m=mission(mid);if(!m)return;const reopening=!!(m.completedAt||m.done);if(reopening){m.completedAt=null;m.done=false;addCompletionEvent('mission','reopened',m.name)}else{m.completedAt=Date.now();m.done=true;m.doneAt=Date.now();recordProgressCompletion('mission',m);addCompletionEvent('mission','completed',m.name)}if(!save())return;if(!reopening)celebrate('mission');openMission(mid)}
+function toggleProjectComplete(pid){const p=project(pid);if(!p)return;const reopening=!!p.completedAt;if(reopening){p.completedAt=null;p.archived=false;addCompletionEvent('project','reopened',p.name);if(!save())return;openProject(pid)}else{if(!confirm('¿Finalizar y archivar este proyecto? Lo vas a encontrar en Historial → Proyectos terminados.'))return;p.completedAt=Date.now();p.archived=true;recordProgressCompletion('project',p);addCompletionEvent('project','completed',p.name);if(data.lastMovement?.projectId===pid)data.lastMovement=null;if(!save())return;tab='history';render();celebrate('project')}}
+function toggleTask(tid){const t=data.tasks.find(x=>x.id===tid);if(t){t.done=!t.done;t.completedAt=t.done?Date.now():null;if(t.done)recordProgressCompletion('task',t);if(t.missionId){const m=mission(t.missionId);if(m)m.lastActivityAt=Date.now()}addCompletionEvent('task',t.done?'completed':'reopened',t.title);if(!save())return;if(t.done)celebrate('task');if(currentMission)openMission(currentMission);else if(currentProject)openProject(currentProject);else render()}}
 function celebrate(kind){document.body.classList.remove('celebrate-'+kind);void document.body.offsetWidth;document.body.classList.add('celebrate-'+kind);setTimeout(()=>document.body.classList.remove('celebrate-'+kind),850)}
 function startSession(pid,mid=''){
  const p=project(pid),m=mid?mission(mid):null,key='session-'+pid+(mid?'-'+mid:'');
@@ -350,8 +395,8 @@ function saveSession(pid,mid=''){
  if(!save())return;
  clearDraft(key);closeModal();mid?openMission(mid):openProject(pid);
 }
-function archiveProject(pid){if(!confirm('¿Archivar este proyecto? Podrás restaurarlo desde Historial.'))return;const p=project(pid);p.archived=true;if(data.lastMovement?.projectId===pid){const fallback=data.projects.filter(x=>!x.archived&&x.lastAt).sort((a,b)=>b.lastAt-a.lastAt)[0];data.lastMovement=fallback?{core:fallback.core,projectId:fallback.id,at:fallback.lastAt}:null}save();showCore(p.core)}
-function restoreProject(pid){project(pid).archived=false;save();render()}
+function archiveProject(pid){if(!confirm('¿Archivar este proyecto? Podrás restaurarlo desde Historial.'))return;const p=project(pid);p.archived=true;addCompletionEvent('project','archived',p.name);if(data.lastMovement?.projectId===pid){const fallback=data.projects.filter(x=>!x.archived&&x.lastAt).sort((a,b)=>b.lastAt-a.lastAt)[0];data.lastMovement=fallback?{core:fallback.core,projectId:fallback.id,at:fallback.lastAt}:null}save();showCore(p.core)}
+function restoreProject(pid){const p=project(pid);if(!p)return;p.archived=false;addCompletionEvent('project','restored',p.name);save();render()}
 function deleteProject(pid){const p=project(pid);if(!p||!confirm('¿Eliminar definitivamente este proyecto, sus misiones, tareas y sesiones?'))return;const mids=data.missions.filter(m=>m.projectId===pid).map(m=>m.id);data.projects=data.projects.filter(x=>x.id!==pid);const removedMissionIds=data.missions.filter(m=>m.projectId===pid).map(m=>m.id);data.missions=data.missions.filter(m=>m.projectId!==pid);data.missionFolders=(data.missionFolders||[]).filter(f=>!removedMissionIds.includes(f.missionId));if(data.projectIdeas)delete data.projectIdeas[pid];if(data.missionIdeas)removedMissionIds.forEach(id=>delete data.missionIdeas[id]);data.tasks=data.tasks.filter(t=>t.projectId!==pid);data.sessions=data.sessions.filter(s=>s.projectId!==pid);if(data.lastMovement?.projectId===pid)data.lastMovement=null;save();closeModal();showCore(p.core)}
 function deleteMission(mid){const m=mission(mid);if(!m||!confirm('¿Eliminar esta misión, sus tareas y sus sesiones?'))return;data.missions=data.missions.filter(x=>x.id!==mid);data.missionFolders=(data.missionFolders||[]).filter(f=>f.missionId!==mid);if(data.missionIdeas)delete data.missionIdeas[mid];data.tasks=data.tasks.filter(t=>t.missionId!==mid);data.sessions=data.sessions.filter(s=>s.missionId!==mid);if(data.lastMovement?.missionId===mid)data.lastMovement={core:project(m.projectId)?.core,projectId:m.projectId,at:Date.now()};save();closeModal();openProject(m.projectId)}
 function deleteCore(k){const pids=data.projects.filter(p=>p.core===k).map(p=>p.id);if(!confirm('¿Eliminar definitivamente este núcleo y TODO su contenido: proyectos, misiones, tareas, ideas y sesiones? Esta acción no se puede deshacer.'))return;data.projects=data.projects.filter(p=>p.core!==k);data.missions=data.missions.filter(m=>!pids.includes(m.projectId));data.tasks=data.tasks.filter(t=>!pids.includes(t.projectId));data.sessions=data.sessions.filter(s=>s.core!==k&&!pids.includes(s.projectId));delete data.ideasByCore[k];data.deletedCores=[...new Set([...(data.deletedCores||[]),k])];if(data.coreNames)delete data.coreNames[k];if(data.coreDescs)delete data.coreDescs[k];if(data.coreIcons)delete data.coreIcons[k];if(data.coreColors)delete data.coreColors[k];if(data.lastMovement?.core===k)data.lastMovement=null;save();tab='cores';render()}
@@ -535,15 +580,21 @@ function today(){
  <div class="activity-inline"><span><b>${active.length}</b> proyectos</span><span><b>${pendingTasks}</b> tareas de la misión pendientes</span><span><b>${pendingMissions}</b> misiones pendientes</span></div><div class="theme-control"><span>Modo oscuro</span><label class="switch"><input type="checkbox" id="themeSwitch" ${localStorage.getItem('hoy-theme')==='dark'?'checked':''} onchange="setTheme(this.checked)"><span></span></label></div>`;
 }
 function historyPage(){
- const completedTasks=data.tasks.filter(t=>t.done),completedMissions=data.missions.filter(m=>!!(m.completedAt||m.done)),completedProjects=data.projects.filter(p=>!!p.completedAt);
+ const now=new Date(),currentMonth=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+ const selectedMonth=data.progressViewMonth||currentMonth;
+ const ledger=(data.progressLedger||[]).filter(entry=>progressMonthKey(entry.at)===selectedMonth);
+ const counts={mission:new Set(),task:new Set(),project:new Set()};
+ ledger.forEach(entry=>{if(counts[entry.kind])counts[entry.kind].add(entry.entityId)});
  const events=(data.completionEvents||[]).slice().reverse();
- return `<p class="small">MEMORIA DE TRABAJO</p><h1>Historial</h1><div class="panel"><h2>Tu progreso</h2><div class="completion-stats"><div class="completion-stat"><strong>${completedMissions.length}</strong><span>Misiones cumplidas</span></div><div class="completion-stat"><strong>${completedTasks.length}</strong><span>Tareas cumplidas</span></div><div class="completion-stat"><strong>${completedProjects.length}</strong><span>Proyectos terminados</span></div></div></div>
- <details class="panel completed-projects"><summary><span>Proyectos terminados</span><span class="completed-count">${completedProjects.length}</span><span class="completion-log-more">⋯</span></summary><div class="completion-log-body">${completedProjects.length?completedProjects.slice().sort((a,b)=>b.completedAt-a.completedAt).map(p=>`<div class="item row between"><div><b>${safe(p.name)}</b><div class="small">${safe(coreName(p.core))} · ${fmt(p.completedAt)}</div></div><button class="btn secondary" onclick="openArchivedProject('${p.id}')">Ver</button></div>`).join(''):'<p class="muted">Todavía no terminaste proyectos.</p>'}</div></details>
- <details class="panel completion-log"><summary><span>Misiones terminadas</span><span class="completion-log-more">⋯</span></summary><div class="completion-log-body">${events.length?`<div class="completion-log-actions"><button class="text-button danger-text" onclick="clearCompletionLog()">Borrar todo el registro</button></div>${events.map(e=>`<div class="event-row completion-event"><div><b>${e.action==='reopened'?'Reabierto':'Completado'}: ${safe(e.label)}</b><div class="small">${e.kind==='task'?'Tarea de la misión':e.kind==='mission'?'Misión':'Proyecto'} · ${fmt(e.at)}</div></div><button class="edit-icon completion-delete" onclick="deleteCompletionEvent('${e.id}')" aria-label="Eliminar registro" title="Eliminar registro">×</button></div>`).join('')}`:'<p class="muted">Cuando completes tareas, misiones o proyectos, aparecerán acá.</p>'}</div></details>
+ const trackingStart=data.progressTracking?.startedAt?new Date(data.progressTracking.startedAt).toLocaleDateString('es-AR'):'';
+ const eventLabel=e=>({completed:'Completado',reopened:'Reabierto',archived:'Archivado',restored:'Restaurado'})[e.action]||'Actividad';
+ const eventRows=events.map(e=>`<div class="event-row completion-event"><div><b>${eventLabel(e)}: ${safe(e.label)}</b><div class="small">${e.kind==='task'?'Tarea de la misión':e.kind==='mission'?'Misión':'Proyecto'} · ${fmt(e.at)}</div></div><button class="edit-icon completion-delete" onclick="deleteCompletionEvent('${e.id}')" aria-label="Eliminar registro" title="Eliminar registro">×</button></div>`).join('');
+ return `<p class="small">MEMORIA DE TRABAJO</p><h1>Historial</h1>
+ <div class="panel"><div class="row between" style="align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">Tu progreso este mes</h2><label class="small" style="margin:0"><input type="month" value="${safe(selectedMonth)}" onchange="setProgressMonth(this.value)" aria-label="Elegir mes del progreso"></label></div><p class="small muted">${safe(progressMonthLabel(selectedMonth))}</p><div class="completion-stats"><div class="completion-stat"><strong>${counts.mission.size}</strong><span>Misiones</span></div><div class="completion-stat"><strong>${counts.task.size}</strong><span>Tareas</span></div><div class="completion-stat"><strong>${counts.project.size}</strong><span>Proyectos</span></div></div><p class="small muted">Se cuentan finalizaciones únicas registradas desde ${safe(trackingStart)}. Archivar, restaurar o reabrir no suma ni resta logros.</p></div>
+ <div class="panel completion-log"><h2>Actividad registrada</h2>${events.length?`<div class="completion-log-actions"><button class="text-button danger-text" onclick="clearCompletionLog()">Borrar actividad registrada</button></div>${eventRows}`:'<p class="muted">Todavía no hay actividad registrada.</p>'}</div>
  <div class="panel"><h2>Cómo funciona HOY</h2><p class="small">Una guía rápida para organizarte.</p><button class="btn secondary" onclick="showTutorial()">Ver tutorial</button></div><div class="panel"><h2>Copias de seguridad</h2><p class="small">Tus datos se guardan en este navegador. Exportá una copia periódicamente.</p><button class="btn secondary" onclick="exportData()">Descargar copia JSON</button><label>Restaurar copia</label><input type="file" accept="application/json" onchange="importData(event)"></div>
  <div class="version-history"><p class="small version-history-label">VERSIÓN DE LA APLICACIÓN</p><div class="version-history-line"><span>${APP_VERSION}</span><span class="version-history-date">· ${APP_RELEASE_DATE}</span></div></div>`;
-}
-(function v38Styles(){
+}(function v38Styles(){
  const st=document.createElement('style');
  st.textContent=`
  .v38-priority-trigger{display:inline-flex;align-items:center;gap:9px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:5px 12px;min-width:56px;justify-content:center}
@@ -656,3 +707,4 @@ function unpinMission(type,id){
  data.pinnedShortcuts=(data.pinnedShortcuts||[]).filter(x=>!(x.type===type&&x.id===id));
  if(!save())return;managePinnedMissions();render();
 }
+
