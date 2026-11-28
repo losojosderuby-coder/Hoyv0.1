@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HOY">
 <link rel="manifest" href="manifest.webmanifest">
-<title>HOY V48</title>
+<title>HOY V49</title>
 <style>
 html.hoy-booting header,html.hoy-booting #app,html.hoy-booting .nav{visibility:hidden!important}html.hoy-booting #sunSplash{visibility:visible!important;z-index:9999}
 
@@ -759,7 +759,7 @@ body.dark .mission-number-tile{background:#263640!important;border-color:#354955
 <script>
 
 const KEY='hoy-data-v1';
-const APP_VERSION='V48';
+const APP_VERSION='V49';
 // Interruptor técnico en este archivo: false oculta Calendario para todos los usuarios.
 // No borra datos; al volver a true, el calendario reaparece.
 const HOY_CONFIG={modules:{calendarEnabled:true}};
@@ -937,7 +937,7 @@ function coreDetail(k){
  ${ps.length?ps.map(p=>projectCard(p)).join(''):'<div class="empty">Todavía no hay proyectos en este núcleo.</div>'}
  <details class="v39-core-ideas"><summary><span>Ideas de ${safe(coreName(k))}</span><span class="v39-dots" aria-hidden="true">•••</span></summary>
  <div class="v39-core-ideas-body"><div class="v39-core-ideas-actions"><button class="btn secondary" onclick="newCoreIdea('${k}')">＋ Idea</button></div>
- ${nucleusIdeas.length?nucleusIdeas.slice().sort((a,b)=>(b.at||0)-(a.at||0)).map(i=>`<div class="v39-core-idea"><div><b>${safe(i.title||'Idea')}</b><p>${safe(i.text)}</p><small>${i.at?fmt(i.at):''}</small></div><button class="edit-icon" onclick="editCoreIdea('${k}','${i.id}')" aria-label="Editar idea">✎</button></div>`).join(''):'<p class="small muted">Todavía no hay ideas para este núcleo.</p>'}
+ ${nucleusIdeas.length?nucleusIdeas.slice().sort((a,b)=>(b.at||0)-(a.at||0)).map(i=>`<div class="v39-core-idea"><div><b>${safe(i.title||'Idea')}</b><p>${safe(i.text)}</p><small>${i.at?fmt(i.at):''}</small></div><button class="v39-dots" onclick="scopedIdeaMenu('${i.id}',(data.ideasByCore['${k}']||[]).some(x=>x.id==='${i.id}')?'core':'coreNote','${k}')" aria-label="Administrar idea">•••</button></div>`).join(''):'<p class="small muted">Todavía no hay ideas para este núcleo.</p>'}
  </div></details>
  <div class="actions"><button class="btn danger" onclick="deleteCore('${k}')">Eliminar núcleo</button></div>`;
 }
@@ -987,15 +987,58 @@ function scopedIdeaCard(i,k,oid){return `<div class="v41-idea-card" style="--v41
 function newScopedIdea(k,oid){modal(`<h2>Nueva idea</h2><label>Título</label><input id="v41Title"><label>Idea</label><textarea id="v41Text"></textarea><div class="actions"><button class="btn" onclick="saveScopedIdea('${k}','${oid}')">Guardar idea</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
 function saveScopedIdea(k,oid){const text=document.getElementById('v41Text').value.trim();if(!text)return alert('Escribí la idea.');if(k!=='project')return;const store=data.projectIdeas;(store[oid]||(store[oid]=[])).push({id:uid(),title:document.getElementById('v41Title').value.trim(),text,at:Date.now()});if(!save())return;closeModal();openProject(oid)}
 function ideaCollectionMenu(k,oid){modal(`<h2>Ideas</h2><button class="btn secondary" onclick="closeModal();newScopedIdea('${k}','${oid}')">＋ Crear nueva idea</button><div class="actions"><button class="btn ghost" onclick="closeModal()">Cerrar</button></div>`)}
-function scopedIdeaMenu(id,k,oid){modal(`<h2>Administrar idea</h2><button class="btn secondary" onclick="closeModal();editScopedIdea('${id}','${k}','${oid}')">Editar idea</button><button class="btn secondary" onclick="moveScopedIdeaPrompt('${id}','${k}','${oid}')">Trasladar idea</button><button class="btn danger" onclick="deleteScopedIdea('${id}','${k}','${oid}')">Eliminar idea</button><div class="actions"><button class="btn ghost" onclick="closeModal()">Cerrar</button></div>`)}
+function scopedIdeaMenu(id,k,oid){modal(`<h2>Administrar idea</h2><button class="btn secondary" onclick="closeModal();${(k==='core'||k==='coreNote')?`editCoreIdea('${oid}','${id}')`:`editScopedIdea('${id}','${k}','${oid}')`}">Editar idea</button><button class="btn secondary" onclick="moveScopedIdeaPrompt('${id}','${k}','${oid}')">Trasladar idea</button><button class="btn danger" onclick="${(k==='core'||k==='coreNote')?`deleteCoreIdea('${oid}','${id}')`:`deleteScopedIdea('${id}','${k}','${oid}')`}">Eliminar idea</button><div class="actions"><button class="btn ghost" onclick="closeModal()">Cerrar</button></div>`)}
 function editScopedIdea(id,k,oid){if(k!=='project')return;const s=data.projectIdeas,i=(s[oid]||[]).find(x=>x.id===id);if(!i)return;modal(`<h2>Editar idea</h2><label>Título</label><input id="v41Title" value="${safe(i.title||'')}"><label>Idea</label><textarea id="v41Text">${safe(i.text)}</textarea><label>Color</label><select id="v41Color"><option value="#22323c" ${(!i.color||i.color==='#22323c')?'selected':''}>Azul petróleo</option><option value="#26313a" ${i.color==='#26313a'?'selected':''}>Grafito azulado</option><option value="#2b3039" ${i.color==='#2b3039'?'selected':''}>Carbón</option><option value="#302b36" ${i.color==='#302b36'?'selected':''}>Ciruela oscura</option><option value="#26352f" ${i.color==='#26352f'?'selected':''}>Verde pizarra</option></select><div class="actions"><button class="btn" onclick="saveScopedEdit('${id}','${k}','${oid}')">Guardar</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
 function saveScopedEdit(id,k,oid){if(k!=='project')return;const s=data.projectIdeas,i=(s[oid]||[]).find(x=>x.id===id);if(!i)return;i.title=document.getElementById('v41Title').value.trim();i.text=document.getElementById('v41Text').value.trim();i.color=document.getElementById('v41Color').value;if(!save())return;closeModal();openProject(oid)}
 function deleteScopedIdea(id,k,oid){if(!confirm('¿Eliminar idea?'))return;if(k!=='project')return;const s=data.projectIdeas;s[oid]=(s[oid]||[]).filter(x=>x.id!==id);if(!save())return;closeModal();openProject(oid)}
-function moveScopedIdeaPrompt(id,k,oid){modal(`<h2>Trasladar idea</h2><label>Destino</label><select id="v41Dest" onchange="refreshV41Targets()"><option value="general">Ideas generales</option><option value="project">Proyecto</option></select><label>Proyecto</label><select id="v41Project" onchange="refreshV41Targets()">${data.projects.filter(p=>!p.archived).map(p=>`<option value="${p.id}">${safe(p.name)}</option>`).join('')}</select><label>Misión</label><select id="v41Mission"></select><div class="actions"><button class="btn" onclick="moveScopedIdea('${id}','${k}','${oid}')">Trasladar</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`);refreshV41Targets()}
-function refreshV41Targets(){const type=document.getElementById('v41Dest')?.value,pid=document.getElementById('v41Project')?.value,s=document.getElementById('v41Mission');if(!s)return;s.disabled=type!=='mission';s.innerHTML=data.missions.filter(m=>m.projectId===pid&&!m.archivedCompleted).map(m=>`<option value="${m.id}">${safe(m.name)}</option>`).join('')||'<option value="">No hay misiones</option>'}
-function moveScopedIdea(id,k,oid){if(k!=='project')return;const s=data.projectIdeas,i=(s[oid]||[]).find(x=>x.id===id);if(!i)return;const type=document.getElementById('v41Dest').value,pid=document.getElementById('v41Project').value,mid=document.getElementById('v41Mission').value;s[oid]=s[oid].filter(x=>x.id!==id);if(type==='general'){delete i.projectId;delete i.missionId;delete i.core;data.notes.push(i)}else if(type==='project'){i.projectId=pid;i.core=project(pid)?.core||'';delete i.missionId;(data.projectIdeas[pid]||(data.projectIdeas[pid]=[])).push(i)}if(!save())return;closeModal();openProject(oid)}
-function moveGeneralIdea(id,source,core){const i=findIdea(id,source,core);if(!i)return;modal(`<h2>Asignar idea</h2><p class="small muted">Se quitará de Ideas generales y quedará solo en el destino.</p><label>Destino</label><select id="v41Dest" onchange="refreshV41Targets()"><option value="project">Proyecto</option></select><label>Proyecto</label><select id="v41Project" onchange="refreshV41Targets()">${data.projects.filter(p=>!p.archived).map(p=>`<option value="${p.id}">${safe(p.name)}</option>`).join('')}</select><label>Misión</label><select id="v41Mission"></select><div class="actions"><button class="btn" onclick="assignGeneralIdea('${id}','${source}','${core||''}')">Asignar</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`);refreshV41Targets()}
-function assignGeneralIdea(id,source,core){const i=findIdea(id,source,core);if(!i)return;const type=document.getElementById('v41Dest').value,pid=document.getElementById('v41Project').value,mid=document.getElementById('v41Mission').value;if(source==='core')data.ideasByCore[core]=(data.ideasByCore[core]||[]).filter(x=>x.id!==id);else data.notes=data.notes.filter(x=>x.id!==id);if(type==='project'){i.projectId=pid;i.core=project(pid)?.core||'';(data.projectIdeas[pid]||(data.projectIdeas[pid]=[])).push(i)}if(!save())return;closeModal();tab='ideas';render()}
+function ideaDestinationFields(selectedCore='',selectedProject=''){
+ const coreOptions=activeCores().map(c=>`<option value="${c[0]}" ${c[0]===selectedCore?'selected':''}>${safe(coreName(c[0]))}</option>`).join('');
+ return `<label>Núcleo</label><select id="v41Core" onchange="refreshV41Targets()"><option value="">Elegí un núcleo</option>${coreOptions}</select>
+ <div id="v41ProjectWrap"><label>Proyecto</label><select id="v41Project"><option value="">Elegí un proyecto</option></select></div>`;
+}
+function moveScopedIdeaPrompt(id,k,oid){
+ const sourceCore=k==='core'?oid:'';
+ modal(`<h2>Trasladar idea</h2><p class="small muted">La idea se quitará de su ubicación actual y quedará únicamente en el destino elegido.</p>
+ <label>Destino</label><select id="v41Dest" onchange="refreshV41Targets()"><option value="general">Ideas generales</option><option value="core">Núcleo</option><option value="project">Proyecto</option></select>
+ ${ideaDestinationFields(sourceCore,'')}
+ <div class="actions"><button class="btn" onclick="moveScopedIdea('${id}','${k}','${oid}')">Trasladar</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`);
+ refreshV41Targets();
+}
+function refreshV41Targets(){
+ const type=document.getElementById('v41Dest')?.value,coreId=document.getElementById('v41Core')?.value||'',wrap=document.getElementById('v41ProjectWrap'),sel=document.getElementById('v41Project');
+ if(wrap)wrap.style.display=type==='project'?'':'none';
+ if(sel){
+  const ps=data.projects.filter(p=>!p.archived&&p.core===coreId);
+  sel.innerHTML=`<option value="">Elegí un proyecto</option>`+ps.map(p=>`<option value="${p.id}">${safe(p.name)}</option>`).join('');
+  sel.disabled=type!=='project'||!coreId;
+ }
+ const cs=document.getElementById('v41Core');if(cs)cs.disabled=type==='general';
+}
+function takeIdeaFrom(source,oid,id){
+ if(source==='project'){const a=data.projectIdeas[oid]||[],i=a.find(x=>x.id===id);data.projectIdeas[oid]=a.filter(x=>x.id!==id);return i}
+ if(source==='core'){const a=data.ideasByCore[oid]||[],i=a.find(x=>x.id===id);data.ideasByCore[oid]=a.filter(x=>x.id!==id);return i}
+ const i=(data.notes||[]).find(x=>x.id===id);data.notes=(data.notes||[]).filter(x=>x.id!==id);return i;
+}
+function putIdeaAt(i,type,coreId,pid){
+ if(type==='general'){delete i.core;delete i.projectId;delete i.hiddenFromGeneral;delete i.hiddenFromNucleus;(data.notes||(data.notes=[])).push(i)}
+ else if(type==='core'){delete i.projectId;i.core=coreId;i.hiddenFromGeneral=true;if(!data.ideasByCore)data.ideasByCore={};(data.ideasByCore[coreId]||(data.ideasByCore[coreId]=[])).push(i)}
+ else if(type==='project'){const p=project(pid);if(!p)return false;i.core=p.core;i.projectId=pid;i.hiddenFromGeneral=true;(data.projectIdeas[pid]||(data.projectIdeas[pid]=[])).push(i)}
+ return true;
+}
+function moveScopedIdea(id,k,oid){
+ const type=document.getElementById('v41Dest')?.value,coreId=document.getElementById('v41Core')?.value||'',pid=document.getElementById('v41Project')?.value||'';
+ if(type==='core'&&!coreId)return alert('Elegí un núcleo.');
+ if(type==='project'&&(!coreId||!pid))return alert('Elegí un núcleo y un proyecto.');
+ const i=takeIdeaFrom(k,oid,id);if(!i)return;
+ if(!putIdeaAt(i,type,coreId,pid))return alert('No se pudo encontrar el proyecto.');
+ if(!save())return;closeModal();
+ if(k==='project')openProject(oid);else if(k==='core')showCore(oid);else{tab='ideas';render()}
+}
+function moveGeneralIdea(id,source,core){
+ const k=source==='core'?'core':'general',oid=core||'';
+ moveScopedIdeaPrompt(id,k,oid);
+}
+function assignGeneralIdea(id,source,core){moveScopedIdea(id,source==='core'?'core':'general',core||'')}
 
 function openProject(pid){
  currentProject=pid;const p=project(pid);if(!p)return;tab='project';touchCore(p.core,pid);
@@ -1360,7 +1403,7 @@ function historyPage(){
  const eventRows=events.map(e=>`<div class="event-row completion-event"><div><b>${eventLabel(e)}: ${safe(e.label)}</b><div class="small">${e.kind==='task'?'Tarea de la misión':e.kind==='mission'?'Misión':'Proyecto'} · ${fmt(e.at)}</div></div><button class="edit-icon completion-delete" onclick="deleteCompletionEvent('${e.id}')" aria-label="Eliminar registro" title="Eliminar registro">×</button></div>`).join('');
  return `<p class="small">MEMORIA DE TRABAJO</p><h1>Historial</h1>
  <div class="panel"><div class="row between" style="align-items:center;gap:12px;flex-wrap:wrap"><h2 style="margin:0">Tu progreso este mes</h2><label class="small" style="margin:0"><input type="month" value="${safe(selectedMonth)}" onchange="setProgressMonth(this.value)" aria-label="Elegir mes del progreso"></label></div><p class="small muted">${safe(progressMonthLabel(selectedMonth))}</p><div class="completion-stats"><div class="completion-stat"><strong>${counts.mission.size}</strong><span>Misiones</span></div><div class="completion-stat"><strong>${counts.task.size}</strong><span>Tareas</span></div><div class="completion-stat"><strong>${counts.project.size}</strong><span>Proyectos</span></div></div><p class="small muted">Se cuentan finalizaciones únicas registradas desde ${safe(trackingStart)}. Archivar, restaurar o reabrir no suma ni resta logros.</p></div>
- <div class="panel completion-log"><h2>Actividad registrada</h2>${events.length?`<div class="completion-log-actions"><button class="text-button danger-text" onclick="clearCompletionLog()">Borrar actividad registrada</button></div>${eventRows}`:'<p class="muted">Todavía no hay actividad registrada.</p>'}</div>
+ <details class="panel completion-log"><summary><span>Actividad registrada</span><span class="completion-log-more" aria-hidden="true">•••</span></summary><div class="completion-log-body">${events.length?`<div class="completion-log-actions"><button class="text-button danger-text" onclick="clearCompletionLog()">Borrar actividad registrada</button></div>${eventRows}`:'<p class="muted">Todavía no hay actividad registrada.</p>'}</div></details>
  <div class="panel"><h2>Cómo funciona HOY</h2><p class="small">Una guía rápida para organizarte.</p><button class="btn secondary" onclick="showTutorial()">Ver tutorial</button></div><div class="panel"><h2>Copias de seguridad</h2><p class="small">Tus datos se guardan en este navegador. Exportá una copia periódicamente.</p><button class="btn secondary" onclick="exportData()">Descargar copia JSON</button><label>Restaurar copia</label><input type="file" accept="application/json" onchange="importData(event)"></div>
  <div class="version-history"><p class="small version-history-label">VERSIÓN DE LA APLICACIÓN</p><div class="version-history-line"><span>${APP_VERSION}</span><span class="version-history-date">· ${APP_RELEASE_DATE}</span></div></div>`;
 }(function v38Styles(){

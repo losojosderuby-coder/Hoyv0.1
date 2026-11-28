@@ -201,3 +201,15 @@ Caché: hoy-cache-v54.
 2. Ideas de misión: se elimina la sección y sus destinos/acciones; no se crea ni se muestra esa funcionalidad.
 3. Historial: «Actividad registrada» ahora se presenta como una fila desplegable con tres puntos. Al desplegar aparecen todos los registros y la opción «Borrar actividad registrada» queda dentro del contenido desplegado, no visible permanentemente. Se conserva la eliminación individual de registros y el mecanismo existente de conteo mensual.
 No se modificó el resto de la estructura funcional de HOY.
+
+HOY V49 — destinos de ideas y actividad registrada
+Base: V48.
+Versión: V49. Caché: hoy-cache-v55.
+
+- Sistema unificado para trasladar ideas entre Ideas generales, un Núcleo y un Proyecto.
+- Al elegir Proyecto se debe elegir primero el Núcleo y luego un proyecto perteneciente a ese núcleo.
+- El traslado mueve el mismo objeto de idea entre contenedores, sin duplicarlo y conservando su id, título, texto, color y fecha.
+- Ideas de núcleo y de proyecto disponen de menú de administración con traslado.
+- Se elimina del formulario el selector residual de Misión.
+- Historial: la función activa historyPage muestra Actividad registrada como disclosure con tres puntos. Al desplegar aparece el registro completo y la acción «Borrar actividad registrada»; los botones de borrar registros individuales se mantienen.
+- No se altera el sistema de conteo mensual.
