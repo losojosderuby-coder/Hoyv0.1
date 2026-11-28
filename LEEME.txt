@@ -52,3 +52,12 @@ HOY V38 — actualización incremental sobre HOY V37
 
 Verificación realizada: integridad del ZIP, sintaxis JavaScript del documento y del Service Worker, y lectura de los tres archivos JSON. No se realizó una prueba interactiva completa en Safari/iPhone.
 Nota: la eliminación general de cualquier tipo de notificación todavía requiere definir una capa de notificaciones descartables; V37 solo tiene el descarte persistente del aviso de enfoque.
+
+
+HOY V39 — Cambios sobre V38
+- Ideas generales: botón Convertir en misión más compacto y en una línea; quitar de la vista general ahora se representa con una X; controles de ordenamiento circulares y discretos, adaptados a variables de tema.
+- Inicio: el acceso a todas las prioridades muestra únicamente tres puntos; botón Ver todos de Tus núcleos más compacto.
+- Accesos fijados: botón + Fijar permite fijar hasta tres proyectos y/o misiones; selección por núcleo, proyecto y misión según corresponda. Los accesos previos de misiones se migran conservándolos.
+- Dentro de cada núcleo: se elimina el bloque Accesos directos; se agrega un desplegable discreto “Ideas de [nombre del núcleo]” debajo de los proyectos.
+- Ideas creadas desde dentro del núcleo quedan solo en ese núcleo. Las ideas generales asignadas a un núcleo se muestran también allí; quitar de Ideas generales conserva el mismo registro en el núcleo.
+- No se eliminan datos anteriores. Se conserva hoy-data-v1 y la copia JSON.
