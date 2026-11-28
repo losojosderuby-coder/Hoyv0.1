@@ -1,41 +1,42 @@
-HOY V37 — PRIMER PAQUETE DE CAMBIOS
+HOY V37 — RECONSTRUCCIÓN SOBRE V36
 
-Base: HOY_V36(1).zip proporcionado por el usuario.
-Versión: V37
-Almacenamiento: conserva la clave hoy-data-v1.
+Base: HOY_V36(1).zip recibido del usuario.
+Versión interna y título: V37.
+Almacenamiento: se conserva la clave hoy-data-v1.
 Service Worker: hoy-cache-v42.
 
-CAMBIOS INCORPORADOS
-1. Misiones completadas: acción Archivar misión. Las archivadas dejan de aparecer en la lista principal del proyecto, se muestran en un bloque Misiones archivadas y pueden restaurarse. Al restaurarlas siguen completadas. No se borran tareas ni registros.
-2. Acciones de misión: botones compactos y opción Archivar misión abajo, enfrentada a Eliminar misión.
-3. Carpetas de proyecto: Nueva carpeta pasa al menú de tres puntos.
-4. Núcleos: sección Accesos directos con capacidad máxima visual de tres elementos y selector de misiones/tareas; sección Ideas dentro del núcleo.
-5. Ideas: permite quitar una idea de Ideas generales conservándola en el núcleo; eliminar definitivamente elimina las apariciones asociadas.
-6. Prioridades: contador total en lugar de n/3, filtros circulares por núcleo y controles de orden en el listado completo.
-7. Consejo de enfoque: permite descartar el aviso «El que mucho abarca, poco aprieta» y guarda el descarte.
-8. Zoom: viewport bloquea zoom de doble toque/pellizco y se previene doble toque sobre controles.
+CAMBIOS INTEGRADOS
+1. Misiones completadas: se pueden archivar desde el bloque Misiones completadas o desde el detalle de una misión completada. Las archivadas salen de la lista principal, quedan en Misiones archivadas y pueden restaurarse. Restaurar no cambia el estado completado ni las tareas.
+2. Acciones de misión: controles compactos; Archivar misión queda abajo, enfrentado a Eliminar misión.
+3. Carpetas de proyecto: Nueva carpeta está dentro del menú de tres puntos junto a Carpetas.
+4. Núcleos: sección Accesos directos con máximo de tres misiones/tareas y administración desde los tres puntos.
+5. Núcleos: sección Ideas. Las ideas generales asociadas a un núcleo aparecen en ese núcleo sin crear una segunda copia.
+6. Ideas: Quitar de acá oculta la idea de la sección general y conserva la misma idea en el núcleo. Eliminar idea completamente elimina la idea de todas las vistas.
+7. Prioridades: el contador muestra el total, el panel muestra hasta tres, y los filtros de núcleo se representan con círculos. En Todas las urgencias se pueden filtrar y ordenar con flechas.
+8. Consejo «El que mucho abarca, poco aprieta»: se puede descartar y el descarte se conserva.
+9. Zoom: se evita el doble toque de zoom sobre controles sin desactivar el zoom manual de accesibilidad del navegador.
 
 CONSERVACIÓN
-- Mantiene hoy-data-v1 y los archivos de contenido de V36.
-- Se agregan campos/colecciones opcionales: archivedCompleted, archivedAt, coreShortcuts, dismissedAdvice y priorityOrder.
-- No se realiza una migración destructiva.
+- Se mantiene hoy-data-v1.
+- No se reemplaza ni se borra el contenido de proyectos, núcleos, misiones, tareas, ideas, calendario, rutinas o historial.
+- Los campos nuevos se agregan de forma opcional: archivedCompleted, archivedAt, coreShortcuts, dismissedAdvice, priorityOrder y hiddenFromGeneral.
 
-VALIDACIONES REALIZADAS
-- ZIP de origen V36: integridad comprobada.
-- JavaScript inline de V37: node --check correcto.
-- Service Worker: node --check correcto.
-- JSON de contenidos: validación de sintaxis.
-- Recursos locales referenciados por el Service Worker: presentes en el paquete.
+VALIDACIONES
+- ZIP base V36: integridad comprobada.
+- JavaScript inline de V37: comprobación de sintaxis con Node.js correcta.
+- Service Worker: comprobación de sintaxis con Node.js correcta.
+- Archivos JSON de Biblia y Martín Fierro: parseo correcto.
+- Recursos listados por Service Worker: verificados dentro del paquete.
+- Se verificó que APP_VERSION y el título declaren V37.
 
-LIMITACIONES IMPORTANTES
-- No se pudo ejecutar una prueba real de navegador/Safari/iPhone ni una prueba end-to-end con datos reales.
-- La sección de notificaciones persistentes no existía como módulo general en V36. En esta versión se implementa el descarte persistente del consejo de enfoque solicitado, pero no un gestor universal para borrar cualquier notificación importante/informativa.
-- El orden de prioridades se guarda al usar las flechas del listado completo.
-- Los accesos directos y las ideas por núcleo se agregan sin eliminar las estructuras existentes.
-- La desactivación del zoom usa maximum-scale/user-scalable=no, lo que también limita el zoom manual de accesibilidad.
+LIMITACIONES DE PRUEBA
+- No se pudo ejecutar una prueba end-to-end en navegador real ni en Safari/iPhone.
+- El descarte persistente implementado es para el consejo de enfoque citado; V36 no contiene un gestor genérico de notificaciones que permita borrar cualquier tipo de aviso.
+- La verificación de sintaxis no demuestra por sí sola que todas las interacciones visuales funcionen en un dispositivo.
+- No publicar automáticamente en GitHub Pages.
 
 ANTES DE INSTALAR
-1. Exportar una copia JSON desde HOY actual.
-2. Conservar la instalación anterior y no borrarla.
-3. Probar primero en una copia/entorno de prueba.
-4. No asumir que el paquete está publicado en GitHub Pages: la publicación debe hacerse por separado y con autorización.
+1. Exportar una copia JSON desde HOY.
+2. Mantener la versión anterior instalada.
+3. Probar el ZIP en un entorno separado antes de reemplazar la versión estable.
+4. No borrar datos de Safari ni desinstalar la PWA como paso de actualización.
