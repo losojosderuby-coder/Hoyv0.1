@@ -1,29 +1,41 @@
-HOY V36 — CARPETAS, HISTORIAL Y RUTINAS SEMANALES
+HOY V37 — PRIMER PAQUETE DE CAMBIOS
 
-Base: HOY V35 proporcionada por el usuario.
-Versión: V36
-Almacenamiento: se conserva la clave hoy-data-v1. No se reinicia ni se cambia el esquema de datos existente.
-Service Worker: hoy-cache-v40.
+Base: HOY_V36(1).zip proporcionado por el usuario.
+Versión: V37
+Almacenamiento: conserva la clave hoy-data-v1.
+Service Worker: hoy-cache-v42.
 
-CAMBIOS
-1. Carpetas de proyecto: se reemplaza la tira permanente de carpetas por un botón de tres puntos que despliega General, Sin carpeta y las carpetas creadas. Se mantienen los contadores y la edición de carpetas.
-2. Tarjetas de proyecto: se elimina el indicador de progreso numérico (por ejemplo 0/1) y su barra. No se reemplaza por otro indicador.
-3. Historial: Proyectos terminados pasa a ser un bloque desplegable con tres puntos.
-4. Historial: el bloque Registro de finalizaciones cambia su título a Misiones terminadas.
-5. Calendario: se incorpora Tu rutina, con un máximo de cinco rutinas semanales. Solo se muestran las rutinas creadas. Cada rutina permite organizar actividades de lunes a domingo, varias por día, con horario y duración opcionales. Se puede crear, renombrar y eliminar una rutina; añadir, editar y eliminar actividades.
-6. Integración rutina/calendario: al crear o editar una actividad se puede marcar Añadir también al Calendario. La actividad se agrega como elemento de tipo Actividad con repetición semanal, en la fecha del día de semana correspondiente a la semana actual (o el día de hoy si coincide). La relación queda guardada. Si se desmarca en edición, se quita ese elemento del calendario. Si se elimina la actividad o la rutina, los elementos previamente añadidos al calendario se conservan, tal como se avisa en la interfaz.
+CAMBIOS INCORPORADOS
+1. Misiones completadas: acción Archivar misión. Las archivadas dejan de aparecer en la lista principal del proyecto, se muestran en un bloque Misiones archivadas y pueden restaurarse. Al restaurarlas siguen completadas. No se borran tareas ni registros.
+2. Acciones de misión: botones compactos y opción Archivar misión abajo, enfrentada a Eliminar misión.
+3. Carpetas de proyecto: Nueva carpeta pasa al menú de tres puntos.
+4. Núcleos: sección Accesos directos con capacidad máxima visual de tres elementos y selector de misiones/tareas; sección Ideas dentro del núcleo.
+5. Ideas: permite quitar una idea de Ideas generales conservándola en el núcleo; eliminar definitivamente elimina las apariciones asociadas.
+6. Prioridades: contador total en lugar de n/3, filtros circulares por núcleo y controles de orden en el listado completo.
+7. Consejo de enfoque: permite descartar el aviso «El que mucho abarca, poco aprieta» y guarda el descarte.
+8. Zoom: viewport bloquea zoom de doble toque/pellizco y se previene doble toque sobre controles.
 
 CONSERVACIÓN
-- Se mantiene hoy-data-v1.
-- Los datos existentes de proyectos, núcleos, misiones, tareas, ideas, carpetas, calendario y recordatorios se conservan.
-- Se agrega data.routines como arreglo si no existe; no se altera el resto de los datos.
-- No se migran ni se borran registros previos.
-- Los elementos añadidos desde rutinas se guardan en calendarItems existentes.
+- Mantiene hoy-data-v1 y los archivos de contenido de V36.
+- Se agregan campos/colecciones opcionales: archivedCompleted, archivedAt, coreShortcuts, dismissedAdvice y priorityOrder.
+- No se realiza una migración destructiva.
 
-REVISIÓN TÉCNICA REALIZADA
-- Integridad del ZIP de entrada V35 comprobada.
-- Sintaxis JavaScript del documento comprobada con Node.js.
-- Sintaxis del Service Worker comprobada con Node.js.
-- Se actualizó la caché a hoy-cache-v40 para evitar servir los recursos de V35.
-- No se pudo ejecutar una prueba visual/interactiva real en Safari/iPhone ni una prueba completa de interacción de la app en un navegador. Por lo tanto, la prueba final de interfaz y de sincronía visual debe hacerse manualmente en el iPhone.
-- Antes de instalar: exportar copia JSON desde Configuración/Historial y conservar la instalación anterior hasta validar V36.
+VALIDACIONES REALIZADAS
+- ZIP de origen V36: integridad comprobada.
+- JavaScript inline de V37: node --check correcto.
+- Service Worker: node --check correcto.
+- JSON de contenidos: validación de sintaxis.
+- Recursos locales referenciados por el Service Worker: presentes en el paquete.
+
+LIMITACIONES IMPORTANTES
+- No se pudo ejecutar una prueba real de navegador/Safari/iPhone ni una prueba end-to-end con datos reales.
+- La sección de notificaciones persistentes no existía como módulo general en V36. En esta versión se implementa el descarte persistente del consejo de enfoque solicitado, pero no un gestor universal para borrar cualquier notificación importante/informativa.
+- El orden de prioridades se guarda al usar las flechas del listado completo.
+- Los accesos directos y las ideas por núcleo se agregan sin eliminar las estructuras existentes.
+- La desactivación del zoom usa maximum-scale/user-scalable=no, lo que también limita el zoom manual de accesibilidad.
+
+ANTES DE INSTALAR
+1. Exportar una copia JSON desde HOY actual.
+2. Conservar la instalación anterior y no borrarla.
+3. Probar primero en una copia/entorno de prueba.
+4. No asumir que el paquete está publicado en GitHub Pages: la publicación debe hacerse por separado y con autorización.

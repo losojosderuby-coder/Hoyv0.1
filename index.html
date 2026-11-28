@@ -2,13 +2,13 @@
 <html lang="es" class="hoy-booting">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#eaf4f8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HOY">
 <link rel="manifest" href="manifest.webmanifest">
-<title>HOY V36</title>
+<title>HOY V37</title>
 <style>
 html.hoy-booting header,html.hoy-booting #app,html.hoy-booting .nav{visibility:hidden!important}html.hoy-booting #sunSplash{visibility:visible!important;z-index:9999}
 
@@ -655,13 +655,13 @@ function calToggleDone(id,day){const x=data.calendarItems.find(i=>i.id===id);if(
 function today(){
  const active=data.projects.filter(p=>!p.archived);
  const priorities=[...data.tasks.filter(t=>!t.done&&t.priority==='Alta').map(t=>({kind:'task',item:t})),...data.missions.filter(m=>!(m.completedAt||m.done)&&m.priority==='Alta').map(m=>({kind:'mission',item:m}))].sort((a,b)=>(a.item.created||0)-(b.item.created||0));
- const visiblePriorities=priorities.slice(0,3);
+ const visiblePriorities=priorities.slice().sort(priorityCompare).slice(0,3);
  const recentTasks=visiblePriorities.map(({kind,item})=>{const p=project(item.projectId),m=kind==='mission'?item:(item.missionId?mission(item.missionId):null),title=kind==='mission'?item.name:item.title;return `<div class="item"><button class="text-button" onclick="${m?`openMission('${m.id}')`:`openProject('${item.projectId}')`}">${safe(title)}</button><div class="small">${p?cname(p.core)+' · '+safe(p.name):'Proyecto'}${m&&kind==='task'?' · '+safe(m.name):''} · ${kind==='mission'?'Misión':'Tarea de la misión'}</div></div>`}).join('');
  const pendingTasks=data.tasks.filter(t=>!t.done).length;
  const pendingMissions=data.missions.filter(m=>!m.completedAt&&!m.done).length;
  return `<p class="small">CENTRO DE CONTROL</p><h1 class="dashboard-title">El mundo es de quien lo hace suyo</h1>
  
- <div class="panel" id="priorityPanel"><div class="row between"><h2>Prioridades</h2><span class="small">${visiblePriorities.length}/3</span></div>${priorities.length?recentTasks:'<p class="muted">No hay prioridades altas pendientes.</p>'}${priorities.length>3?`<button class="priority-more" onclick="showAllPriorities()">•••</button>`:''}</div>
+ <div class="panel" id="priorityPanel"><div class="row between"><h2>Prioridades</h2><span class="small">${priorities.length}</span></div>${priorities.length?recentTasks:'<p class="muted">No hay prioridades altas pendientes.</p>'}<div class="priority-filter-dots"><button class="mini-action" onclick="priorityCoreFilter='';showAllPriorities()">Todas las urgencias</button>${activeCores().map(c=>`<button class="core-filter-dot" style="--dot:${data.coreColors?.[c[0]]||defaultCoreColor(c[0])}" onclick="priorityCoreFilter='${c[0]}';showAllPriorities()" aria-label="Filtrar por núcleo"></button>`).join('')}</div>${priorities.length>3?`<button class="priority-more" onclick="showAllPriorities()">••• Ver todas</button>`:''}</div>
  <div class="row between"><h2>Tus núcleos</h2><button class="btn ghost" onclick="tab='cores';render()">Ver todos</button></div><div class="core-stack">${activeCores().map((c,i)=>coreTile(c,i)).join('')}</div>
  <div class="activity-inline"><span><b>${active.length}</b> proyectos</span><span><b>${pendingTasks}</b> tareas de la misión pendientes</span><span><b>${pendingMissions}</b> misiones pendientes</span></div><div class="theme-control"><span>Modo oscuro</span><label class="switch"><input type="checkbox" id="themeSwitch" ${localStorage.getItem('hoy-theme')==='dark'?'checked':''} onchange="setTheme(this.checked)"><span></span></label></div>`;
 }
@@ -698,16 +698,16 @@ function setMissionSort(pid,mode){if(!data.missionSortBy)data.missionSortBy={};d
 function missionSortControl(pid){const mode=missionSortMode(pid);return `<label class="sort-control"><span>Ordenar por</span><select aria-label="Ordenar misiones" onchange="setMissionSort('${pid}',this.value)"><option value="newest" ${mode==='newest'?'selected':''}>Más recientes primero</option><option value="oldest" ${mode==='oldest'?'selected':''}>Más antiguas primero</option><option value="dueSoon" ${mode==='dueSoon'?'selected':''}>Vencimiento más próximo</option><option value="dueLate" ${mode==='dueLate'?'selected':''}>Vencimiento más lejano</option><option value="manual" ${mode==='manual'?'selected':''}>Orden manual</option></select></label>`}
 function openProject(pid){
  currentProject=pid;const p=project(pid);if(!p)return;tab='project';touchCore(p.core,pid);
- const allMs=data.missions.filter(m=>m.projectId===pid).slice(),ms=sortMissions(allMs.filter(m=>!(m.completedAt||m.done)),missionSortMode(pid)),doneMs=allMs.filter(m=>!!(m.completedAt||m.done));
+ const allMs=data.missions.filter(m=>m.projectId===pid).slice(),ms=sortMissions(allMs.filter(m=>!(m.completedAt||m.done)&&!m.archivedCompleted),missionSortMode(pid)),doneMs=allMs.filter(m=>!!(m.completedAt||m.done)&&!m.archivedCompleted),archivedMs=allMs.filter(m=>!!m.archivedCompleted);
  const oldTasks=data.tasks.filter(t=>t.projectId===pid&&!t.missionId),folders=projectMissionFolders(pid),activeFolder=projectFolderFilter[pid]||'';
  const looseCount=ms.filter(m=>!m.folderId).length;
  const visibleMs=activeFolder==='__none__'?ms.filter(m=>!m.folderId):(activeFolder?ms.filter(m=>m.folderId===activeFolder):ms);
- const activeFolderName=!activeFolder?'General':activeFolder==='__none__'?'Sin carpeta':(folders.find(f=>f.id===activeFolder)?.name||'Carpeta');const folderShortcuts=`<div class="folder-toolbar"><h3>Carpetas</h3><button class="folder-dots" aria-label="Ver carpetas" onclick="toggleProjectFolders('${pid}')">···</button><button class="btn secondary" onclick="newProjectMissionFolder('${pid}')">＋ Nueva carpeta</button></div><div class="folder-current small">Mostrando: <b>${safe(activeFolderName)}</b></div><div class="folder-menu" id="folderMenu-${pid}" hidden><button class="folder-menu-item ${!activeFolder?'selected':''}" onclick="setProjectFolderFilter('${pid}','')">📂 General <span>${ms.length}</span></button><button class="folder-menu-item ${activeFolder==='__none__'?'selected':''}" onclick="setProjectFolderFilter('${pid}','__none__')">📁 Sin carpeta <span>${looseCount}</span></button>${folders.map(f=>{const count=ms.filter(m=>m.folderId===f.id).length;return `<div class="folder-menu-row"><button class="folder-menu-item ${activeFolder===f.id?'selected':''}" onclick="setProjectFolderFilter('${pid}','${f.id}')">📁 ${safe(f.name)} <span>${count}</span></button><button class="folder-shortcut-edit" onclick="editProjectMissionFolder('${f.id}')" aria-label="Editar carpeta">✎</button></div>`}).join('')}</div>`;
+ const activeFolderName=!activeFolder?'General':activeFolder==='__none__'?'Sin carpeta':(folders.find(f=>f.id===activeFolder)?.name||'Carpeta');const folderShortcuts=`<div class="folder-toolbar"><h3>Carpetas</h3><button class="folder-dots" aria-label="Ver carpetas" onclick="toggleProjectFolders('${pid}')">···</button></div><div class="folder-current small">Mostrando: <b>${safe(activeFolderName)}</b></div><div class="folder-menu" id="folderMenu-${pid}" hidden><button class="folder-menu-item" onclick="newProjectMissionFolder('${pid}')">＋ Nueva carpeta</button><button class="folder-menu-item ${!activeFolder?'selected':''}" onclick="setProjectFolderFilter('${pid}','')">📂 General <span>${ms.length}</span></button><button class="folder-menu-item ${activeFolder==='__none__'?'selected':''}" onclick="setProjectFolderFilter('${pid}','__none__')">📁 Sin carpeta <span>${looseCount}</span></button>${folders.map(f=>{const count=ms.filter(m=>m.folderId===f.id).length;return `<div class="folder-menu-row"><button class="folder-menu-item ${activeFolder===f.id?'selected':''}" onclick="setProjectFolderFilter('${pid}','${f.id}')">📁 ${safe(f.name)} <span>${count}</span></button><button class="folder-shortcut-edit" onclick="editProjectMissionFolder('${f.id}')" aria-label="Editar carpeta">✎</button></div>`}).join('')}</div>`;
  document.getElementById('app').innerHTML=`<button class="btn ghost" onclick="showCore('${p.core}')">← ${cname(p.core)}</button><p class="eyebrow">${cname(p.core)} / PROYECTO</p><div class="headline"><h1>${safe(p.name)}</h1><button class="edit-icon" onclick="editProject('${p.id}')">✎</button></div><p class="muted">${safe(p.description||'')}</p>${p.completedAt?`<span class="tag">PROYECTO TERMINADO · ${fmt(p.completedAt)}</span>`:''}
  <div class="row between section-head"><div><h2>Misiones</h2><p class="small">Dividí el proyecto en partes de trabajo.</p></div><button class="btn" onclick="newMission('${p.id}')">＋ Misión</button></div>
  ${folderShortcuts}${missionSortControl(pid)}
  <div id="projectBulkActions" class="project-bulk-actions"><span id="selectedMissionCount" class="small"></span><button class="btn" onclick="moveSelectedMissions('${p.id}')">Meter en carpeta</button><button class="btn ghost" onclick="selectedMissionIds.clear();openProject('${p.id}')">Cancelar selección</button></div>
- <div class="mission-grid">${visibleMs.map(m=>missionCard(m,visibleMs)).join('')||'<div class="empty">'+(activeFolder?'Esta carpeta no tiene misiones.':'No hay misiones pendientes.')+'</div>'}</div>${doneMs.length?`<details class="mission-completed-list"><summary><span>Misiones completadas</span><span class="completed-count">${doneMs.length}</span><span class="completed-more">⋯</span></summary><div class="completed-missions">${doneMs.map(m=>`<div class="item row between"><div><b>${safe(m.name)}</b><div class="small">Completada · ${fmt(m.completedAt||m.doneAt||Date.now())}</div></div><button class="btn secondary" onclick="openMission('${m.id}')">Ver</button></div>`).join('')}</div></details>`:''}
+ <div class="mission-grid">${visibleMs.map(m=>missionCard(m,visibleMs)).join('')||'<div class="empty">'+(activeFolder?'Esta carpeta no tiene misiones.':'No hay misiones pendientes.')+'</div>'}</div>${doneMs.length?`<details class="mission-completed-list"><summary><span>Misiones completadas</span><span class="completed-count">${doneMs.length}</span><span class="completed-more">⋯</span></summary><div class="completed-missions">${doneMs.map(m=>`<div class="item row between"><div><b>${safe(m.name)}</b><div class="small">Completada · ${fmt(m.completedAt||m.doneAt||Date.now())}</div></div><div class="compact-actions"><button class="mini-action" onclick="archiveCompletedMission('${m.id}')">Archivar</button><button class="mini-action" onclick="openMission('${m.id}')">Ver</button></div></div>`).join('')}</div></details>`:''}${archivedMs.length?`<details class="mission-completed-list archived-missions"><summary><span>Misiones archivadas</span><span class="completed-count">${archivedMs.length}</span></summary><div class="completed-missions">${archivedMs.map(m=>`<div class="item row between"><div><b>${safe(m.name)}</b><div class="small">Archivada · sigue completada</div></div><button class="mini-action" onclick="restoreArchivedMission('${m.id}')">Restaurar</button></div>`).join('')}</div></details>`:''}
  ${oldTasks.length?`<div class="panel"><h3>Tareas de la misión sin asignar</h3><p class="small">Estas tareas ya existían en el proyecto. Podés mantenerlas acá o asignarlas a una misión más adelante.</p>${oldTasks.map(t=>taskRow(t)).join('')}</div>`:''}
  <div class="completion-actions">${p.completedAt?`<span class="tag">TERMINADO · ${fmt(p.completedAt)}</span>`:''}<button class="btn ${p.completedAt?'secondary':''}" onclick="toggleProjectComplete('${p.id}')">${p.completedAt?'↶ Reabrir proyecto':'✓ Finalizar proyecto'}</button></div><div class="actions"><button class="btn ghost" onclick="editProject('${p.id}')">Editar proyecto</button><button class="btn ghost" onclick="archiveProject('${p.id}')">Archivar</button><button class="btn danger" onclick="deleteProject('${p.id}')">Eliminar</button></div>`;
  updateBulkMissionActions();
@@ -723,9 +723,9 @@ function openMission(mid){
  const m=mission(mid);if(!m)return;currentMission=mid;const p=project(m.projectId);if(!p)return;tab='mission';touchCore(p.core,p.id,mid);
  const ts=missionTasks(mid),isDone=!!(m.completedAt||m.done);const index=data.missions.filter(x=>x.projectId===m.projectId).slice().sort((a,b)=>(a.order??0)-(b.order??0)).findIndex(x=>x.id===m.id)+1;
  document.getElementById('app').innerHTML=`<button class="btn ghost" onclick="openProject('${p.id}')">← ${safe(p.name)}</button><p class="eyebrow">${cname(p.core)} / ${safe(p.name)}</p><div class="mission-hero ${isDone?'status-done':''}"><div class="mission-number-tile"><span class="number">${index}</span></div><div class="headline"><h1>${safe(m.name)}</h1></div>${missionPriorityBadge(m)}${m.description?`<p class="muted">${safe(m.description)}</p>`:''}${isDone?`<span class="tag">COMPLETADA · ${fmt(m.completedAt)}</span>`:''}</div>
- <div class="mission-detail-actions">${calendarIsAvailable()?`<button class="btn secondary" onclick="calScheduleMission('${m.id}')">▦ Agendar calendario</button>`:''}<button class="btn mission-complete-action" onclick="toggleMissionComplete('${m.id}')">${isDone?'↶ Reabrir misión':'✓ Misión completa'}</button><button class="btn secondary" onclick="moveMissionToFolder('${m.id}')">▤ Mover a carpeta</button><button class="btn secondary" onclick="editMission('${m.id}')">✎ Editar misión</button></div>
+ <div class="mission-detail-actions compact-actions">${calendarIsAvailable()?`<button class="mini-action" onclick="calScheduleMission('${m.id}')">▦ Agendar</button>`:''}<button class="mini-action" onclick="toggleMissionComplete('${m.id}')">${isDone?'↶ Reabrir':'✓ Completar'}</button><button class="mini-action" onclick="moveMissionToFolder('${m.id}')">▤ Carpeta</button><button class="mini-action" onclick="editMission('${m.id}')">✎ Editar</button></div>
  <div class="row between section-head"><div><h2>Tareas de la misión</h2><p class="small">${ts.filter(t=>!t.done).length} pendientes · ${ts.filter(t=>t.done).length} completadas</p></div><button class="btn" onclick="newTask('${p.id}','${m.id}')">＋ Nueva tarea</button></div>
- <div class="task-list">${ts.map(t=>taskRow(t)).join('')||'<div class="empty">Todavía no hay tareas de la misión.</div>'}</div><div class="actions"><button class="btn danger" onclick="deleteMission('${m.id}')">Eliminar misión</button></div>`;
+ <div class="task-list">${ts.map(t=>taskRow(t)).join('')||'<div class="empty">Todavía no hay tareas de la misión.</div>'}</div><div class="mission-bottom-actions"><button class="btn danger" onclick="deleteMission('${m.id}')">Eliminar misión</button>${isDone?`<button class="mini-action archive-action" onclick="archiveCompletedMission('${m.id}')">Archivar misión</button>`:''}</div>`;
 }
 
 function newMissionFolder(mid){modal(`<h2>Nueva carpeta</h2><label>Nombre de la carpeta</label><input id="mfName" placeholder="Ej. Investigación, Producción, Pendientes"><label>Color de la carpeta</label><input id="mfColor" type="color" value="#c99b4b"><div class="actions"><button class="btn" onclick="saveMissionFolder('${mid}')">Crear carpeta</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
@@ -834,7 +834,7 @@ function deleteMission(mid){const m=mission(mid);if(!m||!confirm('¿Eliminar est
 function deleteCore(k){const pids=data.projects.filter(p=>p.core===k).map(p=>p.id);if(!confirm('¿Eliminar definitivamente este núcleo y TODO su contenido: proyectos, misiones, tareas, ideas y sesiones? Esta acción no se puede deshacer.'))return;data.projects=data.projects.filter(p=>p.core!==k);data.missions=data.missions.filter(m=>!pids.includes(m.projectId));data.tasks=data.tasks.filter(t=>!pids.includes(t.projectId));data.sessions=data.sessions.filter(s=>s.core!==k&&!pids.includes(s.projectId));delete data.ideasByCore[k];data.deletedCores=[...new Set([...(data.deletedCores||[]),k])];if(data.coreNames)delete data.coreNames[k];if(data.coreDescs)delete data.coreDescs[k];if(data.coreIcons)delete data.coreIcons[k];if(data.coreColors)delete data.coreColors[k];if(data.lastMovement?.core===k)data.lastMovement=null;save();tab='cores';render()}
 function moveIdea(id,source,core,delta){data.ideaSortMode='manual';const arr=source==='core'?coreIdeas(core):data.notes;const sorted=arr.slice().sort((a,b)=>{const ao=Number.isFinite(a.manualOrder)?a.manualOrder:null,bo=Number.isFinite(b.manualOrder)?b.manualOrder:null;if(ao!==null||bo!==null){if(ao===null)return 1;if(bo===null)return -1;return ao-bo;}return (b.at||0)-(a.at||0)});const idx=sorted.findIndex(x=>x.id===id),next=idx+delta;if(idx<0||next<0||next>=sorted.length)return;const item=sorted[idx];sorted.splice(idx,1);sorted.splice(next,0,item);sorted.forEach((x,i)=>x.manualOrder=i);if(source==='core')data.ideasByCore[core]=sorted;else data.notes=sorted;if(!save())return;if(source==='core')openIdeas(core);else{tab='ideas';render()}}
 function setIdeaSort(mode){data.ideaSortMode=mode;if(!save())return;tab='ideas';render()}
-function allIdeas(mode=data.ideaSortMode||'newest'){const list=(data.notes||[]).map(i=>({...i,source:'note'}));Object.entries(data.ideasByCore||{}).forEach(([core,arr])=>(arr||[]).forEach(i=>{if(!list.some(x=>x.id===i.id))list.push({...i,core,source:'core'});}));if(mode==='oldest')return list.sort((a,b)=>(a.at||0)-(b.at||0));if(mode==='manual')return list.sort((a,b)=>{const ao=Number.isFinite(a.manualOrder)?a.manualOrder:null,bo=Number.isFinite(b.manualOrder)?b.manualOrder:null;if(ao!==null||bo!==null){if(ao===null)return 1;if(bo===null)return -1;return ao-bo;}return (b.at||0)-(a.at||0)});return list.sort((a,b)=>(b.at||0)-(a.at||0));}
+function allIdeas(mode=data.ideaSortMode||'newest'){const list=(data.notes||[]).map(i=>({...i,source:'note'}));Object.entries(data.ideasByCore||{}).forEach(([core,arr])=>(arr||[]).forEach(i=>{if(!i.hiddenFromGeneral&&!list.some(x=>x.id===i.id))list.push({...i,core,source:'core'});}));if(mode==='oldest')return list.sort((a,b)=>(a.at||0)-(b.at||0));if(mode==='manual')return list.sort((a,b)=>{const ao=Number.isFinite(a.manualOrder)?a.manualOrder:null,bo=Number.isFinite(b.manualOrder)?b.manualOrder:null;if(ao!==null||bo!==null){if(ao===null)return 1;if(bo===null)return -1;return ao-bo;}return (b.at||0)-(a.at||0)});return list.sort((a,b)=>(b.at||0)-(a.at||0));}
 function ideasPage(){const mode=data.ideaSortMode||'newest',list=allIdeas(mode);return `<div class="headline"><div><p class="eyebrow">CAPTURA Y CREACIÓN</p><h1>Ideas 💡</h1><p class="muted">Guardá ideas ahora y convertílas en misiones cuando estés listo.</p></div><button class="btn" onclick="newGlobalIdea()">＋ Idea</button></div><div class="idea-sort-row"><label class="sort-control">Ordenar por <select onchange="setIdeaSort(this.value)"><option value="newest" ${mode==='newest'?'selected':''}>Más recientes primero</option><option value="oldest" ${mode==='oldest'?'selected':''}>Más antiguas primero</option><option value="manual" ${mode==='manual'?'selected':''}>Orden manual</option></select></label></div>${list.length?list.map(i=>`<div class="idea-list-card"><b>${safe(i.title||(i.at?'Idea · '+fmt(i.at):'Idea'))}</b><p>${safe(i.text)}</p><div class="idea-meta">${i.core?safe(coreName(i.core))+' · ':''}${i.at?fmt(i.at):''}</div><div class="idea-card-actions"><button class="btn secondary idea-convert" onclick="convertIdea('${i.id}','${i.source}','${i.core||''}')">Convertir en misión</button><div class="idea-reorder"><button class="edit-icon" onclick="moveIdea('${i.id}','${i.source}','${i.core||''}',-1)" aria-label="Subir idea" title="Subir">↑</button><button class="edit-icon" onclick="moveIdea('${i.id}','${i.source}','${i.core||''}',1)" aria-label="Bajar idea" title="Bajar">↓</button></div><button class="edit-icon idea-edit" onclick="editGlobalIdea('${i.id}','${i.source}','${i.core||''}')" aria-label="Editar idea" title="Editar">✎</button></div></div>`).join(''):'<div class="empty">Todavía no guardaste ideas. Tocá «Idea» para capturar la primera.</div>'}`;}
 function ideaProjectOptions(coreId='',selected=''){const list=data.projects.filter(p=>!p.archived&&(!coreId||p.core===coreId));return `<option value="">Sin proyecto</option>${list.map(p=>`<option value="${p.id}" ${p.id===selected?'selected':''}>${safe(p.name)}</option>`).join('')}`;}
 function refreshGlobalIdeaProjects(){const coreId=document.getElementById('gIdeaCore')?.value||'',sel=document.getElementById('gIdeaProject');if(!sel)return;sel.innerHTML=ideaProjectOptions(coreId);if(coreId&&sel.value){const p=project(sel.value);if(p&&p.core!==coreId)sel.value='';}}
@@ -906,5 +906,106 @@ if(hoySplash){
 }else{
  document.documentElement.classList.remove('hoy-booting');
 }
+
+/* HOY V37 — funciones añadidas y ajustes de interfaz */
+if(!Array.isArray(data.coreShortcuts))data.coreShortcuts=[];
+if(!Array.isArray(data.dismissedAdvice))data.dismissedAdvice=[];
+function archiveCompletedMission(id){
+ const m=mission(id);if(!m||!(m.completedAt||m.done))return alert('Solo podés archivar misiones completadas.');
+ m.archivedCompleted=true;m.archivedAt=Date.now();if(!save())return;openProject(m.projectId);
+}
+function restoreArchivedMission(id){
+ const m=mission(id);if(!m||!m.archivedCompleted)return;
+ delete m.archivedCompleted;delete m.archivedAt;
+ if(!save())return;openProject(m.projectId);
+}
+function setCoreShortcut(core,id,type){
+ if(!Array.isArray(data.coreShortcuts))data.coreShortcuts=[];
+ data.coreShortcuts=data.coreShortcuts.filter(x=>!(x.core===core&&x.id===id));
+ data.coreShortcuts.push({core,id,type});
+ save();showCore(core);
+}
+function removeCoreShortcut(core,id){data.coreShortcuts=data.coreShortcuts.filter(x=>!(x.core===core&&x.id===id));save();showCore(core)}
+function chooseCoreShortcut(core){
+ const missions=data.missions.filter(m=>{const p=project(m.projectId);return p&&p.core===core&&!m.archivedCompleted});
+ const tasks=data.tasks.filter(t=>{const p=project(t.projectId);return p&&p.core===core});
+ modal(`<h2>Agregar acceso directo</h2><p class="small muted">Elegí una misión o tarea para abrirla directamente desde este núcleo.</p><label>Elemento</label><select id="coreShortcutChoice">${missions.map(m=>`<option value="mission|${m.id}">Misión · ${safe(m.name)}</option>`).join('')}${tasks.map(t=>`<option value="task|${t.id}">Tarea · ${safe(t.title)}</option>`).join('')}</select><div class="actions"><button class="btn" onclick="(()=>{const [type,id]=document.getElementById('coreShortcutChoice').value.split('|');if(id){if(data.coreShortcuts.filter(x=>x.core==='${core}').length>=3)return alert('Ya tenés 3 accesos directos.');setCoreShortcut('${core}',id,type);closeModal()}})()">Colocar acceso</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`);
+}
+const _coreDetailV36=coreDetail;
+coreDetail=function(k){
+ let out=_coreDetailV36(k);
+ const items=data.coreShortcuts.filter(x=>x.core===k).slice(0,3);
+ const shortcuts=`<section class="core-shortcuts"><div class="row between"><h2>Accesos directos</h2><button class="folder-dots" onclick="chooseCoreShortcut('${k}')" aria-label="Administrar accesos">···</button></div>${items.length?items.map(x=>{const m=x.type==='mission'?mission(x.id):null,t=x.type==='task'?data.tasks.find(y=>y.id===x.id):null;return `<div class="core-shortcut-row"><button class="text-button" onclick="${m?`openMission('${m.id}')`:t&&t.missionId?`openMission('${t.missionId}');setTimeout(()=>document.getElementById('task-${t.id}')?.scrollIntoView({behavior:'smooth'}),150)`:t?`openProject('${t.projectId}')`:'void(0)'}">${safe(m?.name||t?.title||'Elemento no disponible')}</button><button class="mini-action" onclick="removeCoreShortcut('${k}','${x.id}')">×</button></div>`}).join(''):'<p class="small muted">Todavía no agregaste accesos directos.</p>'}</section>`;
+ const ideas=coreIdeas(k);
+ const ideasBlock=`<section class="core-ideas"><div class="row between"><h2>Ideas</h2><button class="btn secondary" onclick="newCoreIdea('${k}')">＋ Idea</button></div>${ideas.length?ideas.map(i=>`<div class="idea-list-card"><b>${safe(i.title||'Idea')}</b><p>${safe(i.text)}</p><div class="idea-card-actions"><button class="mini-action" onclick="editGlobalIdea('${i.id}','core','${k}')">Editar</button><button class="mini-action" onclick="removeCoreIdea('${k}','${i.id}')">Eliminar</button></div></div>`).join(''):'<p class="small muted">Las ideas asignadas a este núcleo aparecerán acá.</p>'}</section>`;
+ return out.replace('<div class="row between"><h2>Proyectos</h2>',shortcuts+ideasBlock+'<div class="row between"><h2>Proyectos</h2>');
+};
+function newCoreIdea(k){modal(`<h2>Nueva idea · ${safe(coreName(k))}</h2><label>Idea</label><textarea id="coreIdeaText"></textarea><label>Título</label><input id="coreIdeaTitle"><div class="actions"><button class="btn" onclick="(()=>{const text=document.getElementById('coreIdeaText').value.trim();if(!text)return alert('Escribí la idea.');if(!Array.isArray(data.ideasByCore['${k}']))data.ideasByCore['${k}']=[];data.ideasByCore['${k}'].push({id:uid(),title:document.getElementById('coreIdeaTitle').value.trim(),text,core:'${k}',at:Date.now()});save();closeModal();showCore('${k}')})()">Guardar idea</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
+function removeCoreIdea(k,id){if(!confirm('¿Eliminar esta idea definitivamente del núcleo?'))return;data.ideasByCore[k]=coreIdeas(k).filter(x=>x.id!==id);save();showCore(k)}
+const _ideasPageV36=ideasPage;
+ideasPage=function(){
+ const list=allIdeas(data.ideaSortMode||'newest');
+ return `<div class="headline"><div><p class="eyebrow">CAPTURA Y CREACIÓN</p><h1>Ideas 💡</h1><p class="muted">Guardá ideas ahora y convertílas en misiones cuando estés listo.</p></div><button class="btn" onclick="newGlobalIdea()">＋ Idea</button></div><div class="idea-sort-row"><label class="sort-control">Ordenar por <select onchange="setIdeaSort(this.value)"><option value="newest" ${(data.ideaSortMode||'newest')==='newest'?'selected':''}>Más recientes primero</option><option value="oldest" ${data.ideaSortMode==='oldest'?'selected':''}>Más antiguas primero</option><option value="manual" ${data.ideaSortMode==='manual'?'selected':''}>Orden manual</option></select></label></div>${list.length?list.map(i=>`<div class="idea-list-card"><b>${safe(i.title||(i.at?'Idea · '+fmt(i.at):'Idea'))}</b><p>${safe(i.text)}</p><div class="idea-meta">${i.core?safe(coreName(i.core))+' · ':''}${i.at?fmt(i.at):''}</div><div class="idea-card-actions"><button class="btn secondary idea-convert" onclick="convertIdea('${i.id}','${i.source}','${i.core||''}')">Convertir en misión</button><div class="idea-reorder"><button class="edit-icon" onclick="moveIdea('${i.id}','${i.source}','${i.core||''}',-1)">↑</button><button class="edit-icon" onclick="moveIdea('${i.id}','${i.source}','${i.core||''}',1)">↓</button></div><button class="edit-icon" onclick="editGlobalIdea('${i.id}','${i.source}','${i.core||''}')">✎</button><button class="mini-action" onclick="removeIdeaFromGeneral('${i.id}','${i.source}','${i.core||''}')">Quitar de Ideas</button></div></div>`).join(''):'<div class="empty">Todavía no guardaste ideas.</div>'}`;
+};
+function removeIdeaFromGeneral(id,source,core){
+ const i=findIdea(id,source,core);if(!i)return;
+ if(source==='core'){
+   if(!confirm('¿Quitar esta idea de Ideas generales? Se conservará dentro del núcleo.'))return;
+   const coreItem=coreIdeas(core).find(x=>x.id===id);if(coreItem)coreItem.hiddenFromGeneral=true;
+ }else{
+   const target=data.notes.find(x=>x.id===id);if(!target)return;
+   if(target.core){
+     const k=target.core;if(!Array.isArray(data.ideasByCore[k]))data.ideasByCore[k]=[];
+     if(!data.ideasByCore[k].some(x=>x.id===id))data.ideasByCore[k].push({...target});
+     data.notes=data.notes.filter(x=>x.id!==id);
+   }else{
+     if(!confirm('Esta idea no está guardada en un núcleo. ¿Eliminarla definitivamente?'))return;
+     data.notes=data.notes.filter(x=>x.id!==id);
+   }
+ }
+ save();render();
+}
+function deleteGlobalIdea(id,source,core){
+ const i=findIdea(id,source,core);if(!i)return;
+ if(!confirm('¿Eliminar idea definitivamente? Se quitará también del núcleo si está asociada.'))return;
+ data.notes=(data.notes||[]).filter(x=>x.id!==id);
+ if(source==='core'&&core)data.ideasByCore[core]=coreIdeas(core).filter(x=>x.id!==id);
+ for(const k of Object.keys(data.ideasByCore||{}))data.ideasByCore[k]=(data.ideasByCore[k]||[]).filter(x=>x.id!==id);
+ save();closeModal();render();
+}
+const _showAllPrioritiesV36=showAllPriorities;
+let priorityCoreFilter='';
+showAllPriorities=function(){
+ const list=[...data.tasks.filter(t=>!t.done&&t.priority==='Alta').map(t=>({kind:'task',item:t})),...data.missions.filter(m=>!(m.completedAt||m.done)&&!m.archivedCompleted&&m.priority==='Alta').map(m=>({kind:'mission',item:m}))].filter(x=>{const p=project(x.item.projectId);return !priorityCoreFilter||(p&&p.core===priorityCoreFilter)}).sort(priorityCompare);
+ const dots=activeCores().map(c=>`<button class="core-filter-dot ${priorityCoreFilter===c[0]?'active':''}" style="--dot:${data.coreColors?.[c[0]]||defaultCoreColor(c[0])}" onclick="priorityCoreFilter='${c[0]}';showAllPriorities()" aria-label="Filtrar núcleo"></button>`).join('');
+ modal(`<h2>Todas las urgencias</h2><div class="priority-filter-dots"><button class="mini-action" onclick="priorityCoreFilter='';showAllPriorities()">Todas</button>${dots}</div>${list.map(({kind,item})=>{const p=project(item.projectId),m=kind==='mission'?item:(item.missionId?mission(item.missionId):null);return `<div class="item"><button class="text-button" onclick="closeModal();${m?`openMission('${m.id}')`:`openProject('${item.projectId}')`}">${safe(kind==='mission'?item.name:item.title)}</button><div class="small">${p?cname(p.core)+' · '+safe(p.name):'Proyecto'} · ${kind==='mission'?'Misión':'Tarea'}</div></div><div class="compact-actions"><button class="mini-action" onclick="movePriority('${item.id}',-1)">↑</button><button class="mini-action" onclick="movePriority('${item.id}',1)">↓</button></div></div>`}).join('')||'<p class="muted">No hay urgencias pendientes.</p>'}<div class="actions"><button class="btn ghost" onclick="closeModal()">Cerrar</button></div>`);
+};
+function priorityCompare(a,b){const order=data.priorityOrder||[];const ai=order.indexOf(a.item.id),bi=order.indexOf(b.item.id);if(ai!==-1||bi!==-1)return (ai===-1?99999:ai)-(bi===-1?99999:bi);return (a.item.created||0)-(b.item.created||0)}
+function movePriority(id,delta){const all=[...data.tasks.filter(t=>!t.done&&t.priority==='Alta'),...data.missions.filter(m=>!(m.completedAt||m.done)&&!m.archivedCompleted&&m.priority==='Alta')];const ids=all.map(x=>x.id);let order=(data.priorityOrder||[]).filter(x=>ids.includes(x));ids.forEach(x=>{if(!order.includes(x))order.push(x)});const i=order.indexOf(id),j=i+delta;if(j<0||j>=order.length)return;[order[i],order[j]]=[order[j],order[i]];data.priorityOrder=order;save();showAllPriorities()}
+function dismissAdvice(code){if(!data.dismissedAdvice.includes(code))data.dismissedAdvice.push(code);save();closeModal();render()}
+const _attentionProjectCardV36=attentionProjectCard;
+attentionProjectCard=function(){if(data.dismissedAdvice.includes('focus-projects'))return '';const n=attentionProjectNudge();if(!n)return '';return `<section class="attention-section attention-advice"><div class="attention-tag">Sugerencia de enfoque</div><h3>Hey, perrito 🐶</h3><p>El que mucho abarca, poco aprieta. Tenés <b>${n.count} proyectos activos</b>. Antes de sumar más, estaría bueno dedicarles tiempo a los que ya empezaste. Desarrollalos y llevalos adelante.</p><p class="small muted">Podés crear otro proyecto igualmente; HOY solo te invita a enfocarte.</p><div class="attention-actions"><button class="btn secondary" onclick="closeModal();tab='cores';render()">Ver mis proyectos</button><button class="btn ghost" onclick="dismissAdvice('focus-projects')">Eliminar aviso</button></div></section>`};
+function addV37Styles(){
+ const style=document.createElement('style');style.textContent=`
+ .mission-detail-actions.compact-actions{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+ .mini-action{border:1px solid var(--line,#49606b);background:transparent;color:var(--text,#e8f0f3);border-radius:14px;padding:7px 10px;font-size:13px;min-height:32px}
+ .mission-bottom-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:22px}
+ .archive-action{color:var(--muted,#aab9c0)}
+ .folder-toolbar .btn{display:none!important}
+ .folder-menu-item{display:flex}
+ .core-shortcuts,.core-ideas{margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:18px}
+ .core-shortcut-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+ .priority-filter-dots{display:flex;gap:12px;align-items:center;margin:10px 0 18px}
+ .core-filter-dot{width:17px;height:17px;border-radius:50%;border:2px solid transparent;background:var(--dot);padding:0}
+ .core-filter-dot.active{outline:2px solid var(--text);outline-offset:3px}
+ .compact-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+ .task-actions .edit-icon,.mission-card .edit-icon{width:34px;height:34px}
+ button,.btn,.edit-icon{touch-action:manipulation}
+ `;
+ document.head.appendChild(style);
+}
+addV37Styles();
+document.addEventListener('dblclick',e=>{if(e.target.closest('button,a,input,select,textarea,.task-row,.mission-card'))e.preventDefault()},{passive:false});
+
 </script>
 </body></html>
