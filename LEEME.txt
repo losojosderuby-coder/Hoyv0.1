@@ -114,3 +114,7 @@ CONSERVACIÓN
 
 VALIDACIONES
 - Pendientes de ejecutar en este paquete.
+
+CORRECCIÓN DE INTEGRACIÓN V42
+En el paquete anterior las modificaciones se habían aplicado al archivo inline.js, pero index.html ejecutaba un bloque JavaScript embebido y no cargaba inline.js. En este paquete corregido, el código V42 completo está incorporado directamente en index.html, que es el código que ejecuta la aplicación. Se conserva inline.js sincronizado como copia.
+Service Worker actualizado a hoy-cache-v48 para forzar la renovación de caché al publicar esta corrección.
