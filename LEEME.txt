@@ -61,3 +61,22 @@ HOY V39 — Cambios sobre V38
 - Dentro de cada núcleo: se elimina el bloque Accesos directos; se agrega un desplegable discreto “Ideas de [nombre del núcleo]” debajo de los proyectos.
 - Ideas creadas desde dentro del núcleo quedan solo en ese núcleo. Las ideas generales asignadas a un núcleo se muestran también allí; quitar de Ideas generales conserva el mismo registro en el núcleo.
 - No se eliminan datos anteriores. Se conserva hoy-data-v1 y la copia JSON.
+
+
+HOY V40 — Ajustes visuales y orden predeterminado de misiones
+Base: HOY_V39(2).zip recibido del usuario.
+- Se conserva la clave local hoy-data-v1 y toda la estructura de datos.
+- En las carpetas del proyecto, los contadores muestran a la izquierda el total de misiones de cada carpeta. Se incluyen misiones completadas no archivadas; las archivadas no se cuentan. El lápiz de edición de carpeta conserva su función y pasa a formato circular oscuro.
+- Se unifica el aspecto oscuro y circular de los controles de edición de Ideas, proyectos y misiones.
+- Las flechas de orden de las tarjetas de misión conservan sus acciones y pasan al estilo circular oscuro.
+- Los números de las tarjetas y del detalle de misión pasan a estilo oscuro, manteniendo la legibilidad.
+- El orden predeterminado de misiones pasa a manual/orden de creación: las nuevas misiones se agregan al final. Las flechas siguen permitiendo reordenarlas manualmente.
+- El comportamiento de agregar al final se aplica al crear misiones desde un proyecto, desde el calendario y al convertir una idea en misión.
+- Se conserva cualquier modo de orden explícitamente guardado por el usuario.
+- Se actualiza la caché del Service Worker a hoy-cache-v45.
+
+ALCANCE
+No se modificaron navegación, jerarquías, almacenamiento, ni otras funciones ajenas a esta lista.
+
+VALIDACIONES
+Pendientes de validación automática final y prueba visual/interactiva en Safari/iPhone.
