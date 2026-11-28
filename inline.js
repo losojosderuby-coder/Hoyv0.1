@@ -1,7 +1,7 @@
 
 
 const KEY='hoy-data-v1';
-const APP_VERSION='V45';
+const APP_VERSION='V46';
 // Interruptor técnico en este archivo: false oculta Calendario para todos los usuarios.
 // No borra datos; al volver a true, el calendario reaparece.
 const HOY_CONFIG={modules:{calendarEnabled:true}};

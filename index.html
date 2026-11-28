@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HOY">
 <link rel="manifest" href="manifest.webmanifest">
-<title>HOY V45</title>
+<title>HOY V46</title>
 <style>
 html.hoy-booting header,html.hoy-booting #app,html.hoy-booting .nav{visibility:hidden!important}html.hoy-booting #sunSplash{visibility:visible!important;z-index:9999}
 
@@ -564,6 +564,72 @@ body.dark button.idea-edit:focus{
   box-shadow:none !important;
 }
 
+
+/* HOY V46: replicar explícitamente en Ideas de misión el diseño de Ideas de proyecto */
+body.dark .v46-mission-ideas{
+  display:block !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  margin:18px 0 24px !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  color:#e4edf1 !important;
+}
+body.dark .v46-mission-ideas .v44-ideas-heading{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  padding:12px 4px !important;
+  border-top:1px solid #354955 !important;
+  border-bottom:1px solid #354955 !important;
+}
+body.dark .v46-mission-ideas .v44-ideas-heading h2{
+  margin:0 !important;
+  font-size:17px !important;
+  font-weight:650 !important;
+  color:#e4edf1 !important;
+}
+body.dark .v46-mission-ideas .v44-ideas-heading .v41-dots{
+  flex:0 0 38px !important;
+  width:38px !important;
+  height:38px !important;
+}
+body.dark .v46-mission-ideas .v44-ideas-add{
+  display:flex !important;
+  justify-content:flex-end !important;
+  margin:12px 4px 14px !important;
+}
+body.dark .v46-mission-ideas .v44-ideas-add .btn{
+  min-height:42px !important;
+  padding:9px 18px !important;
+}
+body.dark .v46-mission-ideas .v41-idea-card{
+  display:block !important;
+  box-sizing:border-box !important;
+  width:100% !important;
+  margin:10px 0 !important;
+  padding:15px !important;
+  border:1px solid #354955 !important;
+  border-radius:16px !important;
+  background:var(--v41-idea-bg,#1d2b34) !important;
+  color:#e4edf1 !important;
+}
+body.dark .v46-mission-ideas .v41-idea-card p{
+  margin:7px 0 !important;
+  line-height:1.45 !important;
+}
+body.dark .v46-mission-ideas .v41-idea-card .edit-icon,
+body.dark .v46-mission-ideas .v41-idea-card .v41-dots{
+  flex-shrink:0 !important;
+}
+body.dark .v46-mission-ideas>.small,
+body.dark .v46-mission-ideas>p{
+  color:#8298a3 !important;
+}
+
 </style>
 <style>
 /* HOY V24 CALENDAR */
@@ -687,7 +753,7 @@ body.dark .mission-number-tile{background:#263640!important;border-color:#354955
 <script>
 
 const KEY='hoy-data-v1';
-const APP_VERSION='V45';
+const APP_VERSION='V46';
 // Interruptor técnico en este archivo: false oculta Calendario para todos los usuarios.
 // No borra datos; al volver a true, el calendario reaparece.
 const HOY_CONFIG={modules:{calendarEnabled:true}};
@@ -903,7 +969,7 @@ function setMissionSort(pid,mode){if(!data.missionSortBy)data.missionSortBy={};d
 function missionSortControl(pid){const mode=missionSortMode(pid);return `<label class="sort-control"><span>Ordenar por</span><select aria-label="Ordenar misiones" onchange="setMissionSort('${pid}',this.value)"><option value="newest" ${mode==='newest'?'selected':''}>Más recientes primero</option><option value="oldest" ${mode==='oldest'?'selected':''}>Más antiguas primero</option><option value="dueSoon" ${mode==='dueSoon'?'selected':''}>Vencimiento más próximo</option><option value="dueLate" ${mode==='dueLate'?'selected':''}>Vencimiento más lejano</option><option value="manual" ${mode==='manual'?'selected':''}>Orden manual</option></select></label>`}
 
 function projectIdeasSection(p){const a=data.projectIdeas[p.id]||[];return `<section class="v41-ideas v44-ideas"><div class="v44-ideas-heading"><h2>Ideas de ${safe(p.name)}</h2><button class="v41-dots" onclick="ideaCollectionMenu('project','${p.id}')" aria-label="Opciones de ideas">•••</button></div><div class="v41-ideas-add v44-ideas-add"><button class="btn secondary" onclick="newScopedIdea('project','${p.id}')">＋ Idea</button></div>${a.map(i=>scopedIdeaCard(i,'project',p.id)).join('')||'<p class="small muted">Todavía no hay ideas para este proyecto.</p>'}</section>`}
-function missionIdeasSection(m){const a=data.missionIdeas[m.id]||[];return `<section class="v41-ideas v44-ideas"><div class="v44-ideas-heading"><h2>Ideas de ${safe(m.name)}</h2><button class="v41-dots" onclick="ideaCollectionMenu('mission','${m.id}')" aria-label="Opciones de ideas">•••</button></div><div class="v41-ideas-add v44-ideas-add"><button class="btn secondary" onclick="newScopedIdea('mission','${m.id}')">＋ Idea</button></div>${a.map(i=>scopedIdeaCard(i,'mission',m.id)).join('')||'<p class="small muted">Todavía no hay ideas para esta misión.</p>'}</section>`}
+function missionIdeasSection(m){const a=data.missionIdeas[m.id]||[];return `<section class="v41-ideas v44-ideas v46-mission-ideas"><div class="v44-ideas-heading"><h2>Ideas de ${safe(m.name)}</h2><button class="v41-dots" onclick="ideaCollectionMenu('mission','${m.id}')" aria-label="Opciones de ideas">•••</button></div><div class="v41-ideas-add v44-ideas-add"><button class="btn secondary" onclick="newScopedIdea('mission','${m.id}')">＋ Idea</button></div>${a.map(i=>scopedIdeaCard(i,'mission',m.id)).join('')||'<p class="small muted">Todavía no hay ideas para esta misión.</p>'}</section>`}
 function scopedIdeaCard(i,k,oid){return `<div class="v41-idea-card" style="--v41-idea-bg:${safe(i.color||'#22323c')}"><div class="row between"><b>${safe(i.title||'Idea')}</b><div class="row"><button class="edit-icon" onclick="editScopedIdea('${i.id}','${k}','${oid}')" aria-label="Editar color e idea">✎</button><button class="v41-dots" onclick="scopedIdeaMenu('${i.id}','${k}','${oid}')">•••</button></div></div><p>${safe(i.text)}</p><small>${i.at?fmt(i.at):''}</small></div>`}
 function newScopedIdea(k,oid){modal(`<h2>Nueva idea</h2><label>Título</label><input id="v41Title"><label>Idea</label><textarea id="v41Text"></textarea><div class="actions"><button class="btn" onclick="saveScopedIdea('${k}','${oid}')">Guardar idea</button><button class="btn ghost" onclick="closeModal()">Cancelar</button></div>`)}
 function saveScopedIdea(k,oid){const text=document.getElementById('v41Text').value.trim();if(!text)return alert('Escribí la idea.');const store=k==='project'?data.projectIdeas:data.missionIdeas;(store[oid]||(store[oid]=[])).push({id:uid(),title:document.getElementById('v41Title').value.trim(),text,at:Date.now()});if(!save())return;closeModal();k==='project'?openProject(oid):openMission(oid)}

@@ -178,3 +178,16 @@ CAMBIOS EXCLUSIVAMENTE ESTÉTICOS
 - Lápices de edición en toda la aplicación: se elimina el aro/contorno destacado y se unifica el tratamiento oscuro.
 - Se mantienen dimensiones circulares y comportamiento de los controles.
 - No se modifican funciones, datos ni contabilidad.
+
+
+HOY V46 — uniformidad visual de Ideas de misión
+Base: HOY V45.
+Versión visible/interna: V46.
+Caché Service Worker: hoy-cache-v52.
+
+CAMBIO
+- Se identificó que projectIdeasSection() y missionIdeasSection() compartían las mismas tarjetas, pero la sección de misión no tenía un alcance CSS explícito para aislarla de estilos heredados del contexto de misión.
+- Se añadió la clase v46-mission-ideas a la sección de ideas de cada misión.
+- Se aplicó explícitamente el mismo diseño de projectIdeasSection(): encabezado con divisores superior/inferior, menú de tres puntos a la derecha, botón + Idea alineado a la derecha y tarjetas oscuras con borde y espaciado iguales.
+- No se modificaron funciones de creación, edición, traslado, eliminación ni almacenamiento de ideas.
+- No se modificó el resto de la lógica ni el registro de progreso.
