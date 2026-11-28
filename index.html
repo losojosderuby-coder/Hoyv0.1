@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HOY">
 <link rel="manifest" href="manifest.webmanifest">
-<title>HOY V37</title>
+<title>HOY V38</title>
 <style>
 html.hoy-booting header,html.hoy-booting #app,html.hoy-booting .nav{visibility:hidden!important}html.hoy-booting #sunSplash{visibility:visible!important;z-index:9999}
 
@@ -508,7 +508,7 @@ body.dark .cal-day.is-selected{background:#4b493d}body.dark .cal-views{backgroun
 <div id="modal"></div>
 <script>
 const KEY='hoy-data-v1';
-const APP_VERSION='V37';
+const APP_VERSION='V38';
 // Interruptor técnico en este archivo: false oculta Calendario para todos los usuarios.
 // No borra datos; al volver a true, el calendario reaparece.
 const HOY_CONFIG={modules:{calendarEnabled:true}};
@@ -940,6 +940,99 @@ document.addEventListener('dblclick',e=>{if(e.target.closest('button,a,input,sel
 
 
 function deleteGlobalIdea(id,source,core){deleteIdeaCompletely(id)}
+
+
+// HOY V38 — mejoras incrementales sobre V37. Se conservan las claves y registros existentes.
+if(!Array.isArray(data.pinnedMissions)) data.pinnedMissions=[];
+if(typeof data.priorityCoreFilter!=='string') data.priorityCoreFilter='';
+
+function v38PriorityList(){
+ const list=[
+  ...data.tasks.filter(t=>!t.done&&t.priority==='Alta').map(t=>({kind:'task',item:t})),
+  ...data.missions.filter(m=>!(m.completedAt||m.done)&&!m.archivedCompleted&&m.priority==='Alta').map(m=>({kind:'mission',item:m}))
+ ];
+ const core=data.priorityCoreFilter||'';
+ return list.filter(x=>{if(!core)return true;const p=project(x.item.projectId);return p&&p.core===core})
+  .sort((a,b)=>(a.item.created||0)-(b.item.created||0));
+}
+function v38PriorityFilter(){
+ const options=[['','Todas'],...activeCores().map(c=>[c[0],coreName(c[0])])];
+ modal(`<h2>Filtrar prioridades</h2><div class="v38-filter-options">${options.map(([id,label])=>`<button class="btn ${data.priorityCoreFilter===id?'':'ghost'}" onclick="data.priorityCoreFilter='${id}';save();closeModal();render()">${safe(label)}</button>`).join('')}</div><div class="actions"><button class="btn ghost" onclick="closeModal()">Cerrar</button></div>`);
+}
+function showAllPriorities(){
+ const list=v38PriorityList();
+ modal(`<h2>Todas las urgencias</h2>${list.map(({kind,item})=>{const p=project(item.projectId),m=kind==='mission'?item:(item.missionId?mission(item.missionId):null);return `<div class="item"><button class="text-button" onclick="closeModal();${m?`openMission('${m.id}')`:`openProject('${item.projectId}')`}">${safe(kind==='mission'?item.name:item.title)}</button><div class="small">${p?cname(p.core)+' · '+safe(p.name):'Proyecto'}${m&&kind==='task'?' · '+safe(m.name):''} · ${kind==='mission'?'Misión':'Tarea de la misión'}</div></div>`}).join('')||'<p class="muted">No hay urgencias pendientes.</p>'}<div class="actions"><button class="btn ghost" onclick="closeModal()">Cerrar</button></div>`);
+}
+function managePinnedMissions(){
+ const current=(data.pinnedMissions||[]).map(id=>mission(id)).filter(Boolean).slice(0,3);
+ const choices=data.missions.filter(m=>!m.archivedCompleted);
+ modal(`<h2>Misiones fijadas</h2><p class="small muted">Elegí hasta 3 misiones para tenerlas a mano en el inicio.</p>
+ ${current.map((m,i)=>`<div class="v38-pin-row"><span>${i+1}. ${safe(m.name)}</span><button class="v37-mini" onclick="unpinMission('${m.id}')">Quitar</button></div>`).join('')||'<p class="muted">Todavía no fijaste misiones.</p>'}
+ <label>Agregar misión</label><select id="v38PinChoice">${choices.filter(m=>!(data.pinnedMissions||[]).includes(m.id)).map(m=>{const p=project(m.projectId);return `<option value="${m.id}">${safe(m.name)}${p?' · '+safe(p.name):''}</option>`}).join('')}</select>
+ <div class="actions"><button class="btn" onclick="pinMission()">Fijar misión</button><button class="btn ghost" onclick="closeModal()">Cerrar</button></div>`);
+}
+function pinMission(){
+ const el=document.getElementById('v38PinChoice'),id=el?.value;
+ if(!id)return alert('No hay otra misión disponible para fijar.');
+ if(!Array.isArray(data.pinnedMissions))data.pinnedMissions=[];
+ if(data.pinnedMissions.length>=3)return alert('Podés fijar hasta 3 misiones.');
+ if(!data.pinnedMissions.includes(id))data.pinnedMissions.push(id);
+ if(!save())return;managePinnedMissions();render();
+}
+function unpinMission(id){
+ data.pinnedMissions=(data.pinnedMissions||[]).filter(x=>x!==id);
+ if(!save())return;managePinnedMissions();render();
+}
+function today(){
+ const active=data.projects.filter(p=>!p.archived);
+ const priorities=v38PriorityList();
+ const recent=priorities.slice(0,3).map(({kind,item})=>{
+  const p=project(item.projectId),m=kind==='mission'?item:(item.missionId?mission(item.missionId):null),title=kind==='mission'?item.name:item.title;
+  return `<div class="item"><button class="text-button" onclick="${m?`openMission('${m.id}')`:`openProject('${item.projectId}')`}">${safe(title)}</button><div class="small">${p?cname(p.core)+' · '+safe(p.name):'Proyecto'}${m&&kind==='task'?' · '+safe(m.name):''} · ${kind==='mission'?'Misión':'Tarea de la misión'}</div></div>`;
+ }).join('');
+ const pinned=(data.pinnedMissions||[]).map(id=>mission(id)).filter(m=>m&&!m.archivedCompleted).slice(0,3);
+ if(pinned.length!==(data.pinnedMissions||[]).length){data.pinnedMissions=pinned.map(m=>m.id);save()}
+ const pendingTasks=data.tasks.filter(t=>!t.done).length;
+ const pendingMissions=data.missions.filter(m=>!m.completedAt&&!m.done&&!m.archivedCompleted).length;
+ return `<p class="small">CENTRO DE CONTROL</p><h1 class="dashboard-title">El mundo es de quien lo hace suyo</h1>
+ <div class="panel" id="priorityPanel"><div class="row between"><h2>Prioridades</h2><button class="v38-priority-trigger" onclick="v38PriorityFilter()" aria-label="Filtrar prioridades"><span>${priorities.length}</span><span aria-hidden="true">⌄</span></button></div>${priorities.length?recent:'<p class="muted">No hay prioridades altas pendientes.</p>'}${priorities.length>3?`<button class="priority-more" onclick="showAllPriorities()">••• Ver todas</button>`:''}</div>
+ <div class="row between"><h2>Tus núcleos</h2><button class="btn ghost" onclick="tab='cores';render()">Ver todos</button></div><div class="core-stack">${activeCores().map((c,i)=>coreTile(c,i)).join('')}</div>
+ ${pinned.length?`<section class="v38-pinned panel"><div class="row between"><h2>Misiones fijadas</h2><button class="folder-dots" onclick="managePinnedMissions()" aria-label="Administrar misiones fijadas">···</button></div>${pinned.map((m,i)=>{const p=project(m.projectId);return `<button class="v38-pinned-item" onclick="openMission('${m.id}')"><span class="v38-pin-index">${i+1}</span><span><b>${safe(m.name)}</b><small>${p?safe(coreName(p.core))+' · '+safe(p.name):'Abrir misión'}</small></span><span class="v38-pin-arrow">›</span></button>`}).join('')}</section>`:`<div class="v38-pin-empty"><button class="text-button" onclick="managePinnedMissions()">＋ Fijar misiones</button></div>`}
+ <div class="activity-inline"><span><b>${active.length}</b> proyectos</span><span><b>${pendingTasks}</b> tareas de la misión pendientes</span><span><b>${pendingMissions}</b> misiones pendientes</span></div><div class="theme-control"><span>Modo oscuro</span><label class="switch"><input type="checkbox" id="themeSwitch" ${localStorage.getItem('hoy-theme')==='dark'?'checked':''} onchange="setTheme(this.checked)"><span></span></label></div>`;
+}
+function historyPage(){
+ const completedTasks=data.tasks.filter(t=>t.done),completedMissions=data.missions.filter(m=>!!(m.completedAt||m.done)),completedProjects=data.projects.filter(p=>!!p.completedAt);
+ const events=(data.completionEvents||[]).slice().reverse();
+ return `<p class="small">MEMORIA DE TRABAJO</p><h1>Historial</h1><div class="panel"><h2>Tu progreso</h2><div class="completion-stats"><div class="completion-stat"><strong>${completedMissions.length}</strong><span>Misiones cumplidas</span></div><div class="completion-stat"><strong>${completedTasks.length}</strong><span>Tareas cumplidas</span></div><div class="completion-stat"><strong>${completedProjects.length}</strong><span>Proyectos terminados</span></div></div></div>
+ <details class="panel completed-projects"><summary><span>Proyectos terminados</span><span class="completed-count">${completedProjects.length}</span><span class="completion-log-more">⋯</span></summary><div class="completion-log-body">${completedProjects.length?completedProjects.slice().sort((a,b)=>b.completedAt-a.completedAt).map(p=>`<div class="item row between"><div><b>${safe(p.name)}</b><div class="small">${safe(coreName(p.core))} · ${fmt(p.completedAt)}</div></div><button class="btn secondary" onclick="openArchivedProject('${p.id}')">Ver</button></div>`).join(''):'<p class="muted">Todavía no terminaste proyectos.</p>'}</div></details>
+ <details class="panel completion-log"><summary><span>Misiones terminadas</span><span class="completion-log-more">⋯</span></summary><div class="completion-log-body">${events.length?`<div class="completion-log-actions"><button class="text-button danger-text" onclick="clearCompletionLog()">Borrar todo el registro</button></div>${events.map(e=>`<div class="event-row completion-event"><div><b>${e.action==='reopened'?'Reabierto':'Completado'}: ${safe(e.label)}</b><div class="small">${e.kind==='task'?'Tarea de la misión':e.kind==='mission'?'Misión':'Proyecto'} · ${fmt(e.at)}</div></div><button class="edit-icon completion-delete" onclick="deleteCompletionEvent('${e.id}')" aria-label="Eliminar registro" title="Eliminar registro">×</button></div>`).join('')}`:'<p class="muted">Cuando completes tareas, misiones o proyectos, aparecerán acá.</p>'}</div></details>
+ <div class="panel"><h2>Cómo funciona HOY</h2><p class="small">Una guía rápida para organizarte.</p><button class="btn secondary" onclick="showTutorial()">Ver tutorial</button></div><div class="panel"><h2>Copias de seguridad</h2><p class="small">Tus datos se guardan en este navegador. Exportá una copia periódicamente.</p><button class="btn secondary" onclick="exportData()">Descargar copia JSON</button><label>Restaurar copia</label><input type="file" accept="application/json" onchange="importData(event)"></div>
+ <div class="version-history"><p class="small version-history-label">VERSIÓN DE LA APLICACIÓN</p><div class="version-history-line"><span>${APP_VERSION}</span><span class="version-history-date">· ${APP_RELEASE_DATE}</span></div></div>`;
+}
+(function v38Styles(){
+ const st=document.createElement('style');
+ st.textContent=`
+ .v38-priority-trigger{display:inline-flex;align-items:center;gap:9px;background:transparent;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:5px 12px;min-width:56px;justify-content:center}
+ .v38-priority-trigger span:first-child{font-variant-numeric:tabular-nums}
+ .v38-filter-options{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+ .v38-filter-options .btn{min-width:90px}
+ .v38-pinned{margin-top:18px}
+ .v38-pinned-item{display:flex;align-items:center;gap:12px;width:100%;padding:11px 4px;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--text);text-align:left}
+ .v38-pinned-item>span:nth-child(2){display:flex;flex-direction:column;gap:3px;min-width:0}
+ .v38-pinned-item small{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .v38-pin-index{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--line);flex:none}
+ .v38-pin-arrow{margin-left:auto;font-size:24px;color:var(--muted)}
+ .v38-pin-empty{margin:12px 0;text-align:right}
+ .v38-pin-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+ .completed-projects summary{display:flex;align-items:center;gap:10px;cursor:pointer}
+ .completed-projects summary span:first-child{font-weight:700}
+ .completed-projects summary .completion-log-more{margin-left:auto;order:3}
+ .completed-projects summary .completed-count{order:2}
+ .btn{border-radius:999px!important;padding:10px 18px}
+ .actions .btn{border-radius:999px!important}
+ `;
+ document.head.appendChild(st);
+})();
 
 </script>
 </body></html>

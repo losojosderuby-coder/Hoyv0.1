@@ -40,3 +40,15 @@ ANTES DE INSTALAR
 2. Mantener la versión anterior instalada.
 3. Probar el ZIP en un entorno separado antes de reemplazar la versión estable.
 4. No borrar datos de Safari ni desinstalar la PWA como paso de actualización.
+
+
+HOY V38 — actualización incremental sobre HOY V37
+- Se conserva la estructura del paquete V37 y la clave local hoy-data-v1.
+- Se agrega selector desplegable de prioridades: Todas o cualquiera de los núcleos activos del dispositivo.
+- Se agrega la sección Misiones fijadas debajo de Tus núcleos, con un máximo de tres accesos directos.
+- Se redondean los botones principales a formato ovalado horizontal.
+- Se ajusta la fila de Proyectos terminados para llevar los tres puntos al extremo derecho y mantener visible el contador.
+- Se conserva el contenido original de los archivos de recursos y los datos JSON.
+
+Verificación realizada: integridad del ZIP, sintaxis JavaScript del documento y del Service Worker, y lectura de los tres archivos JSON. No se realizó una prueba interactiva completa en Safari/iPhone.
+Nota: la eliminación general de cualquier tipo de notificación todavía requiere definir una capa de notificaciones descartables; V37 solo tiene el descarte persistente del aviso de enfoque.
