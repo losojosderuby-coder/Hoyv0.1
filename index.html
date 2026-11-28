@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HOY">
 <link rel="manifest" href="manifest.webmanifest">
-<title>HOY V40</title>
+<title>HOY V41</title>
 <style>
 html.hoy-booting header,html.hoy-booting #app,html.hoy-booting .nav{visibility:hidden!important}html.hoy-booting #sunSplash{visibility:visible!important;z-index:9999}
 
@@ -460,6 +460,17 @@ body.dark .idea-entry{background:#223945!important;color:#e2edf2!important;borde
 .folder-current{margin:5px 0 8px}.folder-menu{border:1px solid var(--line);border-radius:13px;padding:6px;background:var(--panel);margin:8px 0}.folder-menu-item{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:transparent;color:var(--text);padding:11px;border-radius:9px;text-align:left}.folder-menu-item.selected{background:#dcecf3;color:#29485a;font-weight:700}.folder-menu-row{display:flex;align-items:center}.folder-menu-row .folder-menu-item{flex:1}
 .routine-panel{margin:12px 0}.routine-card{border:1px solid var(--line);border-radius:13px;padding:12px;margin-top:10px;background:var(--panel)}.routine-card summary{display:flex;justify-content:space-between;gap:10px;cursor:pointer}.routine-manage{justify-content:flex-end;margin-top:8px}.routine-days{margin-top:10px}.routine-day{padding:10px 0;border-top:1px solid var(--line)}.routine-day-head,.routine-activity{display:flex;align-items:center;justify-content:space-between;gap:8px}.routine-activity{padding:8px 0}.routine-activity>div:first-child{min-width:0}.routine-activity .row{flex-shrink:0}.routine-activity .text-button{font-size:12px}.completed-projects summary{display:flex;align-items:center;gap:10px;cursor:pointer}.completed-projects summary span:first-child{font-weight:700}.completed-projects .completed-count{margin-left:auto}
 body.dark .folder-menu-item.selected{background:#29485a;color:#f4f8fa}
+
+.v41-ideas{margin:18px 0 22px;padding:14px;border:1px solid #354955;border-radius:16px;background:#1d2b34}
+.v41-ideas h2{font-size:17px;margin:0}
+.v41-ideas-add{display:flex;justify-content:flex-end;margin:10px 0}
+.v41-idea-card{padding:12px;margin:9px 0;border:1px solid #354955;border-radius:13px;background:var(--v41-idea-bg,#22323c)}
+.v41-idea-card p{margin:7px 0}
+.v41-dots{width:32px;height:32px;border-radius:50%;border:1px solid #354955;background:#263640;color:#9aabb4;display:inline-grid;place-items:center;font-size:17px;letter-spacing:1px}
+.v41-ideas .btn.secondary{background:#263640;color:#a8b7bf;border-color:#354955}
+body.dark .edit-icon,body.dark .idea-edit{background:#263640!important;color:#a8b7bf!important;border:1px solid #354955}
+body.dark .v39-round-arrow{background:#263640!important;color:#a8b7bf!important;border-color:#354955!important}
+body.dark .mission-number-tile{background:#263640!important;border-color:#354955!important;color:#a8b7bf!important}
 </style>
 <style>
 /* HOY V24 CALENDAR */
@@ -491,6 +502,17 @@ body.dark .cal-day.is-selected{background:#4b493d}body.dark .cal-views{backgroun
 .attention-empty{color:var(--muted);font-size:13px;padding:8px 0}
 .attention-tag{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 
+
+.v41-ideas{margin:18px 0 22px;padding:14px;border:1px solid #354955;border-radius:16px;background:#1d2b34}
+.v41-ideas h2{font-size:17px;margin:0}
+.v41-ideas-add{display:flex;justify-content:flex-end;margin:10px 0}
+.v41-idea-card{padding:12px;margin:9px 0;border:1px solid #354955;border-radius:13px;background:var(--v41-idea-bg,#22323c)}
+.v41-idea-card p{margin:7px 0}
+.v41-dots{width:32px;height:32px;border-radius:50%;border:1px solid #354955;background:#263640;color:#9aabb4;display:inline-grid;place-items:center;font-size:17px;letter-spacing:1px}
+.v41-ideas .btn.secondary{background:#263640;color:#a8b7bf;border-color:#354955}
+body.dark .edit-icon,body.dark .idea-edit{background:#263640!important;color:#a8b7bf!important;border:1px solid #354955}
+body.dark .v39-round-arrow{background:#263640!important;color:#a8b7bf!important;border-color:#354955!important}
+body.dark .mission-number-tile{background:#263640!important;border-color:#354955!important;color:#a8b7bf!important}
 </style>
 
 <link rel="apple-touch-icon" sizes="180x180" href="hoy-sol-v29-180.png">
@@ -544,6 +566,17 @@ body.dark .mission-hero .mission-number-tile {
   border:1px solid #52636d;
 }
 body.dark .idea-actions .edit-icon {border-radius:50%}
+
+.v41-ideas{margin:18px 0 22px;padding:14px;border:1px solid #354955;border-radius:16px;background:#1d2b34}
+.v41-ideas h2{font-size:17px;margin:0}
+.v41-ideas-add{display:flex;justify-content:flex-end;margin:10px 0}
+.v41-idea-card{padding:12px;margin:9px 0;border:1px solid #354955;border-radius:13px;background:var(--v41-idea-bg,#22323c)}
+.v41-idea-card p{margin:7px 0}
+.v41-dots{width:32px;height:32px;border-radius:50%;border:1px solid #354955;background:#263640;color:#9aabb4;display:inline-grid;place-items:center;font-size:17px;letter-spacing:1px}
+.v41-ideas .btn.secondary{background:#263640;color:#a8b7bf;border-color:#354955}
+body.dark .edit-icon,body.dark .idea-edit{background:#263640!important;color:#a8b7bf!important;border:1px solid #354955}
+body.dark .v39-round-arrow{background:#263640!important;color:#a8b7bf!important;border-color:#354955!important}
+body.dark .mission-number-tile{background:#263640!important;border-color:#354955!important;color:#a8b7bf!important}
 </style>
 
 </head>

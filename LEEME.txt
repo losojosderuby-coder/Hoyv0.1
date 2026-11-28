@@ -80,3 +80,14 @@ No se modificaron navegación, jerarquías, almacenamiento, ni otras funciones a
 
 VALIDACIONES
 Pendientes de validación automática final y prueba visual/interactiva en Safari/iPhone.
+
+
+HOY V41 — Ideas independientes por proyecto y misión + ajuste de controles oscuros
+Base: HOY_V40(1).zip recibido del usuario.
+- Se agregan espacios independientes de Ideas dentro de cada proyecto y dentro de cada misión, debajo de la descripción/encabezado y antes de las misiones/tareas.
+- Cada espacio permite crear ideas, abrir el menú de tres puntos, editar, trasladar y eliminar.
+- Las ideas generales permiten asignar mediante tres puntos a un proyecto o misión. Al asignarlas se retiran del listado anterior y quedan únicamente en el nuevo destino.
+- Las ideas creadas directamente en proyectos y misiones se guardan en estructuras separadas: projectIdeas y missionIdeas.
+- Se unifica el aspecto de controles circulares en una paleta oscura azul petróleo/azul grisáceo, sin fondos blancos ni celestes brillantes.
+- Se conserva hoy-data-v1 y todos los datos preexistentes. Se actualiza caché a hoy-cache-v46.
+- No se modifican las funciones de navegación, historial, calendario, consejos, rutinas ni notificaciones.
